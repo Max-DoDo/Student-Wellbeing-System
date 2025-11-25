@@ -17,7 +17,7 @@
           <mxGeometry height="60" width="30" x="623" y="490" as="geometry" />
         </mxCell>
         <mxCell id="OokSDtlgLzqvZy-yguoR-8" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Student Wellbeing System" vertex="1">
-          <mxGeometry height="30" width="150" x="360" y="140" as="geometry" />
+          <mxGeometry height="30" width="150" x="371.5" y="140" as="geometry" />
         </mxCell>
         <mxCell id="OokSDtlgLzqvZy-yguoR-9" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="View individual reports" vertex="1">
           <mxGeometry height="45" width="76" x="404" y="220" as="geometry" />
