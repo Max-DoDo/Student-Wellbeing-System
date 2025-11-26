@@ -28,3 +28,8 @@ TODO TODO TODO TODO TODO
 
 ## License
 This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+## Create SQL database
+# Run create_database.py
+# Will get university_wellbeing.db
+# Insert data can use init_users.py for example
