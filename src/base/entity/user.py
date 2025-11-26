@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from entity.person import Person
 from datetime import datetime
+
 @dataclass
 class user(Person):
 
