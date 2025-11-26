@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-# ตั้งชื่อไฟล์ Database
+# Database name
 DB_NAME = "university_wellbeing.db"
 
 def init_database():
@@ -17,23 +17,24 @@ def init_database():
     sql_script = """
     PRAGMA foreign_keys = ON;
 
+    # usually in sql int 1 is TRUE and 0 is FALSE
+
     -- 1. Table: Students
     CREATE TABLE IF NOT EXISTS students (
         student_id INTEGER PRIMARY KEY,
         first_name TEXT NOT NULL,
         last_name TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
-        personal_tutor_email TEXT,
+        personal_tutor_email TEXT NOT NULL,
         emergency_contact_name TEXT, 
         emergency_contact_phone TEXT,
-        enrollment_year INTEGER DEFAULT 2025
     );
 
     -- 2. Table: users
     CREATE TABLE IF NOT EXISTS users (
         users_id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,      -- should store in hash
+        password TEXT NOT NULL,      -- in first stage we can use plain password
         first_name TEXT NOT NULL,
         last_name TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
@@ -48,7 +49,7 @@ def init_database():
         student_id INTEGER NOT NULL,
         week_number INTEGER NOT NULL CHECK(week_number > 0 AND week_number <= 52),
         is_present INTEGER NOT NULL CHECK(is_present IN (0, 1)),
-        recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        is_late INTEGER NOT NULL CHECK(is_late IN (0, 1)),
         FOREIGN KEY(student_id) REFERENCES students(student_id) ON DELETE CASCADE
     );
 
@@ -57,7 +58,7 @@ def init_database():
         assessment_id INTEGER PRIMARY KEY AUTOINCREMENT,
         student_id INTEGER NOT NULL,
         assignment_name TEXT NOT NULL,
-        grade INTEGER CHECK(grade >= 0 AND grade <= 100),
+        grade INTEGER NOT NULL CHECK(grade >= 0 AND grade <= 100),
         submitted_on_time INTEGER NOT NULL CHECK(submitted_on_time IN (0, 1)),
         FOREIGN KEY(student_id) REFERENCES students(student_id) ON DELETE CASCADE
     );
