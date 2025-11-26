@@ -6,6 +6,9 @@ from dataclasses import dataclass
 @dataclass
 class Person(ABC):
 
-    id: str
+    id: int
     name: str
     gender: str
+    first_name:str
+    last_name:str
+    email:str
