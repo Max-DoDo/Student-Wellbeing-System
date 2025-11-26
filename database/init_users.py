@@ -1,12 +1,17 @@
 import sqlite3
+import os
 
 DB_NAME = "university_wellbeing.db"
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_FOLDER_PATH = os.path.join(BASE_DIR)
+DB_FILE_PATH = os.path.join(DB_FOLDER_PATH, DB_NAME)
+
 def init_users_plaintext():
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_FILE_PATH)
     cursor = conn.cursor()
 
-    print(f"Connected to {DB_NAME}")
+    print(f"Connected to {DB_FILE_PATH}")
 
     # create sample users data
     # Role Mapping: 0=Admin, 1=Wellbeing, 2=Course Leader

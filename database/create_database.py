@@ -1,23 +1,35 @@
 import sqlite3
 import os
 
-# Database name
 DB_NAME = "university_wellbeing.db"
 
-def init_database():
-    if os.path.exists(DB_NAME):
-        os.remove(DB_NAME)
-        print(f"Deleted old database: {DB_NAME}")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_FOLDER_PATH = os.path.join(BASE_DIR)
+DB_FILE_PATH = os.path.join(DB_FOLDER_PATH, DB_NAME)
 
-    # 2. connect SQLlite
-    conn = sqlite3.connect(DB_NAME)
+def init_database():
+    if not os.path.exists(DB_FOLDER_PATH):
+        os.makedirs(DB_FOLDER_PATH)
+        print(f"[INFO] Created directory: {DB_FOLDER_PATH}")
+
+    if os.path.exists(DB_FILE_PATH):
+        try:
+            os.remove(DB_FILE_PATH)
+            print(f"[INFO] Deleted old database: {DB_NAME}")
+        except PermissionError:
+            print(f"[ERROR] Cannot delete {DB_NAME}. It might be in use.")
+            return
+
+    # 3. Connect SQLite
+    print(f"[INFO] Creating database at: {DB_FILE_PATH}")
+    conn = sqlite3.connect(DB_FILE_PATH)
     cursor = conn.cursor()
 
-    # 3. sql script
+    # 4. SQL Script
     sql_script = """
     PRAGMA foreign_keys = ON;
 
-    # usually in sql int 1 is TRUE and 0 is FALSE
+    -- usually in sql int 1 is TRUE and 0 is FALSE
 
     -- 1. Table: Students
     CREATE TABLE IF NOT EXISTS students (
@@ -27,7 +39,7 @@ def init_database():
         email TEXT UNIQUE NOT NULL,
         personal_tutor_email TEXT NOT NULL,
         emergency_contact_name TEXT, 
-        emergency_contact_phone TEXT,
+        emergency_contact_phone TEXT
     );
 
     -- 2. Table: users
@@ -98,10 +110,10 @@ def init_database():
 
     try:
         cursor.executescript(sql_script)
-        print("Database Schema created successfully.")
+        print("[SUCCESS] Database Schema created successfully.")        
         conn.commit()
     except sqlite3.Error as e:
-        print(f"Error creating database: {e}")
+        print(f"[ERROR] creating database: {e}")
     finally:
         conn.close()
 
