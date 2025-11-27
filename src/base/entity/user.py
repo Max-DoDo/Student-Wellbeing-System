@@ -1,11 +1,19 @@
 from dataclasses import dataclass
+from typing import Optional
+from tools.mytools import MyTools
 from entity.person import Person
-from datetime import datetime
+
 
 @dataclass
-class user(Person):
+class User(Person):
+    username: Optional[str] = None
+    password: Optional[str] = None
+    role_id: Optional[int] = None
+    is_active: Optional[bool] = None
+    created_at: Optional[str] = None
 
-    password:str
-    role_id:int
-    is_active:bool
-    created_at:str
+    def __post_init__(self):
+        super().__post_init__()
+        if self.created_at == None:
+            self.created_at = MyTools.getFormattedDate()
+

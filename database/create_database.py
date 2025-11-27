@@ -31,7 +31,7 @@ def init_database():
 
     -- usually in sql int 1 is TRUE and 0 is FALSE
 
-    -- 1. Table: Students
+    -- 1. Table: students
     CREATE TABLE IF NOT EXISTS students (
         student_id INTEGER PRIMARY KEY,
         first_name TEXT NOT NULL,

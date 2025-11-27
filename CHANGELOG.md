@@ -16,9 +16,6 @@
 
 * README.md file. Added some descriptive words.
 
-## Create SQL database
-# Run create_database.py
-# Will get university_wellbeing.db include mock data
 
 ---
 

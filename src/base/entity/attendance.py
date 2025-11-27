@@ -1,11 +1,12 @@
 
 from dataclasses import dataclass
+from typing import Optional
 
 @dataclass
-class Attendence:
-    attendance_id:int
-    student_id:int
-    week_number:int
-    is_present:bool
-    is_late:bool
+class Attendance:
+    attendance_id:Optional[int] = None
+    student_id:Optional[int] = None
+    week_number:Optional[int] = None
+    is_present:Optional[bool] = None
+    is_late:Optional[bool] = None
     

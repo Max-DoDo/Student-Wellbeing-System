@@ -1,20 +1,53 @@
 import os
+from entity.student import Student
+from tools.log import Log
+from tools.mytools import MyTools
+from repository.attendance_repo import Attendance_Repo
+from entity.user import User
+from repository.user_repo import User_Repo
 from repository.student_repo import Student_Repo
+from repository.base_repo import Base_Repo
+from entity.person import Person
 
 class App:
     def __init__(self):
-        current_dir = os.path.dirname(os.path.abspath(__file__))    
-        db_folder = os.path.abspath(os.path.join(current_dir, "..", "..", "database"))     
-        self.db_path = os.path.join(db_folder, "university_wellbeing.db")   
+        self.configure_DataBase();
+        self.main() 
 
-    def main(self):
-        repo = Student_Repo(self.db_path)
+    def main(self) -> None:
 
-        studentsById = repo.getStudent(10)
-        students = repo.getAllStudent()
-        print(studentsById)
-        print(students)
+        self.test();
+    
+    def test(self):
+        
+        teststudent = Student(name="Max Wang",email="reat_maxwell@outlook.com")
+        sr = Student_Repo()
+
+        changes = Student(
+            email="newaaemail@uni.ac.uk",
+            emergency_contact_phone="123456"
+        )
+
+        sr.updateStudent(11, changes)
+        # Log.isFileLogging(True)
+        # Log.info("aaa")
+        # Log.success("Success")
+        # Log.warn("Warn")
+        # Log.debug("debug")
+        # Log.error("error")
+        pass
+
+    def configure_DataBase(self):
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        db_path = os.path.abspath(os.path.join(
+            current_dir,
+            "..",   # base → src
+            "..",   # src → root
+            "database",
+            "university_wellbeing.db"
+        ))
+        Base_Repo.set_db_path(db_path)
 
 if __name__ == "__main__":
     app = App()
-    app.main()
