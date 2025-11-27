@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Wellbeing Report for {{ student.fname }} {{ student.lname }}</h2>
+
+<div class="chart-card">
+    <h3>Weekly Stress Trend</h3>
+    {{ stress_chart|safe }}
+</div>
+
+<div class="chart-card">
+    <h3>Weekly Sleep Trend</h3>
+    {{ sleep_chart|safe }}
+</div>
+
+<a href="{{ url_for('student_list') }}" class="btn btn-secondary mt-3">
+    ⬅ Back to Student List
+</a>
+
+{% endblock %}

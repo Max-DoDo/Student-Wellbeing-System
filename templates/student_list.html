@@ -1,19 +1,47 @@
 {% extends "base.html" %}
+
 {% block content %}
+
 <h2>Student List</h2>
-<div class="card">
-<table class="table">
-    <thead><tr><th>ID</th><th>Name</th><th>Course</th><th>Year</th></tr></thead>
+
+<table class="table table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Course</th>
+            <th>Year</th>
+        </tr>
+    </thead>
+
     <tbody>
         {% for s in students %}
-            <tr>
-                <td>{{ s.id }}</td>
-                <td>{{ s.fname }} {{ s.lname }}</td>
-                <td>{{ s.course }}</td>
-                <td>{{ s.year }}</td>
-            </tr>
+        <tr>
+            <td>{{ s.id }}</td>
+
+            <td>
+                {% if role == 'wellbeing' %}
+                    <a href="{{ url_for('wellbeing_student_detail', sid=s.id) }}"
+                       class="student-link">
+                        {{ s.fname }} {{ s.lname }}
+                    </a>
+
+                {% elif role == 'course_leader' %}
+                    <a href="{{ url_for('course_leader_student_detail', sid=s.id) }}"
+                       class="student-link">
+                        {{ s.fname }} {{ s.lname }}
+                    </a>
+
+                {% else %}
+                    {{ s.fname }} {{ s.lname }}
+                {% endif %}
+            </td>
+
+            <td>{{ s.course }}</td>
+            <td>{{ s.year }}</td>
+        </tr>
         {% endfor %}
     </tbody>
 </table>
-</div>
+
 {% endblock %}

@@ -1,14 +1,42 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>Add Student</h2>
-<div class="card" style="max-width:500px;">
-<form>
-    <input class="form-control mb-2" placeholder="Student ID">
-    <input class="form-control mb-2" placeholder="First Name">
-    <input class="form-control mb-2" placeholder="Last Name">
-    <input class="form-control mb-2" placeholder="Course">
-    <input class="form-control mb-2" placeholder="Year">
-    <button class="btn btn-primary w-100">Add (Dummy)</button>
-</form>
+
+<h2>Add New Student</h2>
+
+<div class="card" style="max-width:500px; margin:auto; padding:20px;">
+
+    <form method="POST" action="{{ url_for('add_student_page') }}">
+
+        <div class="mb-3">
+            <label class="form-label">Student ID</label>
+            <input name="student_id" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">First Name</label>
+            <input name="first_name" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Last Name</label>
+            <input name="last_name" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Course</label>
+            <input name="course" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Year of Study</label>
+            <input type="number" name="year" class="form-control" required min="1" max="5">
+        </div>
+
+        <button class="btn btn-success w-100" type="submit">Add Student</button>
+    </form>
+
 </div>
+
+
 {% endblock %}
