@@ -1,4 +1,5 @@
 import os
+from tools.mytools import MyTools
 from repository.attendance_repo import Attendance_Repo
 from entity.user import User
 from repository.user_repo import User_Repo
@@ -16,6 +17,7 @@ class App:
         self.test();
     
     def test(self):
+        MyTools().debug("aaa")
         pass
 
     def configure_DataBase(self):

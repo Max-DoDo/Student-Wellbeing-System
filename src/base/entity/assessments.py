@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
+from base.tools.mytools import MyTools
 
 @dataclass
 class Assessment:
@@ -12,5 +12,5 @@ class Assessment:
     def __post_init__(self):
         super().__post_init__()
         if self.submitted_on_time == None:
-            self.submitted_on_time = datetime.now().strftime("%Y-%m-%d")
+            self.submitted_on_time = MyTools.getFormattedDate();
         

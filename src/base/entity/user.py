@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional
+from tools.mytools import MyTools
 from entity.person import Person
-from datetime import datetime
+
 
 @dataclass
 class User(Person):
@@ -14,5 +15,5 @@ class User(Person):
     def __post_init__(self):
         super().__post_init__()
         if self.created_at == None:
-            self.created_at = datetime.now().strftime("%Y-%m-%d")
+            self.created_at = MyTools.getFormattedDate();
 

@@ -2,6 +2,8 @@
 from dataclasses import dataclass
 from datetime import datetime
 
+from tools.mytools import MyTools
+
 @dataclass
 class Wellbeing_Survey:
     survey_id:int
@@ -14,5 +16,5 @@ class Wellbeing_Survey:
     def __post_init__(self):
         super().__post_init__()
         if self.survey_date == None:
-            self.survey_date = datetime.now().strftime("%Y-%m-%d")
+            self.survey_date = MyTools.getFormattedDate();
         
