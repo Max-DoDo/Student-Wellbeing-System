@@ -1,9 +1,24 @@
+from typing import List, Optional
 from repository.baserepo import BaseRepo
-from src.base.entity.student import Student
+from entity.student import Student
+
 class Student_Repo(BaseRepo):
 
-    def getStudentName(self, id) -> str:
-        pass;
+    def getStudent(self, id: int) -> str:
+        
+        print(f"Fetching name for student ID: {id}")
+        query = "SELECT * FROM students WHERE student_id = ?"
+        
+        self.cursor.execute(query, (id,))
+        result = self.cursor.fetchall()
+        print(result)
 
-    def getAllStudent(self) -> Student:
-        pass;
+    def getAllStudent(self) -> List[Student]:
+        """
+        Retrieves all users and maps them to Student objects.
+        """
+        query = "SELECT * FROM users"
+        
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        return results
