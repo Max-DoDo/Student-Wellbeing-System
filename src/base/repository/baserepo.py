@@ -1,4 +1,8 @@
 import sqlite3
+import os
+from database.create_database import DB_NAME
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class BaseRepo:
     def __init__(self, db_path: str):

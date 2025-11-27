@@ -6,5 +6,5 @@ class Assessment:
     student_id:int
     assignment_name:str
     grade:int
-    submited_on_time:str
+    submitted_on_time:str
     
