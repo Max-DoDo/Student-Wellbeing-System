@@ -1,28 +1,21 @@
-{% extends "base.html" %}
-
+<!-- {% extends "base.html" %}
 {% block content %}
-
-<h2>Wellbeing Staff Dashboard</h2>
-
-<div class="card">
-    <a href="{{ url_for('group_report') }}" class="btn btn-primary">
-        📊 View Group Report
-    </a>
+<h2 class="mb-3">👩‍⚕️ Wellbeing Dashboard</h2>
+<p class="text-muted">Manage student wellbeing data and view analytics.</p>
+<div class="row">
+<div class="col-md-4">
+<div class="card quick-card">
+<h4>Student List</h4>
+<p>View and track wellbeing status</p>
+<a href="{{ url_for('student_list') }}" class="btn btn-primary">Open</a>
 </div>
-
-<div class="card">
-    <h3>Students</h3>
-    <p>Select a student to view wellbeing insights:</p>
-
-    <ul class="student-list">
-    {% for s in students %}
-        <li>
-            <a href="{{ url_for('wellbeing_student_detail', sid=s.id) }}">
-                {{ s.fname }} {{ s.lname }} ({{ s.course }})
-            </a>
-        </li>
-    {% endfor %}
-    </ul>
 </div>
-
-{% endblock %}
+<div class="col-md-4">
+<div class="card quick-card">
+<h4>Group Wellbeing Report</h4>
+<p>Overall stress & sleep overview</p>
+<a href="{{ url_for('group_report') }}" class="btn btn-primary">Open</a>
+</div>
+</div>
+</div>
+{% endblock %} -->

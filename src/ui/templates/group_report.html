@@ -7,7 +7,7 @@
 <p>This visual shows overall wellbeing across all students.</p>
 
 <div class="chart-card">
-   {{ chart_html|safe }}
+   <div class="chart-card"> {{ chart_html|safe }} </div>
 </div>
 
 <a href="{{ url_for('wellbeing_dashboard') }}" class="btn btn-secondary">

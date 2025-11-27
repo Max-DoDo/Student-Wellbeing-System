@@ -1,26 +1,27 @@
 {% extends "base.html" %}
-
 {% block content %}
-
-<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
-    <div class="card p-4 shadow" style="width: 380px;">
-
-        <h3 class="text-center mb-4">Student Wellbeing System</h3>
-
-        <form method="POST">
-            <label class="form-label">Select Role</label>
-            <select name="role" class="form-select mb-3" required>
-                <option value="" selected disabled>-- Choose Role --</option>
-                <option value="wellbeing">Wellbeing Staff</option>
-                <option value="course_leader">Course Leader</option>
-                <option value="admin">Admin</option>
-            </select>
-
-            <button type="submit" class="btn btn-primary w-100">
-                Login
-            </button>
-        </form>
-    </div>
+<div class="d-flex justify-content-center align-items-center" style="height: 85vh;">
+<div class="card p-4 shadow-lg" style="width: 380px; border-radius: 12px;">
+<!-- Student Icon -->
+<div class="text-center mb-3">
+<img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png"
+                alt="User Icon"
+                width="90"
+                style="opacity: 0.9;">
 </div>
-
+<h3 class="text-center mb-4">Student Wellbeing System</h3>
+<form method="POST">
+<!-- Username -->
+<label class="form-label">Username</label>
+<input type="text" name="username" class="form-control mb-3" required>
+<!-- Password -->
+<label class="form-label">Password</label>
+<input type="password" name="password" class="form-control mb-4" required>
+<!-- Login Button -->
+<button type="submit" class="btn btn-primary w-100">
+               Login
+</button>
+</form>
+</div>
+</div>
 {% endblock %}
