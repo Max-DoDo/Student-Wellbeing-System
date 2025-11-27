@@ -5,7 +5,8 @@ from entity.student import Student
 class Student_Repo(BaseRepo):
 
     def getStudent(self, id: int) -> Optional[Student]:
-        self.cursor.execute("SELECT * FROM students WHERE student_id = ?", (id,))
+        query = "SELECT * FROM students WHERE student_id = ?"
+        self.cursor.execute(query, (id,))
         row = self.cursor.fetchone()
         if row:
             return Student(id=row["student_id"], 
