@@ -25,7 +25,7 @@ class App:
     
     def test(self):
         studentrp = Student_Repo();
-        print(studentrp.getStudent(10));
+        print(studentrp.getAllStudent());
 
         pass
 
@@ -39,10 +39,6 @@ class App:
             "database",
             "university_wellbeing.db"
         ))
-
-        # print("[DEBUG] PATH =", db_path)
-        # print("[DEBUG] exists =", os.path.exists(db_path))
-
         BaseRepo.set_db_path(db_path)
 
 if __name__ == "__main__":
