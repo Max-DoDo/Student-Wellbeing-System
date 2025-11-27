@@ -1,4 +1,5 @@
 import os
+from tools.log import Log
 from tools.mytools import MyTools
 from repository.attendance_repo import Attendance_Repo
 from entity.user import User
@@ -17,7 +18,12 @@ class App:
         self.test();
     
     def test(self):
-        MyTools().debug("aaa")
+        Log.isFileLogging(True)
+        Log.info("aaa")
+        Log.success("Success")
+        Log.warn("Warn")
+        Log.debug("debug")
+        Log.error("error")
         pass
 
     def configure_DataBase(self):
