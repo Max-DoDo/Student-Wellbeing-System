@@ -9,21 +9,18 @@ class Student_Repo(Base_Repo):
         self.cursor.execute(query, (id,))
         row = self.cursor.fetchone()
         if row:
-            return Student(id=row["student_id"], 
-                           first_name=row["first_name"], 
-                           last_name=row["last_name"],
-                           )
+            return self.toStudent(row)
         return None
 
     def getAllStudent(self) -> List[Student]:
         query = "SELECT * FROM students"
         self.cursor.execute(query)
+        rows = self.cursor.fetchall()
         if rows:
-            rows = self.cursor.fetchall()
-            return self.rows_to_student(rows)
+            return self.toStudents(rows)
         return None
     
-    def row_to_student(self, row) -> Student:
+    def toStudent(self, row) -> Student:
         return Student(
             id=row["student_id"],
             first_name=row["first_name"],
@@ -34,5 +31,5 @@ class Student_Repo(Base_Repo):
             emergency_contact_phone=row["emergency_contact_phone"]
         )
     
-    def rows_to_student(self,rows) -> List[Student]:
-        return [self.row_to_student(row) for row in rows]
+    def toStudents(self,rows) -> List[Student]:
+        return [self.toStudent(row) for row in rows]
