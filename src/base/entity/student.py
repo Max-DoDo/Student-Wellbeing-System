@@ -5,6 +5,6 @@ from typing import Optional
 
 @dataclass
 class Student(Person):
-    personal_tutor_email: Optional[str] = None
-    emergency_contact_name:Optional[str] = None
-    emergency_contact_phone:Optional[str] = None
+    personal_tutor_email: Optional[str] = ""
+    emergency_contact_name:Optional[str] = ""
+    emergency_contact_phone:Optional[str] = ""

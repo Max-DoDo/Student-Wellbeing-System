@@ -1,4 +1,5 @@
 import os
+from entity.student import Student
 from tools.log import Log
 from tools.mytools import MyTools
 from repository.attendance_repo import Attendance_Repo
@@ -18,12 +19,22 @@ class App:
         self.test();
     
     def test(self):
-        Log.isFileLogging(True)
-        Log.info("aaa")
-        Log.success("Success")
-        Log.warn("Warn")
-        Log.debug("debug")
-        Log.error("error")
+        
+        teststudent = Student(name="Max Wang",email="reat_maxwell@outlook.com")
+        sr = Student_Repo()
+
+        changes = Student(
+            email="newaaemail@uni.ac.uk",
+            emergency_contact_phone="123456"
+        )
+
+        sr.updateStudent(11, changes)
+        # Log.isFileLogging(True)
+        # Log.info("aaa")
+        # Log.success("Success")
+        # Log.warn("Warn")
+        # Log.debug("debug")
+        # Log.error("error")
         pass
 
     def configure_DataBase(self):

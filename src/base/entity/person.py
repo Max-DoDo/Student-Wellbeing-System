@@ -2,20 +2,23 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Optional
 
+from tools.log import Log
+
 @dataclass
 class Person(ABC):
 
-    id: int
-    name: Optional[str] = None
-    first_name:Optional[str] = None
-    last_name:Optional[str] = None
-    gender: Optional[str] = None
-    email:Optional[str] = None
+    id: Optional[int] = -1
+    name: Optional[str] = ""
+    first_name:Optional[str] = ""
+    last_name:Optional[str] = ""
+    gender: Optional[str] = ""
+    email:Optional[str] = ""
 
     def __post_init__(self):
 
         if not (self.first_name or self.last_name or self.name):
-            raise ValueError("Person requires at least a name!")
+            Log.warn("A no name person object has been created with id", self.id)
+            return
         
         if self.name is None:
             self.name = f"{self.first_name} {self.last_name}"
