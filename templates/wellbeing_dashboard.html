@@ -1,5 +1,28 @@
 {% extends "base.html" %}
+
 {% block content %}
+
 <h2>Wellbeing Staff Dashboard</h2>
-<div class="card">Stress levels, sleep data, and alerts will appear here.</div>
+
+<div class="card">
+    <a href="{{ url_for('group_report') }}" class="btn btn-primary">
+        📊 View Group Report
+    </a>
+</div>
+
+<div class="card">
+    <h3>Students</h3>
+    <p>Select a student to view wellbeing insights:</p>
+
+    <ul class="student-list">
+    {% for s in students %}
+        <li>
+            <a href="{{ url_for('wellbeing_student_detail', sid=s.id) }}">
+                {{ s.fname }} {{ s.lname }} ({{ s.course }})
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+
 {% endblock %}

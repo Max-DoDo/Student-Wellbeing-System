@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>{{ student.fname }} {{ student.lname }} – Academic Report</h2>
+<p>This report shows weekly attendance and assignment performance.</p>
+
+<div class="chart-card">
+    <h3>Weekly Attendance Trend</h3>
+    {{ attendance_chart|safe }}
+</div>
+
+<div class="chart-card">
+    <h3>Assignment Grades</h3>
+    {{ grade_chart|safe }}
+</div>
+
+<a href="{{ url_for('student_list') }}" class="btn btn-secondary mt-3">
+    ⬅ Back to Student List
+</a>
+
+{% endblock %}

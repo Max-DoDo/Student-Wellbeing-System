@@ -11,6 +11,7 @@
 
     <style>
         body { background: #f5f6fa; }
+
         .sidebar {
             width: 250px;
             height: 100vh;
@@ -29,47 +30,78 @@
             background: #343545;
             color: #fff;
         }
+
+        /* ✅ If no role → full width for login page */
+        .main-no-sidebar {
+            margin: 0 auto;
+            padding-top: 40px;
+            width: 100%;
+        }
+
         .main {
             margin-left: 270px;
             padding: 20px;
         }
+
         .card {
             padding: 20px;
             background: white;
             border-radius: 8px;
             margin-bottom: 20px;
         }
+        .chart-card {
+        max-width: 750px;
+        margin: 0 auto 25px;
+        padding: 20px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+
+    .chart-img {
+        width: 100%;
+        max-height: 330px;
+        object-fit: contain;
+    }
     </style>
 </head>
 
 <body>
 
+{% if role %}
+<!-- ✅ SIDEBAR ONLY WHEN LOGGED IN -->
 <div class="sidebar">
     <h4 class="text-center">Menu</h4>
     <hr style="border-color:#444;">
 
+    <!-- ✅ Always available -->
     <a href="{{ url_for('student_list') }}">📋 Student List</a>
-    <a href="{{ url_for('group_report') }}">📊 Group Report</a>
-    <a href="{{ url_for('update_student_page') }}">✏️ Update Students</a>
 
-    {% if role == "admin" %}
+    <!-- ✅ Role-specific group reports -->
+    {% if role == 'wellbeing' %}
+        <a href="{{ url_for('group_report') }}">📊 Group Report</a>
+
+    {% elif role == 'course_leader' %}
+        <a href="{{ url_for('course_leader_group_report') }}">📊 Group Report</a>
+    {% endif %}
+
+    <!-- ✅ Update visible to ALL roles -->
+    <a href="{{ url_for('update_student_page') }}">✏️ Update Student</a>
+
+    <!-- ✅ Admin-only options -->
+    {% if role == 'admin' %}
         <a href="{{ url_for('add_student_page') }}">➕ Add Student</a>
         <a href="{{ url_for('delete_student_page') }}">🗑 Delete Student</a>
-    {% endif %}
-
-    {% if role == "wellbeing" %}
-        <a href="{{ url_for('wellbeing_dashboard') }}">🧠 Wellbeing Insights</a>
-    {% endif %}
-
-    {% if role == "course_leader" %}
-        <a href="{{ url_for('course_leader_dashboard') }}">🎓 Academic Dashboard</a>
     {% endif %}
 
     <hr style="border-color:#444;">
     <a href="{{ url_for('logout') }}">🚪 Logout</a>
 </div>
+{% endif %}
 
-<div class="main">
+<!-- ✅ MAIN CONTENT AREA -->
+<div class="{% if role %}main{% else %}main-no-sidebar{% endif %}">
     {% block content %}{% endblock %}
 </div>
 
