@@ -1,3 +1,3 @@
-def login_user(db_path, username, password):
-
+''' return value is the password'''
+def login_user(username) -> str:
     pass

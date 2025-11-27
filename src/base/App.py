@@ -4,6 +4,7 @@ This class is the init class for the programme. Its UI object and database objec
 This class should not be subclassed.
 '''
 from entity.person import Person
+from ui.ui import UI
 class App:
     
     def __init__(self):
@@ -11,7 +12,7 @@ class App:
         self.main()
 
     def main(self) -> None:
-
+        ui();
         self.test()
     
     def test(self) -> None:

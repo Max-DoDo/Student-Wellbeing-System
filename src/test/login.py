@@ -15,7 +15,7 @@ project_root = os.path.abspath(os.path.join(current_dir, '../../'))
 # Add the project root to sys.path
 sys.path.insert(0, project_root)
 
-from src.base.services.Login import login_user
+from src.base.services.login_service import login_user
 
 TEST_DB_NAME = "test_university_wellbeing.db"
 
