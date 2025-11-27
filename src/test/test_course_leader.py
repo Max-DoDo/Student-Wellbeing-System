@@ -26,3 +26,40 @@ def get_course_average_grade(db_name):
 # ===========================================================================
 # END PLACEHOLDERS
 # ===========================================================================
+
+TEST_DB_NAME = "test_course_leader.db"
+
+class TestCourseLeaderFeatures(unittest.TestCase):
+
+    def setUp(self):
+        self.conn = sqlite3.connect(TEST_DB_NAME)
+        self.cursor = self.conn.cursor()
+        
+        # Schema setup (Course Leader focuses on Attendance & Grades)
+        self.cursor.executescript("""
+            CREATE TABLE students (student_id INTEGER PRIMARY KEY, first_name TEXT);
+            
+            CREATE TABLE attendance (
+                attendance_id INTEGER PRIMARY KEY, student_id INTEGER, 
+                week_number INTEGER CHECK(week_number BETWEEN 1 AND 52), 
+                is_present INTEGER
+            );
+            
+            CREATE TABLE assessments (
+                assessment_id INTEGER PRIMARY KEY, student_id INTEGER, 
+                assignment_name TEXT, grade INTEGER CHECK(grade BETWEEN 0 AND 100)
+            );
+        """)
+        # Seed Data
+        self.cursor.execute("INSERT INTO students (student_id, first_name) VALUES (1, 'Alice')")
+        self.cursor.execute("INSERT INTO students (student_id, first_name) VALUES (2, 'Bob')")
+        self.conn.commit()
+
+    def tearDown(self):
+        self.conn.close()
+        if os.path.exists(TEST_DB_NAME):
+            os.remove(TEST_DB_NAME)
+
+
+if __name__ == '__main__':
+    unittest.main()
