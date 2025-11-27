@@ -15,9 +15,27 @@ dummy_users = {
 
 # ---- Dummy Student Data ----
 students_data = [
-    {"id": 101, "fname": "John", "lname": "Doe", "course": "CS", "year": 2},
-    {"id": 102, "fname": "Jane", "lname": "Smith", "course": "Business", "year": 1},
-    {"id": 103, "fname": "Sam", "lname": "Wilson", "course": "Engineering", "year": 3}
+   {
+       "id": 101, "fname": "John", "lname": "Doe", "course": "CS", "year": 2,
+       "email": "john.doe@example.com",
+       "personal_tutor_email": "tutor.john@example.com",
+       "emergency_contact_name": "Michael Doe",
+       "emergency_contact_phone": "999-111-222"
+   },
+   {
+       "id": 102, "fname": "Jane", "lname": "Smith", "course": "Business", "year": 1,
+       "email": "jane.smith@example.com",
+       "personal_tutor_email": "tutor.jane@example.com",
+       "emergency_contact_name": "Sarah Smith",
+       "emergency_contact_phone": "888-444-333"
+   },
+   {
+       "id": 103, "fname": "Sam", "lname": "Wilson", "course": "Engineering", "year": 3,
+       "email": "sam.wilson@example.com",
+       "personal_tutor_email": "tutor.sam@example.com",
+       "emergency_contact_name": "Peter Wilson",
+       "emergency_contact_phone": "777-555-999"
+   },
 ]
 
 # ---- Dummy Wellbeing Data ----
@@ -37,13 +55,43 @@ dummy_academics = {
 # ---------------- LOGIN ----------------
 
 @app.route("/", methods=["GET", "POST"])
+
 def login():
+
     if request.method == "POST":
-        role = request.form["role"]
-        session["role"] = role
-        return redirect(url_for("dashboard_redirect"))
+
+        username = request.form.get("username")
+
+        password = request.form.get("password")
+
+        # Dummy login logic for now
+
+        # (You will replace this with real DB lookup later)
+
+        if username == "admin" and password == "admin":
+
+            session["role"] = "admin"
+
+            return redirect(url_for("dashboard_redirect"))
+
+        elif username == "well" and password == "well":
+
+            session["role"] = "wellbeing"
+
+            return redirect(url_for("dashboard_redirect"))
+
+        elif username == "leader" and password == "leader":
+
+            session["role"] = "course_leader"
+
+            return redirect(url_for("dashboard_redirect"))
+
+        else:
+
+            return render_template("login.html", error="Invalid credentials")
 
     return render_template("login.html")
+ 
 
 
 @app.route("/dashboard")
@@ -63,7 +111,7 @@ def dashboard_redirect():
 
 @app.route("/admin")
 def admin_dashboard():
-    return render_template("admin_dashboard.html", role=session.get("role"))
+    return redirect(url_for("student_list"))
 
 
 @app.route("/wellbeing")
@@ -208,23 +256,28 @@ def course_leader_group_report():
 
 @app.route("/update-student", methods=["GET", "POST"])
 def update_student_page():
-    if request.method == "POST":
-        sid = int(request.form["student_id"])
-        course = request.form["course"]
-        year = request.form["year"]
-
-        for s in students_data:
-            if s["id"] == sid:
-                s["course"] = course
-                s["year"] = int(year)
-
-        return redirect(url_for("update_student_page"))
-
-    return render_template(
-        "update_student.html",
-        students=students_data,
-        role=session.get("role")
-    )
+   sid = request.args.get("sid")
+   selected = None
+   if sid:
+       sid = int(sid)
+       selected = next(s for s in students_data if s["id"] == sid)
+   if request.method == "POST":
+       sid = int(request.form["student_id"])
+       for s in students_data:
+           if s["id"] == sid:
+               s["fname"] = request.form["first_name"]
+               s["lname"] = request.form["last_name"]
+               s["email"] = request.form["email"]
+               s["personal_tutor_email"] = request.form["personal_tutor_email"]
+               s["emergency_contact_name"] = request.form["emergency_contact_name"]
+               s["emergency_contact_phone"] = request.form["emergency_contact_phone"]
+       return redirect(url_for("update_student_page", sid=sid))
+   return render_template(
+       "update_student.html",
+       students=students_data,
+       selected=selected,
+       role=session.get("role")
+   )
 
 # ---------------- DELETE STUDENT ----------------
 
@@ -247,35 +300,32 @@ def delete_student_page():
     )
 
 # ---------------- ADD STUDENT ----------------
-
 @app.route("/add-student", methods=["GET", "POST"])
 def add_student_page():
-    if session.get("role") != "admin":
-        return redirect(url_for("dashboard_redirect"))
-
-    if request.method == "POST":
-        sid = int(request.form["student_id"])
-        fname = request.form["first_name"]
-        lname = request.form["last_name"]
-        course = request.form["course"]
-        year = int(request.form["year"])
-
-        students_data.append({
-            "id": sid,
-            "fname": fname,
-            "lname": lname,
-            "course": course,
-            "year": year
-        })
-
-        return redirect(url_for("add_student_page"))
-
-    return render_template(
-        "add_student.html",
-        students=students_data,
-        role=session.get("role")
-    )
-
+   if session.get("role") != "admin":
+       return redirect(url_for("dashboard_redirect"))
+   if request.method == "POST":
+       sid = int(request.form["student_id"])
+       fname = request.form["first_name"]
+       lname = request.form["last_name"]
+       email = request.form["email"]
+       tutor = request.form["personal_tutor_email"]
+       emergency_name = request.form["emergency_contact_name"]
+       emergency_phone = request.form["emergency_contact_phone"]
+       students_data.append({
+           "id": sid,
+           "fname": fname,
+           "lname": lname,
+           "email": email,
+           "personal_tutor_email": tutor,
+           "emergency_contact_name": emergency_name,
+           "emergency_contact_phone": emergency_phone
+       })
+       return redirect(url_for("student_list"))
+   return render_template(
+       "add_student.html",
+       role=session.get("role")
+   )
 # ---------------- LOGOUT ----------------
 
 @app.route("/logout")
