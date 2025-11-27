@@ -15,5 +15,5 @@ class User(Person):
     def __post_init__(self):
         super().__post_init__()
         if self.created_at == None:
-            self.created_at = MyTools.getFormattedDate();
+            self.created_at = MyTools.getFormattedDate()
 

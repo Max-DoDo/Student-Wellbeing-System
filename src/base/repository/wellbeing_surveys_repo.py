@@ -17,8 +17,8 @@ class Wellbeing_Survey_Repo(Base_Repo):
         self.cursor.execute(query)
         rows = self.cursor.fetchall()
         if rows:
-            return self.toWellBeingSurveys(rows);
-        return None;
+            return self.toWellBeingSurveys(rows)
+        return None
 
     def toWellBeingSurvey(self, row) -> Wellbeing_Survey:
         return Wellbeing_Survey(

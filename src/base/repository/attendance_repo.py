@@ -18,8 +18,8 @@ class Attendance_Repo(Base_Repo):
         self.cursor.execute(query)
         rows = self.cursor.fetchall()
         if rows:
-            return self.toAttendances(rows);
-        return None;
+            return self.toAttendances(rows)
+        return None
 
     def toAttendance(self,row) -> Attendance:
         return Attendance(

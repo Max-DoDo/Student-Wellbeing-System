@@ -17,8 +17,8 @@ class User_Repo(Base_Repo):
         self.cursor.execute(query)
         rows = self.cursor.fetchall()
         if rows:
-            return self.toUsers(rows);
-        return None;
+            return self.toUsers(rows)
+        return None
 
         
 
