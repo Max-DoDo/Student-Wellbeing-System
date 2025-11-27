@@ -4,7 +4,7 @@
 ## Overview
 This repository contains the group work for `WM9QF:Programming for Artificial Intelligence`. 
 
-**Class1, Group4**
+**Present by Class1, Group4**
 
 ## Branching Strategy
 - **main**: Stable, production-ready branch.
@@ -27,7 +27,9 @@ This repository contains the group work for `WM9QF:Programming for Artificial In
 * [Ayush Raghuwanshi](https://github.com/AyushSinghRaghuwanshi)
 * [Max Wang](https://github.com/Max-DoDo)
 
+## Environment
 
+* All this project have passed the running test in `Windows-10-19045.6332`and`Python3.7` environment. For lower or higher versions, we do not guarantee proper functioning.
 
 ## License
 This project is licensed under the MIT License. See the `LICENSE` file for details.
