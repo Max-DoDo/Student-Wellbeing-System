@@ -4,14 +4,14 @@ from entity.student import Student
 
 class Student_Repo(BaseRepo):
 
-    def getStudent(self, id: int) -> str:
-        
-        print(f"Fetching name for student ID: {id}")
-        query = "SELECT * FROM students WHERE student_id = ?"
-        
-        self.cursor.execute(query, (id,))
-        result = self.cursor.fetchall()
-        print(result)
+    def getStudent(self, id: int) -> Optional[Student]:
+        self.cursor.execute("SELECT * FROM students WHERE student_id = ?", (id,))
+        row = self.cursor.fetchone()
+
+        if row:
+            # print(row["student_id"])
+            return Student(id=row["student_id"], first_name=row["first_name"], last_name=row["last_name"])
+        return None
 
     def getAllStudent(self) -> List[Student]:
         """
