@@ -1,27 +1,20 @@
+import os
+from repository.student_repo import Student_Repo
 
-'''
-This class is the init class for the programme. Its UI object and database object are created in this class.
-This class should not be subclassed.
-'''
-from entity.person import Person
 class App:
-    
     def __init__(self):
-        
-        self.main()
+        current_dir = os.path.dirname(os.path.abspath(__file__))    
+        db_folder = os.path.abspath(os.path.join(current_dir, "..", "..", "database"))     
+        self.db_path = os.path.join(db_folder, "university_wellbeing.db")   
 
-    def main(self) -> None:
+    def main(self):
+        repo = Student_Repo(self.db_path)
 
-        self.test()
-    
-    def test(self) -> None:
-        
-        person = Person(id = 10000, name="Max",gender="Male")
-        print(person)
-
-
-
+        studentsById = repo.getStudent(10)
+        students = repo.getAllStudent()
+        print(studentsById)
+        print(students)
 
 if __name__ == "__main__":
     app = App()
-
+    app.main()
