@@ -13,7 +13,10 @@ This repository contains the group work for `WM9QF:Programming for Artificial In
 
 ## Setup
 
-TODO TODO TODO TODO TODO
+### Creat your database file
+
+* Run create_database.py
+* You will get university_wellbeing.db include mock data in same folder
 
 ## Contributors
 ***Contributors are listed in a randomly generated order. Yes randomly***
