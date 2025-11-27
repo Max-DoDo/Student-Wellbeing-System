@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Update Students</h2>
+<div class="card">
+<table class="table">
+    <thead><tr><th>ID</th><th>Name</th><th>Action</th></tr></thead>
+    <tbody>
+        {% for s in students %}
+        <tr>
+            <td>{{ s.id }}</td>
+            <td>{{ s.fname }} {{ s.lname }}</td>
+            <td><button class="btn btn-warning btn-sm">Update</button></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}
