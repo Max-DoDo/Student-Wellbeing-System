@@ -15,4 +15,4 @@ class User(Person):
         super().__post_init__()
         if self.created_at == None:
             self.created_at = datetime.now().strftime("%Y-%m-%d")
-            print(self.created_at)
+
