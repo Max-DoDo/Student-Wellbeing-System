@@ -1,7 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Group Report</h2>
 
-<p>(visual group insights placeholder)</p>
+<h2>Group Wellbeing Report</h2>
+
+<p>This visual shows overall wellbeing across all students.</p>
+
+<div class="chart-card">
+   {{ chart_html|safe }}
+</div>
+
+<a href="{{ url_for('wellbeing_dashboard') }}" class="btn btn-secondary">
+    ⬅ Back
+</a>
+
 {% endblock %}

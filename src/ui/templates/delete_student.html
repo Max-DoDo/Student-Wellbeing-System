@@ -1,18 +1,33 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>Delete Students</h2>
+
+<h2>Delete Student</h2>
+
 <div class="card">
-<table class="table">
-    <thead><tr><th>ID</th><th>Name</th><th>Action</th></tr></thead>
-    <tbody>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>ID</th><th>Name</th><th>Course</th><th>Year</th><th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
         {% for s in students %}
-        <tr>
-            <td>{{ s.id }}</td>
-            <td>{{ s.fname }} {{ s.lname }}</td>
-            <td><button class="btn btn-danger btn-sm">Delete</button></td>
-        </tr>
+            <tr>
+                <td>{{ s.id }}</td>
+                <td>{{ s.fname }} {{ s.lname }}</td>
+                <td>{{ s.course }}</td>
+                <td>{{ s.year }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('delete_student_page') }}">
+                        <input type="hidden" name="student_id" value="{{ s.id }}">
+                        <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
         {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
 </div>
+
 {% endblock %}

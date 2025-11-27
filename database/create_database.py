@@ -1,8 +1,8 @@
 import sqlite3
 import os
+import random
 
 DB_NAME = "university_wellbeing.db"
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_FOLDER_PATH = os.path.join(BASE_DIR)
 DB_FILE_PATH = os.path.join(DB_FOLDER_PATH, DB_NAME)
@@ -89,23 +89,6 @@ def init_database():
     -- 6. Indexes
     CREATE INDEX IF NOT EXISTS idx_attendance_student ON attendance(student_id);
     CREATE INDEX IF NOT EXISTS idx_survey_student_week ON wellbeing_surveys(student_id, week_number);
-
-    -- 7. Views (Privacy Layers)
-    CREATE VIEW IF NOT EXISTS view_academic_report AS
-    SELECT 
-        s.student_id, s.first_name || ' ' || s.last_name AS full_name,
-        a.week_number, a.is_present,
-        asm.assignment_name, asm.grade
-    FROM students s
-    LEFT JOIN attendance a ON s.student_id = a.student_id
-    LEFT JOIN assessments asm ON s.student_id = asm.student_id;
-
-    CREATE VIEW IF NOT EXISTS view_wellbeing_report AS
-    SELECT 
-        s.student_id, s.first_name || ' ' || s.last_name AS full_name,
-        w.week_number, w.stress_level, w.hours_slept
-    FROM students s
-    JOIN wellbeing_surveys w ON s.student_id = w.student_id;
     """
 
     try:
@@ -117,5 +100,147 @@ def init_database():
     finally:
         conn.close()
 
+# ==========================================
+# Generate Mock Data
+# ==========================================
+
+# Mock student names
+FIRST_NAMES = [
+    "James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda", "William", "Elizabeth",
+    "David", "Barbara", "Richard", "Susan", "Joseph", "Jessica", "Thomas", "Sarah", "Charles", "Karen",
+    "Christopher", "Nancy", "Daniel", "Lisa", "Matthew", "Margaret", "Anthony", "Betty", "Donald", "Sandra",
+    "Mark", "Ashley", "Paul", "Dorothy", "Steven", "Kimberly", "Andrew", "Emily", "Kenneth", "Donna",
+    "George", "Michelle", "Joshua", "Carol", "Kevin", "Amanda", "Brian", "Melissa", "Edward", "Deborah"
+]
+
+LAST_NAMES = [
+    "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez",
+    "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin",
+    "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson",
+    "Walker", "Young", "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores",
+    "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell", "Carter", "Roberts"
+]
+def get_random_name():
+    return random.choice(FIRST_NAMES), random.choice(LAST_NAMES)
+
+def get_random_phone():
+    return f"07{random.randint(100000000, 999999999)}"
+
+def populate_database():
+    print("\n--- STEP 2: Populating Mock Data (6 Scenarios) ---")
+    conn = sqlite3.connect(DB_FILE_PATH)
+    cursor = conn.cursor()
+
+    # create users
+    users = [
+        ('admin', 'admin123', 'System', 'Admin', 'admin@warwick.uni.ac.uk', 0),
+        ('wellbeing', 'safe123', 'Sarah', 'Care', 'wellbeing@warwick.uni.ac.uk', 1),
+        ('course_leader', 'teach123', 'Prof', 'Smart', 'course_leader@warwick.uni.ac.uk', 2)
+    ]
+    cursor.executemany("""
+        INSERT INTO users (username, password, first_name, last_name, email, role_id)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, users)
+    print(f"[INFO] Created {len(users)} system users.")
+
+    # All Scenario
+    scenarios = [
+        "The Star", "The Burnout", "The Struggler", 
+        "The Ghost", "The Smart Skipper", "The Partier"
+    ]
+
+    student_id_counter = 1
+    
+    # 10 persons per scenario
+    for student_types in scenarios:
+        print(f"  > Generating 10 students for scenario: {student_types}")
+        
+        for _ in range(10): 
+            fname, lname = get_random_name()
+            email = f"{fname.lower()}.{lname.lower()}{random.randint(10,99)}@warwick.uni.ac.uk"
+            emer_fname, emer_lname = get_random_name()
+            emer_name = f"{emer_fname} {emer_lname}"
+            emer_phone = get_random_phone()
+            
+            cursor.execute("""
+                INSERT INTO students (student_id, first_name, last_name, email, personal_tutor_email, emergency_contact_name, emergency_contact_phone)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (student_id_counter, fname, lname, email, "tutor@warwick.uni.ac.uk", emer_name, emer_phone))
+
+            # create data for 10 weeks
+            for week in range(1, 11):
+                
+                # --- LOGIC: Attendance ---
+                is_present = 1
+                is_late = 0
+                
+                if student_types == "The Ghost":
+                    is_present = 1 if week <= 3 else 0
+                elif student_types in ["The Smart Skipper", "The Partier"]:
+                    is_present = 1 if random.random() > 0.6 else 0
+                    is_late = 1 if is_present and random.random() > 0.5 else 0
+                elif student_types == "The Struggler":
+                    is_present = 1 if random.random() > 0.1 else 0
+                    is_late = 1 if is_present and random.random() > 0.3 else 0
+                else: 
+                    is_present = 1
+                    is_late = 0
+
+                cursor.execute("INSERT INTO attendance (student_id, week_number, is_present, is_late) VALUES (?,?,?,?)",
+                               (student_id_counter, week, is_present, is_late))
+
+                # --- LOGIC: Wellbeing Survey ---
+                if student_types == "The Ghost" and week > 3:
+                    continue 
+
+                stress = 3
+                sleep = 7.0
+
+                if student_types == "The Star":
+                    stress = random.randint(1, 2)
+                    sleep = random.uniform(7, 9)
+                elif student_types == "The Burnout":
+                    stress = random.randint(4, 5)
+                    sleep = random.uniform(3, 4.5)
+                elif student_types == "The Struggler":
+                    stress = random.randint(4, 5)
+                    sleep = random.uniform(5, 7)
+                elif student_types == "The Smart Skipper":
+                    stress = random.randint(1, 2)
+                    sleep = random.uniform(8, 10)
+                elif student_types == "The Partier":
+                    stress = random.randint(1, 2)
+                    sleep = random.uniform(3, 5)
+
+                if student_types == "The Burnout" or random.random() > 0.15:
+                    cursor.execute("INSERT INTO wellbeing_surveys (student_id, week_number, stress_level, hours_slept) VALUES (?,?,?,?)",
+                                   (student_id_counter, week, stress, round(sleep, 1)))
+
+            # create grades
+            assignments = ["Portfolio", "Midterm Exam", "Group Project"]
+            for assign in assignments:
+                grade = 50
+                on_time = 1
+
+                if student_types in ["The Star", "The Burnout", "The Smart Skipper"]:
+                    grade = random.randint(75, 98) 
+                elif student_types == "The Struggler":
+                    grade = random.randint(35, 49) 
+                elif student_types == "The Partier":
+                    grade = random.randint(20, 40) 
+                elif student_types == "The Ghost":
+                    grade = 0
+                    on_time = 0
+
+                cursor.execute("INSERT INTO assessments (student_id, assignment_name, grade, submitted_on_time) VALUES (?,?,?,?)",
+                               (student_id_counter, assign, grade, on_time))
+            
+            student_id_counter += 1
+
+    conn.commit()
+    conn.close()
+    print("[SUCCESS] Mock data populated successfully.")
+
 if __name__ == "__main__":
     init_database()
+    populate_database()
