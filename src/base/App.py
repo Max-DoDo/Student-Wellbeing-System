@@ -1,6 +1,8 @@
 import os
+from entity.user import User
+from repository.user_repo import User_Repo
 from repository.student_repo import Student_Repo
-from base.repository.base_repo import Base_Repo
+from repository.base_repo import Base_Repo
 from entity.person import Person
 
 class App:
@@ -13,8 +15,11 @@ class App:
         self.test();
     
     def test(self):
-        studentrp = Student_Repo();
-        print(studentrp.getAllStudent());
+        user = User(username="aaa",id=121,name="Max Wang", gender="M",email="hahaha@hahah.haha",password="123123",
+                    role_id="111",)
+        # print(user)
+        userr = User_Repo();
+        # print(userr.getAllUser())
         pass
 
     def configure_DataBase(self):

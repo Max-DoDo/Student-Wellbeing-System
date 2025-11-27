@@ -1,6 +1,6 @@
 from typing import List, Optional
-from base.entity.user import User
-from base.repository.base_repo import Base_Repo
+from entity.user import User
+from repository.base_repo import Base_Repo
 
 class User_Repo(Base_Repo):
 

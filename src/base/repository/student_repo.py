@@ -1,5 +1,5 @@
 from typing import List, Optional
-from base.repository.base_repo import Base_Repo
+from repository.base_repo import Base_Repo
 from entity.student import Student
 
 class Student_Repo(Base_Repo):
