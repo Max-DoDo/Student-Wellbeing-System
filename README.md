@@ -16,13 +16,13 @@ This repository contains the group work for `WM9QF:Programming for Artificial In
 TODO TODO TODO TODO TODO
 
 ## Contributors
-***Contributors are listed in a randomly generated order***
-* Yona Jin
-* Khushbu Kapade
-* Tatphong Kruerattanakul
-* Gawin Lohaburananont
-* Ayush Raghuwanshi
-* Max Wang
+***Contributors are listed in a randomly generated order. Yes randomly***
+* [Yona Jin](https://github.com/LjKy9016)
+* [Khushbu Kapade](https://github.com/kkhushbuj)
+* [Tatphong Kruerattanakul](https://github.com/Moohamm001)
+* [Gawin Lohaburananont](https://github.com/Gawinloh)
+* [Ayush Raghuwanshi](https://github.com/AyushSinghRaghuwanshi)
+* [Max Wang](https://github.com/Max-DoDo)
 
 
 
