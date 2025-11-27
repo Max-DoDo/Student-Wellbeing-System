@@ -17,7 +17,7 @@ class Student_Repo(BaseRepo):
         """
         Retrieves all users and maps them to Student objects.
         """
-        query = "SELECT * FROM users"
+        query = "SELECT * FROM students"
         
         self.cursor.execute(query)
         results = self.cursor.fetchall()
