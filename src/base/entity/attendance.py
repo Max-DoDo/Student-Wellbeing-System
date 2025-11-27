@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 
 @dataclass
-class Attendence:
+class Attendance:
     attendance_id:int
     student_id:int
     week_number:int
