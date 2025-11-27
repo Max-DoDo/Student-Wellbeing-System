@@ -60,6 +60,70 @@ class TestCourseLeaderFeatures(unittest.TestCase):
         if os.path.exists(TEST_DB_NAME):
             os.remove(TEST_DB_NAME)
 
+    def test_insert_attendance_valid(self):
+        """TC-009: Verify Course Leader can record attendance."""
+        success = add_attendance(TEST_DB_NAME, student_id=1, week=5, is_present=1)
+        self.assertTrue(success)
+        
+        # Verify in DB
+        self.cursor.execute("SELECT is_present FROM attendance WHERE student_id=1 AND week_number=5")
+        result = self.cursor.fetchone()
+        if result:
+            self.assertEqual(result[0], 1)
+
+    def test_insert_attendance_invalid_week(self):
+        """Edge Case: Ensure Course Leader cannot input invalid weeks."""
+        with self.assertRaises(sqlite3.IntegrityError):
+            add_attendance(TEST_DB_NAME, student_id=1, week=53, is_present=1)
+
+    def test_retrieve_weekly_attendance(self):
+        """TC-010: Verify Course Leader can view class attendance list."""
+        add_attendance(TEST_DB_NAME, student_id=1, week=2, is_present=1) 
+        add_attendance(TEST_DB_NAME, student_id=2, week=2, is_present=0) 
+
+        report = get_attendance_by_week(TEST_DB_NAME, week=2)
+        
+        self.assertEqual(len(report), 2)
+        # Check specific values
+        alice = next((r for r in report if r['student_id'] == 1), None)
+        if alice:
+            self.assertEqual(alice['is_present'], 1)
+
+    # ==========================================
+    # GRADE MANAGEMENT (FR-007, FR-012)
+    # ==========================================
+
+    def test_insert_grade_valid(self):
+        """Verify Course Leader can input grades."""
+        success = add_assessment(TEST_DB_NAME, student_id=1, name="Math 101", grade=85)
+        self.assertTrue(success)
+
+    def test_insert_grade_invalid_range(self):
+        """Edge Case: Grades must be 0-100."""
+        with self.assertRaises(sqlite3.IntegrityError):
+            add_assessment(TEST_DB_NAME, 1, "Math 101", 105)
+
+    def test_calculate_student_average(self):
+        """Verify individual student average calculation."""
+        add_assessment(TEST_DB_NAME, 1, "Test 1", 80)
+        add_assessment(TEST_DB_NAME, 1, "Test 2", 90)
+        add_assessment(TEST_DB_NAME, 1, "Test 3", 100)
+
+        avg = calculate_student_average(TEST_DB_NAME, student_id=1)
+        self.assertEqual(avg, 90.0)
+
+    def test_calculate_average_no_grades(self):
+        """Edge Case: Student with no grades should return 0, not crash."""
+        avg = calculate_student_average(TEST_DB_NAME, student_id=2) 
+        self.assertEqual(avg, 0) 
+
+    def test_group_performance_metrics(self):
+        """Verify Course Leader can view overall class performance."""
+        add_assessment(TEST_DB_NAME, 1, "T1", 90)
+        add_assessment(TEST_DB_NAME, 2, "T1", 70)
+
+        class_avg = get_course_average_grade(TEST_DB_NAME)
+        self.assertEqual(class_avg, 80.0)
 
 if __name__ == '__main__':
     unittest.main()

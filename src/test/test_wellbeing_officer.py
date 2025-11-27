@@ -48,8 +48,6 @@ class TestWellbeingFeatures(unittest.TestCase):
         if os.path.exists(TEST_DB_NAME):
             os.remove(TEST_DB_NAME)
 
-    # --- Survey Tests ---
-
     def test_insert_survey_valid(self):
         success = add_survey(TEST_DB_NAME, student_id=1, week=1, stress=3, sleep=7.5)
         self.assertTrue(success)
@@ -71,7 +69,6 @@ class TestWellbeingFeatures(unittest.TestCase):
             self.assertEqual(history[0]['week_number'], 1)
             self.assertEqual(history[2]['stress_level'], 5)
 
-    # --- Analytics Tests ---
 
     def test_aggregated_wellbeing_metrics(self):
         """Test calculating average stress for a specific week."""
