@@ -1,6 +1,6 @@
 import os
 from repository.student_repo import Student_Repo
-from repository.baserepo import BaseRepo
+from base.repository.base_repo import Base_Repo
 from entity.person import Person
 
 class App:
@@ -27,7 +27,7 @@ class App:
             "database",
             "university_wellbeing.db"
         ))
-        BaseRepo.set_db_path(db_path)
+        Base_Repo.set_db_path(db_path)
 
 if __name__ == "__main__":
     app = App()

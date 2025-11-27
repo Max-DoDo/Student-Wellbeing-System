@@ -1,5 +1,6 @@
-from repository.baserepo import BaseRepo
-class Staff_Repo(BaseRepo):
+from base.repository.base_repo import Base_Repo
+
+class Staff_Repo(Base_Repo):
 
     def getPassword(self, username) -> str:
         pass;

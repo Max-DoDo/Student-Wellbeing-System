@@ -1,8 +1,8 @@
 from typing import List, Optional
-from repository.baserepo import BaseRepo
+from base.repository.base_repo import Base_Repo
 from entity.student import Student
 
-class Student_Repo(BaseRepo):
+class Student_Repo(Base_Repo):
 
     def getStudent(self, id: int) -> Optional[Student]:
         query = "SELECT * FROM students WHERE student_id = ?"

@@ -1,4 +1,4 @@
-from repository.baserepo import BaseRepo
+from base.repository.base_repo import Base_Repo
 
-class Wellbeing_Survey_Repo(BaseRepo):
+class Wellbeing_Survey_Repo(Base_Repo):
     pass;
