@@ -1,4 +1,5 @@
 from repository.user_repo import User_Repo
+from typing import List
 from tools.log import Log
 
 class Login_Service:
@@ -8,7 +9,7 @@ class Login_Service:
     - True for correct password. 
     - False for wrong password or username or did not find the user
     '''
-    def login_user(username: str, password: str) -> bool:
+    def login_user(username: str, password: str) -> List[bool,int]:
         user_repo = User_Repo()
         user = user_repo.getUserByUserName(username)
         
@@ -18,9 +19,11 @@ class Login_Service:
 
         if user.password == password:
             Log.success("User Login with username: ",user.username)
-            return True
+            return [True,user.role_id]
         else:
             Log.warn("User Login failed with username: ", user.username, " privided")
             return False
+
+
         
     
