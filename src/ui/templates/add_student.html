@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Add New Student</h2>
-<div class="card p-4 shadow-sm">
+<h2>Add Student</h2>
+<div class="form-section">
 <form method="POST">
 <div class="row">
 <div class="col-md-4 mb-3">
@@ -18,14 +18,14 @@
 </div>
 </div>
 <div class="mb-3">
-<label class="form-label">Email Address</label>
+<label class="form-label">Email</label>
 <input type="email" name="email" class="form-control" required>
 </div>
 <div class="mb-3">
 <label class="form-label">Personal Tutor Email</label>
 <input type="email" name="personal_tutor_email" class="form-control" required>
 </div>
-<h5 class="mt-4">Emergency Contact</h5>
+<h5>Emergency Contact</h5>
 <div class="row">
 <div class="col-md-6 mb-3">
 <label class="form-label">Contact Name</label>
@@ -36,7 +36,7 @@
 <input type="text" name="emergency_contact_phone" class="form-control">
 </div>
 </div>
-<button class="btn btn-success mt-3">➕ Add Student</button>
+<button class="btn btn-success">➕ Add Student</button>
 </form>
 </div>
 {% endblock %}
