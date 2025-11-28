@@ -14,6 +14,15 @@ import logging
 import sys
 from werkzeug.serving import run_simple
 
+# Host name
+hn = "127.0.0.1"
+
+# Port Number
+pt = 521
+
+# is flask working on debug mode
+debug = False
+
 class App:
     def __init__(self):
 
@@ -48,14 +57,14 @@ if __name__ == "__main__":
 
     import logging
     logging.getLogger('werkzeug').setLevel(logging.ERROR)
-
-    Log.success("Flask UI running on http://127.0.0.1:5000")
+    url = f"http://{hn}:{pt}"
+    Log.success(f"Flask UI running on {url}")
     run_simple(
-        hostname="127.0.0.1",
-        port=5000,
+        hostname=hn,
+        port=pt,
         application=app,
         use_reloader=False,
-        use_debugger=False,
+        use_debugger=debug,
         threaded=True
     )
     # app.run(debug=False, use_reloader=False)
