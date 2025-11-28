@@ -19,6 +19,14 @@ class Wellbeing_Survey_Repo(Base_Repo):
         if rows:
             return self.toWellBeingSurveys(rows)
         return None
+    
+    def getWellBeingSurveysByStudentID(self, student_id = int) -> List[Optional[Wellbeing_Survey]]:
+        query = "SELECT * FROM wellbeing_surveys WHERE student_id = ?"
+        self.cursor.execute(query, (student_id,))
+        rows = self.cursor.fetchall()
+        if rows:
+            return self.toWellBeingSurvey(rows)
+        return None
 
     def toWellBeingSurvey(self, row) -> Wellbeing_Survey:
         return Wellbeing_Survey(

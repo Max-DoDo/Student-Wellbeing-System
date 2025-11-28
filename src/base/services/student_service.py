@@ -1,8 +1,27 @@
 from entity.student import Student
+from entity.assessments import Assessment
+from entity.wellbeing_survey import Wellbeing_Survey
+from typing import List, Optional
 from repository.student_repo import Student_Repo
+from repository.attendance_repo import Attendance_Repo
+from repository.assessment_repo import Assessment_Repo
+from repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
+from entity.attendance import Attendance
 
 class Student_Service:
 
+    '''
+    Return value: A list of Student object
+    to access the attribute in the student object, see the class file for details.
+    '''
     def getAllStudent(self) -> list[Student]:
-        student_repo = Student_Repo()
-        return student_repo.getAllStudent()
+        return Student_Repo().getAllStudent()
+    
+    def getAttdenceByID(self, id: int) -> List[Optional[Attendance]]:
+        return Attendance_Repo().getAttendancesByStudentID(id);
+
+    def getAssessmentByID(self, id: int) -> List[Optional[Assessment]]:
+        return  Assessment_Repo().getAssessmentsByStudentID(id);
+
+    def getWellBeingSurveyByID(self, id : int) -> List[Optional[Wellbeing_Survey]]:
+        return Wellbeing_Survey_Repo().getWellBeingSurveysByStudentID(id);
