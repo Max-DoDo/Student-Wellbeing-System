@@ -14,7 +14,7 @@ class Student_Service:
     Return value: A list of Student object
     to access the attribute in the student object, see the class file for details.
     '''
-    def getAllStudent(self) -> list[Student]:
+    def getAllStudent(self) -> List[Student]:
         return Student_Repo().getAllStudent()
     
     def getAttdenceByID(self, id: int) -> List[Optional[Attendance]]:

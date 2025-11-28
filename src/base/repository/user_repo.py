@@ -1,4 +1,5 @@
 from typing import List, Optional
+from tools.log import Log
 from entity.user import User
 from repository.base_repo import Base_Repo
 
@@ -14,7 +15,8 @@ class User_Repo(Base_Repo):
     
     def getUserByUserName(self, username : str) -> Optional[User]:
         query = "SELECT * FROM users WHERE username = ?"
-        self.cursor.execute(query,(username))
+        Log.debug(username)
+        self.cursor.execute(query,(username,))
         row = self.cursor.fetchone()
         if row:
             return self.toUser(row)

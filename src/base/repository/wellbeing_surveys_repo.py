@@ -1,5 +1,5 @@
 from typing import List, Optional
-from base.entity.wellbeing_survey import Wellbeing_Survey
+from entity.wellbeing_survey import Wellbeing_Survey
 from repository.base_repo import Base_Repo
 
 class Wellbeing_Survey_Repo(Base_Repo):
