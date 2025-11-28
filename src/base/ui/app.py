@@ -1,57 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import plotly.graph_objs as go
 import plotly.express as px
+from services.login_service import Login_Service
 import random
 
 app = Flask(__name__)
 app.secret_key = "secret123"
-
-# ---- Dummy Users ----
-dummy_users = {
-    "admin": {"password": "admin", "role": "admin"},
-    "wellbeing": {"password": "well", "role": "wellbeing"},
-    "leader": {"password": "leader", "role": "course_leader"}
-}
-
-# ---- Dummy Student Data ----
-students_data = [
-{
-    "id": 101, "fname": "John", "lname": "Doe", "course": "CS", "year": 2,
-    "email": "john.doe@example.com",
-    "personal_tutor_email": "tutor.john@example.com",
-    "emergency_contact_name": "Michael Doe",
-    "emergency_contact_phone": "999-111-222"
-},
-{
-    "id": 102, "fname": "Jane", "lname": "Smith", "course": "Business", "year": 1,
-    "email": "jane.smith@example.com",
-    "personal_tutor_email": "tutor.jane@example.com",
-    "emergency_contact_name": "Sarah Smith",
-    "emergency_contact_phone": "888-444-333"
-},
-{
-    "id": 103, "fname": "Sam", "lname": "Wilson", "course": "Engineering", "year": 3,
-    "email": "sam.wilson@example.com",
-    "personal_tutor_email": "tutor.sam@example.com",
-    "emergency_contact_name": "Peter Wilson",
-    "emergency_contact_phone": "777-555-999"
-},
-]
-
-# ---- Dummy Wellbeing Data ----
-dummy_wellbeing = {
-    101: {"stress": 7, "sleep": 6},
-    102: {"stress": 4, "sleep": 7},
-    103: {"stress": 9, "sleep": 5}
-}
-
-# ---- Dummy Academic Data ----
-dummy_academics = {
-    101: {"attendance": [88, 90, 85, 92, 87, 91, 89], "grades": [78, 82, 85, 79]},
-    102: {"attendance": [70, 72, 68, 75, 73, 71, 74], "grades": [65, 60, 58, 62]},
-    103: {"attendance": [95, 96, 94, 97, 93, 95, 96], "grades": [88, 90, 92, 89]}
-}
-
 # ---------------- LOGIN ----------------
 
 @app.route("/", methods=["GET", "POST"])
@@ -59,17 +13,19 @@ def login():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
-        # Dummy login logic for now
-        # (You will replace this with real DB lookup later)
-        if username == "admin" and password == "admin":
-            session["role"] = "admin"
-            return redirect(url_for("dashboard_redirect"))
-        elif username == "well" and password == "well":
-            session["role"] = "wellbeing"
-            return redirect(url_for("dashboard_redirect"))
-        elif username == "leader" and password == "leader":
-            session["role"] = "course_leader"
-            return redirect(url_for("dashboard_redirect"))
+        login_service = Login_Service().login_user(username,password)
+        if login_service[0]:
+            if login_service[1] == 0:
+                session["role"] = "admin"
+                return redirect(url_for("dashboard_redirect"))
+            elif login_service[1] == 1:
+                session["role"] = "wellbeing"
+                return redirect(url_for("dashboard_redirect"))
+            elif login_service[1] == 2:
+                session["role"] = "course_leader"
+                return redirect(url_for("dashboard_redirect"))
+            else:
+                return render_template("login.html", error="Invalid credentials")
         else:
             return render_template("login.html", error="Invalid credentials")
     return render_template("login.html")

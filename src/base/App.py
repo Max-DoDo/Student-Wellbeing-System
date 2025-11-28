@@ -7,6 +7,7 @@ from entity.user import User
 from repository.user_repo import User_Repo
 from repository.student_repo import Student_Repo
 from repository.base_repo import Base_Repo
+from services.student_service import Student_Service
 from entity.person import Person
 from ui.app import app
 
@@ -16,7 +17,8 @@ class App:
         self.main() 
 
     def main(self) -> None:
-
+        # student = Student(name="Max Wang",id=234234)
+        # Student_Service().add(student)
         self.test();
     
     def test(self):

@@ -9,8 +9,9 @@ class Login_Service:
     - True for correct password. 
     - False for wrong password or username or did not find the user
     '''
-    def login_user(username: str, password: str) -> List[bool,int]:
+    def login_user(self, username: str, password: str) -> List[bool,int]:
         user_repo = User_Repo()
+        Log.debug(username)
         user = user_repo.getUserByUserName(username)
         
         if user is None:
