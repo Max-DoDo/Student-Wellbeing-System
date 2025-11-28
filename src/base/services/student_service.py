@@ -25,3 +25,9 @@ class Student_Service:
 
     def getWellBeingSurveyByID(self, id : int) -> List[Optional[Wellbeing_Survey]]:
         return Wellbeing_Survey_Repo().getWellBeingSurveysByStudentID(id);
+
+    def update(self, student = Student):
+        Student_Repo.updateStudent(student)
+
+    def add(self, student = Student):
+        Student_Repo.addStudent(student)
