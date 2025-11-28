@@ -8,10 +8,12 @@ from repository.user_repo import User_Repo
 from repository.student_repo import Student_Repo
 from repository.base_repo import Base_Repo
 from entity.person import Person
+from ui.uiapp import UIApp
 
 class App:
     def __init__(self):
         self.configure_DataBase();
+        uitest = UIApp()
         self.main() 
 
     def main(self) -> None:
@@ -20,21 +22,12 @@ class App:
     
     def test(self):
         
-        teststudent = Student(name="Max Wang",email="reat_maxwell@outlook.com")
-        sr = Student_Repo()
-
-        changes = Student(
-            email="newaaemail@uni.ac.uk",
-            emergency_contact_phone="123456"
-        )
-
-        sr.updateStudent(11, changes)
-        # Log.isFileLogging(True)
-        # Log.info("aaa")
-        # Log.success("Success")
-        # Log.warn("Warn")
-        # Log.debug("debug")
-        # Log.error("error")
+        Log.isFileLogging(True)
+        Log.info("aaa")
+        Log.success("Success")
+        Log.warn("Warn")
+        Log.debug("debug")
+        Log.error("error")
         pass
 
     def configure_DataBase(self):
