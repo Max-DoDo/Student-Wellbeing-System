@@ -19,6 +19,8 @@ class App:
     def main(self) -> None:
         # student = Student(name="Max Wang",id=234234)
         # Student_Service().add(student)
+        # wellbingdata = Student_Service().getWellBeingSurveyByID(10);
+       
         self.test();
     
     def test(self):
