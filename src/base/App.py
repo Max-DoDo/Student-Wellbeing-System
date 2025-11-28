@@ -10,7 +10,9 @@ from repository.base_repo import Base_Repo
 from services.student_service import Student_Service
 from entity.person import Person
 from ui.app import app
+import logging
 import sys
+from werkzeug.serving import run_simple
 
 class App:
     def __init__(self):
@@ -20,7 +22,8 @@ class App:
     def main(self) -> None:
         Log.isFileLogging(True)
         self.configure_DataBase();
-        Log.debug(sys.path)
+        # Log.debug(sys.path)
+
         self.test();
     
     def test(self):
@@ -38,7 +41,21 @@ class App:
         ))
         Base_Repo.set_db_path(db_path)
         Log.success("Success Configure DataBase Path")
+    
 
 if __name__ == "__main__":
     App()
-    app.run(debug=True, use_reloader=False)
+
+    import logging
+    logging.getLogger('werkzeug').setLevel(logging.ERROR)
+
+    Log.success("Flask UI running on http://127.0.0.1:5000")
+    run_simple(
+        hostname="127.0.0.1",
+        port=5000,
+        application=app,
+        use_reloader=False,
+        use_debugger=False,
+        threaded=True
+    )
+    # app.run(debug=False, use_reloader=False)

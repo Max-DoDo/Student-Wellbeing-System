@@ -43,6 +43,8 @@ class Log:
         
         if enabled and Log.log_file_name is None:
             Log.log_file_name = f"{Log.getDate()} {Log.getTimeForFile()}.log"
+        
+        Log.info("Write-to-file mode is enabled. All log will be record to:",Log.log_file_name)
 
     '''
     Get current Date. Formatted by YYYY-MM-DD
