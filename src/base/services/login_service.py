@@ -11,7 +11,6 @@ class Login_Service:
     '''
     def login_user(self, username: str, password: str):
         user_repo = User_Repo()
-        Log.debug(username)
         user = user_repo.getUserByUserName(username)
         
         if user is None:
