@@ -8,13 +8,17 @@ from repository.user_repo import User_Repo
 from repository.student_repo import Student_Repo
 from repository.base_repo import Base_Repo
 from entity.person import Person
-from ui.uiapp import UIApp
+from ui.uiapp import create_ui_app
 
 class App:
     def __init__(self):
         self.configure_DataBase();
-        uitest = UIApp()
-        self.main() 
+        self.run_ui()
+    def run_ui(self):
+       flask_app = create_ui_app()
+       flask_app.run(debug=True)
+
+       self.main() 
 
     def main(self) -> None:
 

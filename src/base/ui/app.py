@@ -3,7 +3,7 @@ import plotly.graph_objs as go
 import plotly.express as px
 import random
 
-class UIApp:
+def create_app():
     app = Flask(__name__)
     app.secret_key = "secret123"
 
@@ -349,6 +349,3 @@ class UIApp:
         return redirect(url_for("login"))
 
 # ---------------- RUN ----------------
-
-    def get_app(self):
-        return self.app
