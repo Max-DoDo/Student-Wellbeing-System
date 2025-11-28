@@ -31,3 +31,6 @@ class Student_Service:
 
     def add(self, student = Student):
         Student_Repo.addStudent(student)
+
+    def delete(self, student = Student):
+        Student_Repo.deleteStudent(student)
