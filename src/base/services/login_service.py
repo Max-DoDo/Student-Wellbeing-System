@@ -15,14 +15,14 @@ class Login_Service:
         
         if user is None:
             Log.warn("User is not fonded")
-            return False
+            return [False,-1]
 
         if user.password == password:
             Log.success("User Login with username: ",user.username)
             return [True,user.role_id]
         else:
             Log.warn("User Login failed with username: ", user.username, " privided")
-            return False
+            return [False,-1]
 
 
         
