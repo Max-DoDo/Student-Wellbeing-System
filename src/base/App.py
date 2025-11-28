@@ -10,27 +10,20 @@ from repository.base_repo import Base_Repo
 from services.student_service import Student_Service
 from entity.person import Person
 from ui.app import app
+import sys
 
 class App:
     def __init__(self):
-        self.configure_DataBase();
+
         self.main() 
 
     def main(self) -> None:
-        # student = Student(name="Max Wang",id=234234)
-        # Student_Service().add(student)
-        # wellbingdata = Student_Service().getWellBeingSurveyByID(10);
-       
+        Log.isFileLogging(True)
+        self.configure_DataBase();
+        Log.debug(sys.path)
         self.test();
     
     def test(self):
-        
-        Log.isFileLogging(True)
-        # Log.info("aaa")
-        # Log.success("Success")
-        # Log.warn("Warn")
-        # Log.debug("debug")
-        # Log.error("error")
         pass
 
     def configure_DataBase(self):
@@ -44,9 +37,8 @@ class App:
             "university_wellbeing.db"
         ))
         Base_Repo.set_db_path(db_path)
+        Log.success("Success Configure DataBase Path")
 
 if __name__ == "__main__":
     App()
-    Log.success("Success launch backend")
-    app.run(debug=True)
-    Log.success("Success launch UI")
+    app.run(debug=True, use_reloader=False)
