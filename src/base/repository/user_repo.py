@@ -11,6 +11,14 @@ class User_Repo(Base_Repo):
         if row:
             return self.toUser(row)
         return None
+    
+    def getUserByUserName(self, username : str) -> Optional[User]:
+        query = "SELECT * FROM users WHERE username = ?"
+        self.cursor.execute(query,(username))
+        row = self.cursor.fetchone()
+        if row:
+            return self.toUser(row)
+        return None
 
     def getAllUser(self):
         query = "SELECT * FROM users"
