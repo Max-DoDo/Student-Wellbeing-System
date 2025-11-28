@@ -8,17 +8,12 @@ from repository.user_repo import User_Repo
 from repository.student_repo import Student_Repo
 from repository.base_repo import Base_Repo
 from entity.person import Person
-from ui.uiapp import create_ui_app
+from ui.app import app
 
 class App:
     def __init__(self):
         self.configure_DataBase();
-        self.run_ui()
-    def run_ui(self):
-       flask_app = create_ui_app()
-       flask_app.run(debug=True)
-
-       self.main() 
+        self.main() 
 
     def main(self) -> None:
 
@@ -27,11 +22,11 @@ class App:
     def test(self):
         
         Log.isFileLogging(True)
-        Log.info("aaa")
-        Log.success("Success")
-        Log.warn("Warn")
-        Log.debug("debug")
-        Log.error("error")
+        # Log.info("aaa")
+        # Log.success("Success")
+        # Log.warn("Warn")
+        # Log.debug("debug")
+        # Log.error("error")
         pass
 
     def configure_DataBase(self):
@@ -47,4 +42,7 @@ class App:
         Base_Repo.set_db_path(db_path)
 
 if __name__ == "__main__":
-    app = App()
+    App()
+    Log.success("Success launch backend")
+    app.run(debug=True)
+    Log.success("Success launch UI")

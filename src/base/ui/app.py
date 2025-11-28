@@ -3,7 +3,6 @@ import plotly.graph_objs as go
 import plotly.express as px
 import random
 
-
 app = Flask(__name__)
 app.secret_key = "secret123"
 
@@ -347,9 +346,6 @@ def add_student_page():
 def logout():
     session.clear()
     return redirect(url_for("login"))
-
-# ---------------- RUN ----------------
-
-
-if __name__ == "__main__":
-   app.run(debug=True)
+#---------------------------------------
+# if __name__ == "__main__":
+#     app.run(debug=True)
