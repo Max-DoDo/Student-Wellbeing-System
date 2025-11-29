@@ -270,10 +270,10 @@ def course_leader_group_report():
 def update_student_page():
    repo = Student_Repo()
    success = False
-   # ---------------- POST: UPDATE THE STUDENT ----------------
+
    if request.method == "POST":
        sid = int(request.form["student_id"])
-       # Build a Student object (NOT dict)
+   
        updated_student = Student(
            id=sid,
            first_name=request.form["first_name"],
@@ -283,9 +283,9 @@ def update_student_page():
            emergency_contact_name=request.form["emergency_contact_name"],
            emergency_contact_phone=request.form["emergency_contact_phone"]
        )
-       # Call repo correctly
+      
        repo.updateStudent(sid, updated_student)
-       # Tell UI success message
+      
        success = True
    # ---------------- GET: LOAD STUDENT LIST ----------------
    students = repo.getAllStudent()
@@ -339,14 +339,14 @@ def add_student_page():
    if request.method == "POST":
        # Read form values
        sid = request.form.get("student_id")
-       sid = int(sid) if sid else -1   # if blank → -1 (auto ID)
+       sid = int(sid) if sid else -1   
        first = request.form["first_name"]
        last = request.form["last_name"]
        email = request.form["email"]
        tutor = request.form["personal_tutor_email"]
        em_name = request.form["emergency_contact_name"]
        em_phone = request.form["emergency_contact_phone"]
-       # Create Student object (IMPORTANT!)
+       # Create Student object 
        student = Student(
            id=sid,
            first_name=first,
@@ -356,10 +356,9 @@ def add_student_page():
            emergency_contact_name=em_name,
            emergency_contact_phone=em_phone
        )
-       # Add to DB
+      
        repo.addStudent(student)
        success = True
-   # Load updated list
    students = repo.getAllStudent()
    return render_template(
        "add_student.html",
