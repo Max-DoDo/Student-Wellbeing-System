@@ -52,7 +52,7 @@ def login():
        elif user.role_id == 2:
            return redirect(url_for("course_leader_dashboard"))
        return redirect(url_for("dashboard_redirect"))
-   return render_template("login.html")
+   return render_template("login.html", login_error = "Wrong Username or Password")
 
 
 @app.route("/dashboard")
@@ -284,7 +284,7 @@ def update_student_page():
            emergency_contact_phone=request.form["emergency_contact_phone"]
        )
       
-       repo.updateStudent(sid, updated_student)
+       repo.updateStudent(updated_student)
       
        success = True
    # ---------------- GET: LOAD STUDENT LIST ----------------
@@ -335,18 +335,38 @@ def add_student_page():
    if session.get("role") != "admin":
        return redirect(url_for("dashboard_redirect"))
    repo = Student_Repo()
-   success = False   # for alert message
+   success = False
+   error = None     # <-- NEW: to send error messages
    if request.method == "POST":
        # Read form values
        sid = request.form.get("student_id")
-       sid = int(sid) if sid else -1   
+       sid = int(sid) if sid else -1
        first = request.form["first_name"]
        last = request.form["last_name"]
        email = request.form["email"]
        tutor = request.form["personal_tutor_email"]
        em_name = request.form["emergency_contact_name"]
        em_phone = request.form["emergency_contact_phone"]
-       # Create Student object 
+       # --- DUPLICATE CHECK LOGIC ---
+       students = repo.getAllStudent()
+       id_exists = any(s.id == sid for s in students) if sid != -1 else False
+       email_exists = any(s.email.lower() == email.lower() for s in students)
+       if id_exists and email_exists:
+           error = "A student with this ID and Email already exists!"
+       elif id_exists:
+           error = "Student ID already exists!"
+       elif email_exists:
+           error = "A student with this Email already exists!"
+       # If ANY error → re-render page with error msg
+       if error:
+           return render_template(
+               "add_student.html",
+               students=students,
+               role=session.get("role"),
+               success=False,
+               error=error
+           )
+       # No duplicates → Create Student object
        student = Student(
            id=sid,
            first_name=first,
@@ -356,7 +376,6 @@ def add_student_page():
            emergency_contact_name=em_name,
            emergency_contact_phone=em_phone
        )
-      
        repo.addStudent(student)
        success = True
    students = repo.getAllStudent()
@@ -364,7 +383,8 @@ def add_student_page():
        "add_student.html",
        students=students,
        role=session.get("role"),
-       success=success
+       success=success,
+       error=error
    )
 # ---------------- LOGOUT ----------------
 

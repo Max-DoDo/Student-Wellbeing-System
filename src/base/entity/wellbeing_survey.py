@@ -7,15 +7,14 @@ from tools.mytools import MyTools
 
 @dataclass
 class Wellbeing_Survey:
-    survey_id:Optional[int] = None
-    student_id:Optional[int] = None
-    week_number:Optional[int] = None
-    stress_level:Optional[int] = None
-    hours_slept:Optional[int] = None
-    survey_date:Optional[str] = None
+    survey_id:Optional[int] = -1
+    student_id:Optional[int] = -1
+    week_number:Optional[int] = -1
+    stress_level:Optional[int] = -1
+    hours_slept:Optional[int] = -1
+    survey_date:Optional[str] = -1
 
     def __post_init__(self):
-        super().__post_init__()
         if self.survey_date == None:
             self.survey_date = MyTools.getFormattedDate();
         
