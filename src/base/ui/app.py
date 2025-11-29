@@ -270,22 +270,40 @@ def course_leader_group_report():
 def update_student_page():
    repo = Student_Repo()
    success = False
-
+   error_message = None    
    if request.method == "POST":
        sid = int(request.form["student_id"])
-   
+       # Read new form values
+       new_email = request.form["email"]
+       # --- CHECK DUPLICATE EMAIL (belongs to another student) ---
+       all_students = repo.getAllStudent()
+       for s in all_students:
+           if s.email == new_email and s.id != sid:
+               error_message = "Email already exists for another student."
+               break
+       if error_message:
+           # reload page with error message
+           students = repo.getAllStudent()
+           selected_student = repo.getStudent(sid)
+           return render_template(
+               "update_student.html",
+               students=students,
+               selected=selected_student,
+               role=session.get("role"),
+               success=False,
+               error=error_message
+           )
+       # ---------------- PROCEED WITH UPDATE ----------------
        updated_student = Student(
            id=sid,
            first_name=request.form["first_name"],
            last_name=request.form["last_name"],
-           email=request.form["email"],
+           email=new_email,
            personal_tutor_email=request.form["personal_tutor_email"],
            emergency_contact_name=request.form["emergency_contact_name"],
            emergency_contact_phone=request.form["emergency_contact_phone"]
        )
-      
        repo.updateStudent(updated_student)
-      
        success = True
    # ---------------- GET: LOAD STUDENT LIST ----------------
    students = repo.getAllStudent()
@@ -298,7 +316,8 @@ def update_student_page():
        students=students,
        selected=selected_student,
        role=session.get("role"),
-       success=success
+       success=success,
+       error=error_message
    )
 # ---------------- DELETE STUDENT ----------------
 @app.route("/delete-student", methods=["GET", "POST"])

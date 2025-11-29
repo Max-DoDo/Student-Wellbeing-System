@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Update Student</h2>
+{% if error %}
+<div class="alert alert-danger mt-2">
+   ❌ {{ error }}
+</div>
+{% endif %}
+{% if success %}
+<div class="alert alert-success mt-2">
+   ✅ Student updated successfully!
+</div>
+{% endif %}
 <style>
    .form-section {
        background: #fff;
@@ -10,11 +20,6 @@
    }
 </style>
 <div class="form-section">
-{% if success %}
-<div class="alert alert-success mt-3">
-   ✅ Student details updated successfully!
-</div>
-{% endif %}
 <!-- Select Student -->
 <form method="GET" action="">
 <label class="form-label"><strong>Select Student</strong></label>
