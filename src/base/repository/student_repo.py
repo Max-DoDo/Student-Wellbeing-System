@@ -103,7 +103,7 @@ class Student_Repo(Base_Repo):
             Log.warn("deleteStudent failed: student is None")
             return False
         
-        query = "DELETE FROM students WHERE id = ?"
+        query = "DELETE FROM students WHERE student_id = ?"
         self.cursor.execute(query, (student.id,))
         self.conn.commit()
 

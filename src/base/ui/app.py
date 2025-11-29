@@ -8,6 +8,8 @@ from repository.student_repo import Student_Repo
 from  entity.student import Student
 from services.student_service import Student_Service
 from repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
+import matplotlib.pyplot as plt
+import os
 
 app = Flask(__name__)
 app.secret_key = "secret123"
@@ -31,8 +33,7 @@ def login():
        if user.password != password:
            return render_template("login.html", error="Incorrect password")
        # -------------------------
-       # ✅ STORE SESSION VALUES
-       # -------------------------
+    
        session["user_id"] = user.id
        session["username"] = user.username
        # Convert numeric role_id → string role (needed for sidebar)
@@ -42,9 +43,8 @@ def login():
            session["role"] = "wellbeing"
        elif user.role_id == 2:
            session["role"] = "course_leader"
-       # -------------------------
        # Redirect based on role_id
-       # -------------------------
+
        if user.role_id == 0:
            return redirect(url_for("student_list"))
        elif user.role_id == 1:
@@ -89,7 +89,7 @@ def course_leader_dashboard():
 @app.route("/students")
 def student_list():
    repo = Student_Repo()
-   students = repo.getAllStudent()  # <-- REAL DB DATA
+   students = repo.getAllStudent()  
    return render_template(
        "student_list.html",
        students=students,
@@ -126,19 +126,19 @@ def group_report():
 # ---------------- WELLBEING INDIVIDUAL ----------------
 @app.route("/wellbeing/student/<int:sid>")
 def wellbeing_student_detail(sid):
-   from repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
-   import matplotlib.pyplot as plt
-   import os
    repo = Wellbeing_Survey_Repo()
+   student = Student_Repo().getStudent(sid)
    surveys = repo.getWellBeingSurveysByStudentID(sid)
    if not surveys:
        return render_template(
            "wellbeing_student_detail.html",
-           student_id=sid,
+           student = student,
            surveys=[],
-           charts=[]
+           charts=[],
+           total_weeks=0,
+           selected_week=None
        )
-   # Convert objects into dicts so UI can use rows["stress_level"]
+   # Convert objects into dicts for HTML
    rows = []
    for s in surveys:
        rows.append({
@@ -176,7 +176,7 @@ def wellbeing_student_detail(sid):
    plt.savefig(sleep_path)
    chart_paths.append("/static/" + os.path.basename(sleep_path))
    plt.close()
-   # 3. Stress vs Sleep Comparison
+   # 3. Stress vs Sleep
    plt.figure()
    plt.scatter(stress, sleep)
    plt.title("Stress vs Sleep")
@@ -186,11 +186,15 @@ def wellbeing_student_detail(sid):
    plt.savefig(comp_path)
    chart_paths.append("/static/" + os.path.basename(comp_path))
    plt.close()
+   # Total weeks = max week value
+   total_weeks = max(weeks)
    return render_template(
        "wellbeing_student_detail.html",
-       student_id=sid,
        surveys=rows,
-       charts=chart_paths
+       charts=chart_paths,
+       student=student,
+       total_weeks=total_weeks,
+       selected_week=None
    )
 # ---------------- COURSE LEADER INDIVIDUAL ----------------
 @app.route("/course-leader/student/<int:sid>")
@@ -299,30 +303,30 @@ def update_student_page():
 # ---------------- DELETE STUDENT ----------------
 @app.route("/delete-student", methods=["GET", "POST"])
 def delete_student_page():
+   # role for sidebar
+   role = session.get("role")
    repo = Student_Repo()
+   success = None
    if request.method == "POST":
-       sid = int(request.form["student_id"])
-       # ✅ Create a minimal Student object for repo
-       student_to_delete = Student(
-           id=sid,
-           first_name="",
-           last_name="",
-           email="",
-           personal_tutor_email="",
-           emergency_contact_name="",
-           emergency_contact_phone="",
+       sid = int(request.form.get("student_id"))
+
+       student = repo.getStudent(sid)
+       if student:
+           deleted = repo.deleteStudent(student)
+           success = deleted
+      
+       students = repo.getAllStudent()
+       return render_template(
+           "delete_student.html",
+           students=students,
+           role=role,
+           success=success
        )
-       deleted = repo.deleteStudent(student_to_delete)
-       # Success alert
-       return redirect(url_for("delete_student_page", success=1))
-   # GET request:
    students = repo.getAllStudent()
-   success = request.args.get("success")
    return render_template(
        "delete_student.html",
        students=students,
-       role=session.get("role"),
-       success=success
+       role=role
    )
 # ---------------- ADD STUDENT ----------------
 
