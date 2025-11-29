@@ -63,7 +63,6 @@ class TestStudentCRUD(unittest.TestCase):
         self.assertIsNotNone(student, "Student record should exist after insertion")
         self.assertEqual(student[1], "Alice", "First name should match")
     
-    '''
     def test_insert_duplicate_student_id_fails(self):
         """Inserting the same student_id twice should raise an error."""
         self.cursor.execute("""
@@ -103,7 +102,6 @@ class TestStudentCRUD(unittest.TestCase):
                 INSERT INTO students (student_id, first_name)
                 VALUES (1, 'Alice')
             """)
-    '''
 
     # ==========================================
     # FR-004: Update Existing Student
@@ -133,7 +131,7 @@ class TestStudentCRUD(unittest.TestCase):
         self.assertEqual(updated[0], "Alicia", "Updated first name should persist")
         self.assertEqual(updated[1], "Green", "Updated last name should persist")
 
-    '''
+
     def test_update_student_duplicate_email_fails(self):
         # Existing students
         self.cursor.execute("""
@@ -206,8 +204,6 @@ class TestStudentCRUD(unittest.TestCase):
                 SET student_id = 2
                 WHERE student_id = 1
             """)
-    '''
-
 
     # ==========================================
     # FR-005: Delete Student
