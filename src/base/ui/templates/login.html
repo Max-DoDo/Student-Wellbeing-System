@@ -10,6 +10,11 @@
                 style="opacity: 0.9;">
 </div>
 <h3 class="text-center mb-4">Student Wellbeing System</h3>
+  {% if error %}
+<div class="alert alert-danger text-center">
+       {{ error }}
+</div>
+   {% endif %}
 <form method="POST">
 <!-- Username -->
 <label class="form-label">Username</label>

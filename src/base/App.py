@@ -7,34 +7,35 @@ from entity.user import User
 from repository.user_repo import User_Repo
 from repository.student_repo import Student_Repo
 from repository.base_repo import Base_Repo
+from services.student_service import Student_Service
 from entity.person import Person
+from ui.app import app
+import logging
+import sys
+from werkzeug.serving import run_simple
+
+# Host name
+hn = "127.0.0.1"
+
+# Port Number
+pt = 521
+
+# is flask working on debug mode
+debug = False
 
 class App:
     def __init__(self):
-        self.configure_DataBase();
+
         self.main() 
 
     def main(self) -> None:
+        Log.isFileLogging(True)
+        self.configure_DataBase();
+        # Log.debug(sys.path)
 
         self.test();
     
     def test(self):
-        
-        teststudent = Student(name="Max Wang",email="reat_maxwell@outlook.com")
-        sr = Student_Repo()
-
-        changes = Student(
-            email="newaaemail@uni.ac.uk",
-            emergency_contact_phone="123456"
-        )
-
-        sr.updateStudent(11, changes)
-        # Log.isFileLogging(True)
-        # Log.info("aaa")
-        # Log.success("Success")
-        # Log.warn("Warn")
-        # Log.debug("debug")
-        # Log.error("error")
         pass
 
     def configure_DataBase(self):
@@ -48,6 +49,22 @@ class App:
             "university_wellbeing.db"
         ))
         Base_Repo.set_db_path(db_path)
+        Log.success("Success Configure DataBase Path")
+    
 
 if __name__ == "__main__":
-    app = App()
+    App()
+
+    import logging
+    logging.getLogger('werkzeug').setLevel(logging.ERROR)
+    url = f"http://{hn}:{pt}"
+    Log.success(f"Flask UI running on {url}")
+    run_simple(
+        hostname=hn,
+        port=pt,
+        application=app,
+        use_reloader=False,
+        use_debugger=debug,
+        threaded=True
+    )
+    # app.run(debug=False, use_reloader=False)

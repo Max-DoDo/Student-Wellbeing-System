@@ -67,9 +67,9 @@ class Student_Repo(Base_Repo):
         Log.info("Added Student:" ,student.name," ID:", student.id, " to database")
         return student.id if student.id is not None else self.cursor.lastrowid
     
-    def updateStudent(self,id: int, new_data: Student) -> bool:
+    def updateStudent(self, new_data: Student) -> bool:
 
-        # TODO if value is not None~~~~
+        id = new_data.id
         field_map = {
             "first_name": new_data.first_name,
             "last_name": new_data.last_name,
@@ -98,6 +98,24 @@ class Student_Repo(Base_Repo):
         Log.info("Updated Student ID: ", id," with data: ", updates)
         return self.cursor.rowcount > 0
 
+    def deleteStudent(self, student: Student) -> bool:
+        if student is None:
+            Log.warn("deleteStudent failed: student is None")
+            return False
+        
+        query = "DELETE FROM students WHERE student_id = ?"
+        self.cursor.execute(query, (student.id,))
+        self.conn.commit()
+
+        if self.cursor.rowcount > 0:
+            Log.success(f"Student deleted successfully: ID={student.id}")
+            return True
+        else:
+            Log.warn(f"No student found with ID={student.id} failed to delete")
+            return False
+
+
+        
 
     def toStudent(self, row) -> Student:
         return Student(

@@ -1,5 +1,5 @@
 from typing import List, Optional
-from base.entity.wellbeing_survey import Wellbeing_Survey
+from entity.wellbeing_survey import Wellbeing_Survey
 from repository.base_repo import Base_Repo
 
 class Wellbeing_Survey_Repo(Base_Repo):
@@ -15,6 +15,14 @@ class Wellbeing_Survey_Repo(Base_Repo):
     def getWellBeingSurveys(self) -> List[Wellbeing_Survey]:
         query = "SELECT * FROM wellbeing_surveys"
         self.cursor.execute(query)
+        rows = self.cursor.fetchall()
+        if rows:
+            return self.toWellBeingSurveys(rows)
+        return None
+    
+    def getWellBeingSurveysByStudentID(self, student_id = int) -> List[Optional[Wellbeing_Survey]]:
+        query = "SELECT * FROM wellbeing_surveys WHERE student_id = ?"
+        self.cursor.execute(query, (student_id,))
         rows = self.cursor.fetchall()
         if rows:
             return self.toWellBeingSurveys(rows)

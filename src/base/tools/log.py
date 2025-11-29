@@ -26,6 +26,9 @@ class Log:
     # log folder path
     log_path = "log"
 
+    # make sure every runtime would only create one file
+    log_file_name = None
+
     '''
     This method provide the toogle for whether written down the console output to file system.
 
@@ -37,6 +40,11 @@ class Log:
         Log.write_to_file = enabled
         if enabled and not os.path.exists(Log.log_path):
             os.makedirs(Log.log_path)
+        
+        if enabled and Log.log_file_name is None:
+            Log.log_file_name = f"{Log.getDate()} {Log.getTimeForFile()}.log"
+        
+        Log.info("Write-to-file mode is enabled. All log will be record to:",Log.log_file_name)
 
     '''
     Get current Date. Formatted by YYYY-MM-DD
@@ -72,7 +80,7 @@ class Log:
         if not Log.write_to_file:
             return
         
-        log_file = os.path.join(Log.log_path, f"{Log.getDate()} {Log.getTimeForFile()}.log")
+        log_file = os.path.join(Log.log_path, Log.log_file_name)
         with open(log_file, "a", encoding="utf-8") as f:
             f.write(f"{prefix} {message}\n")
 

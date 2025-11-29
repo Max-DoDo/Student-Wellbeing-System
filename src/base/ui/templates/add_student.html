@@ -1,7 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Add Student</h2>
 <div class="form-section">
+<h2>Add Student</h2>
+{% if error %}
+<div class="alert alert-danger mt-2">
+   ❌ {{ error }}
+</div>
+{% endif %}
+{% if success %}
+<div class="alert alert-success mt-2">
+   ✅ Student added successfully!
+</div>
+{% endif %}
 <form method="POST">
 <div class="row">
 <div class="col-md-4 mb-3">

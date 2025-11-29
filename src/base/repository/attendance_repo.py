@@ -13,6 +13,14 @@ class Attendance_Repo(Base_Repo):
             return self.toAttendance(row)
         return None
     
+    def getAttendancesByStudentID(self, studentid = int) -> List[Optional[Attendance]]:
+        query = "SELECT * FROM attendance WHERE student_id = ?"
+        self.cursor.execute(query,(studentid))
+        rows = self.cursor.fetchall()
+        if rows:
+            return self.toAttendances(rows)
+        return None
+    
     def getAllAttendance(self) -> List[Attendance]:
         query = "SELECT * FROM attendance"
         self.cursor.execute(query)
