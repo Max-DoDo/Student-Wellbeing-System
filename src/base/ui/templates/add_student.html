@@ -2,6 +2,12 @@
 {% block content %}
 <h2>Add Student</h2>
 <div class="form-section">
+<h2>Add Student</h2>
+{% if success %}
+<div class="alert alert-success mt-3">
+   ✅ Student added successfully!
+</div>
+{% endif %}
 <form method="POST">
 <div class="row">
 <div class="col-md-4 mb-3">
