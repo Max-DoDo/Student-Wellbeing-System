@@ -1,12 +1,12 @@
-from entity.student_test import Student_test
-from entity.assessments_test import Assessment_test
-from entity.wellbeing_survey_test import Wellbeing_Survey_test
+from entity_test.student_test import Student_test
+from entity_test.assessments_test import Assessment_test
+from entity_test.wellbeing_survey_test import Wellbeing_Survey_test
 from typing import List, Optional
-from repository.student_repo_test import Student_Repo_test
-from repository.attendance_repo_test import Attendance_Repo_test
-from repository.assessment_repo_test import Assessment_Repo_test
-from repository.wellbeing_surveys_repo_test import Wellbeing_Survey_Repo_test
-from entity.attendance_test import Attendance_test
+from repository_test.student_repo_test import Student_Repo_test
+from repository_test.attendance_repo_test import Attendance_Repo_test
+from repository_test.assessment_repo_test import Assessment_Repo_test
+from repository_test.wellbeing_survey_repo_test import Wellbeing_Survey_Repo_test
+from entity_test.attendance_test import Attendance_test
 
 class Student_Service_test:
 

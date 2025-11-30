@@ -1,10 +1,10 @@
 from typing import List, Optional
-from entity.assessments import Assessment
-from repository.base_repo import Base_Repo
+from entity_test.assessments_test import Assessment_test
+from repository_test.base_repo_test import Base_Repo_test
 
-class Assessment_Repo(Base_Repo):
+class Assessment_Repo_test(Base_Repo_test):
     
-    def getAssessment(self,id=int) -> Optional[Assessment]:
+    def getAssessment(self,id=int) -> Optional[Assessment_test]:
         query = "SELECT * FROM assessments WHERE assessment_id = ?"
         self.cursor.execute(query, (id,))
         row = self.cursor.fetchone()
@@ -12,7 +12,7 @@ class Assessment_Repo(Base_Repo):
             return self.toAssessment(row)
         return None
 
-    def getAssessments(self) -> Optional[List[Assessment]]:
+    def getAssessments(self) -> Optional[List[Assessment_test]]:
         query = "SELECT * FROM assessments"
         self.cursor.execute(query)
         rows = self.cursor.fetchall()
@@ -20,7 +20,7 @@ class Assessment_Repo(Base_Repo):
             return self.toAssessments(rows)
         return None
     
-    def getAssessmentsByStudentID(self, student_id = int) -> Optional[List[Assessment]]:
+    def getAssessmentsByStudentID(self, student_id = int) -> Optional[List[Assessment_test]]:
         query = "SELECT * FROM assessments WHERE student_id = ?"
         self.cursor.execute(query, (id,))
         rows = self.cursor.fetchall()
@@ -28,8 +28,8 @@ class Assessment_Repo(Base_Repo):
             return self.toAssessment(rows)
         return None
 
-    def toAssessment(self, row)-> Assessment:
-        return Assessment(
+    def toAssessment(self, row)-> Assessment_test:
+        return Assessment_test(
             assessment_id=row["assessment_id"],
             student_id=row["student_id"],
             assignment_name=row["assignment_name"],
@@ -37,5 +37,5 @@ class Assessment_Repo(Base_Repo):
             submitted_on_time=row["submitted_on_time"]
         )
 
-    def toAssessments(self, rows) -> List[Assessment]:
+    def toAssessments(self, rows) -> List[Assessment_test]:
         return [self.toAssessment(row) for row in rows]

@@ -1,7 +1,7 @@
 from typing import List, Optional
 from tools.log import Log
-from repository.base_repo_test import Base_Repo_test
-from entity.student_test import Student_test
+from repository_test.base_repo_test import Base_Repo_test
+from entity_test.student_test import Student_test
 
 class Student_Repo_test(Base_Repo_test):
 

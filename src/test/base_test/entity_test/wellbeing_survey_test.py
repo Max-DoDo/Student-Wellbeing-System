@@ -5,7 +5,7 @@ from typing import Optional
 from tools.mytools import MyTools
 
 @dataclass
-class Wellbeing_Survey:
+class Wellbeing_Survey_test:
     survey_id:Optional[int] = -1
     student_id:Optional[int] = -1
     week_number:Optional[int] = -1

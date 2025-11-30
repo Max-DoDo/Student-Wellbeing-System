@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional
 from tools.mytools import MyTools
-from entity.person import Person
+from entity_test.person_test import Person_test
 
 
 @dataclass
-class User(Person):
+class User_test(Person_test):
     username: Optional[str] = None
     password: Optional[str] = None
     role_id: Optional[int] = None

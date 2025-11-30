@@ -1,8 +1,8 @@
 from typing import List, Optional
-from entity.attendance_test import Attendance_test
-from repository.base_repo import Base_Repo
+from entity_test.attendance_test import Attendance_test
+from repository_test.base_repo_test import Base_Repo_test
 
-class Attendance_Repo_test(Base_Repo):
+class Attendance_Repo_test(Base_Repo_test):
     
     
     def getAttendance_test(self, id_test=int) -> Optional[Attendance_test]:

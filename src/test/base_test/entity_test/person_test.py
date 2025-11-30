@@ -5,7 +5,7 @@ from typing import Optional
 from tools.log import Log
 
 @dataclass
-class Person(ABC):
+class Person_test(ABC):
 
     id: Optional[int] = -1
     name: Optional[str] = ""

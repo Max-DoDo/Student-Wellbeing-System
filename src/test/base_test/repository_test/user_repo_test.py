@@ -1,7 +1,7 @@
 from typing import List, Optional
 from tools.log import Log
-from entity.user_test import User_test
-from repository.base_repo_test import Base_Repo_test
+from entity_test.user_test import User_test
+from repository_test.base_repo_test import Base_Repo_test
 
 class User_Repo_test(Base_Repo_test):
 

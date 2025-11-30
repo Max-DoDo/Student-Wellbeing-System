@@ -1,6 +1,6 @@
 from typing import List, Optional
-from entity.wellbeing_survey_test import Wellbeing_Survey_test
-from repository.base_repo_test import Base_Repo_test
+from entity_test.wellbeing_survey_test import Wellbeing_Survey_test
+from repository_test.base_repo_test import Base_Repo_test
 
 class Wellbeing_Survey_Repo_test(Base_Repo_test):
     
