@@ -1,7 +1,15 @@
 from typing import List, Optional
-from tools.log import Log
-from repository_test.base_repo_test import Base_Repo_test
-from entity_test.student_test import Student_test
+import sys
+import os
+
+CURRENT_DIR = os.path.dirname(__file__)
+
+SRC_PATH = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..", ".." ))
+sys.path.insert(0, SRC_PATH)
+
+from base.tools.log import Log
+from test.base_test.repository_test.base_repo_test import Base_Repo_test
+from test.base_test.entity_test.student_test import Student_test
 
 class Student_Repo_test(Base_Repo_test):
 

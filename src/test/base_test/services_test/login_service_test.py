@@ -1,6 +1,14 @@
 from repository_test.user_repo_test import User_Repo_test
 from typing import List
-from tools.log import Log
+import sys
+import os
+
+CURRENT_DIR = os.path.dirname(__file__)
+
+SRC_PATH = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..", ".." ))
+sys.path.insert(0, SRC_PATH)
+
+from base.tools.log import Log
 
 class Login_Service_test:
 

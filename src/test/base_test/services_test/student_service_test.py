@@ -1,3 +1,11 @@
+import sys
+import os
+
+CURRENT_DIR = os.path.dirname(__file__)
+
+SRC_PATH = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
+sys.path.insert(0, SRC_PATH)
+
 from entity_test.student_test import Student_test
 from entity_test.assessments_test import Assessment_test
 from entity_test.wellbeing_survey_test import Wellbeing_Survey_test

@@ -1,29 +1,34 @@
 import unittest
+import sys
 import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # ===========================================================================
 # PLACEHOLDERS (STUBS)
 # ===========================================================================
 
-from base_test.entity_test.assessments_test import Assessment_test
+from assessments_test import Assessment_test
 
 def create_assessment_test(aid, sid, name, grade, date):
     return Assessment_test(
-        assessment_id_test=aid,
-        student_id_test=sid,
-        assignment_name_test=name,
-        grade_test=grade,
-        submitted_on_time_test=date
+        assessment_id=aid,
+        student_id=sid,
+        assignment_name=name,
+        grade=grade,
+        submitted_on_time=date
     )
+
 
 def create_assessment_none_date():
     return Assessment_test(
-        assessment_id_test=1,
-        student_id_test=1,
-        assignment_name_test="Test",
-        grade_test=80,
-        submitted_on_time_test=None
+        assessment_id=1,
+        student_id=1,
+        assignment_name="Test",
+        grade=80,
+        submitted_on_time=None
     )
+
 
 # ===========================================================================
 # END PLACEHOLDERS
@@ -51,16 +56,16 @@ class TestAssessmentEntity(unittest.TestCase):
             date="2025-01-01"
         )
 
-        self.assertEqual(a.assessment_id_test, 10)
-        self.assertEqual(a.student_id_test, 20)
-        self.assertEqual(a.assignment_name_test, "Homework")
-        self.assertEqual(a.grade_test, 90)
-        self.assertEqual(a.submitted_on_time_test, "2025-01-01")
+        self.assertEqual(a.assessment_id, 10)
+        self.assertEqual(a.student_id, 20)
+        self.assertEqual(a.assignment_name, "Homework")
+        self.assertEqual(a.grade, 90)
+        self.assertEqual(a.submitted_on_time, "2025-01-01")
 
     def test_none_date(self):
-        """Test that submitted_on_time_test is set when None is provided."""
+        """Test that submitted_on_time is set when None is provided."""
         a = create_assessment_none_date()
-        self.assertIsNotNone(a.submitted_on_time_test)
+        self.assertIsNotNone(a.submitted_on_time)
 
     def test_instance_type(self):
         """Test that the object is an instance of the expected class."""

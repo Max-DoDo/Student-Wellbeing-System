@@ -1,11 +1,14 @@
 import unittest
+import sys
 import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # ===========================================================================
 # PLACEHOLDERS (STUBS)
 # ===========================================================================
 
-from base_test.entity_test.student_test import Student_test
+from student_test import Student_test
 
 def create_student_test(
         sid,

@@ -1,11 +1,14 @@
 import unittest
+import sys
 import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # ===========================================================================
 # PLACEHOLDERS (STUBS)
 # ===========================================================================
 
-from base_test.entity_test.wellbeing_survey_test import Wellbeing_Survey_test
+from wellbeing_survey_test import Wellbeing_Survey_test
 
 def create_survey_test(
     sid,

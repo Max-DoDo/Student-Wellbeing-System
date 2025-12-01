@@ -1,8 +1,15 @@
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
+import sys
+import os
 
-from tools.mytools import MyTools
+CURRENT_DIR = os.path.dirname(__file__)
+
+SRC_PATH = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..", ".." ))
+sys.path.insert(0, SRC_PATH)
+
+from base.tools.mytools import MyTools
 
 @dataclass
 class Wellbeing_Survey_test:

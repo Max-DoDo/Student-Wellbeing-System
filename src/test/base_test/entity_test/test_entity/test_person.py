@@ -1,12 +1,18 @@
 import unittest
+import sys
 import os
+
+CURRENT_DIR = os.path.dirname(__file__)
+
+SRC_PATH = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..", ".." ,".."))
+sys.path.insert(0, SRC_PATH)
 
 # ===========================================================================
 # PLACEHOLDERS (STUBS)
 # ===========================================================================
 
-from base_test.entity_test.person_test import Person_test
-from tools.log import Log
+from test.base_test.entity_test.person_test import Person_test
+from base.tools.log import Log
 
 def create_person_test(pid, fname, lname, name, gender, email):
     return Person_test(

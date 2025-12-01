@@ -1,3 +1,11 @@
+import sys
+import os
+
+CURRENT_DIR = os.path.dirname(__file__)
+
+SRC_PATH = os.path.abspath(os.path.join(CURRENT_DIR, ".." ))
+sys.path.insert(0, SRC_PATH)
+
 from typing import List, Optional
 from entity_test.assessments_test import Assessment_test
 from repository_test.base_repo_test import Base_Repo_test

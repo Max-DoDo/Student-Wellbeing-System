@@ -1,11 +1,14 @@
 import unittest
+import sys
 import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # ===========================================================================
 # PLACEHOLDERS (STUBS)
 # ===========================================================================
 
-from base_test.entity_test.attendance_test import Attendance_test
+from attendance_test import Attendance_test
 
 def create_attendance_test(aid, sid, week, present, late):
     return Attendance_test(

@@ -1,8 +1,15 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Optional
+import sys
+import os
 
-from tools.log import Log
+CURRENT_DIR = os.path.dirname(__file__)
+
+SRC_PATH = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..", ".." ))
+sys.path.insert(0, SRC_PATH)
+
+from base.tools.log import Log
 
 @dataclass
 class Person_test(ABC):
