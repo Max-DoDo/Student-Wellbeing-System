@@ -1,5 +1,48 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Admin Dashboard</h2>
-<div class="card">Manage users and system access.</div>
+<style>
+
+.dashboard-card {
+   transition: all 0.25s ease-in-out;
+   border-radius: 12px;
+}
+.dashboard-card:hover {
+   transform: translateY(-6px);
+   box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+   cursor: pointer;
+}
+</style>
+<div class="container mt-4">
+<h2 class="mb-2">Admin Dashboard</h2>
+<p class="text-muted">System Overview & Quick Management</p>
+<hr>
+
+<div class="row">
+<div class="col-md-3">
+<div class="card dashboard-card text-center p-3 shadow-sm">
+<h4>Total Students</h4>
+<h2 class="text-primary">{{ total_students }}</h2>
+</div>
+</div>
+<div class="col-md-3">
+<div class="card dashboard-card text-center p-3 shadow-sm">
+<h4>Wellbeing Surveys</h4>
+<h2 class="text-success">{{ total_surveys }}</h2>
+</div>
+</div>
+<div class="col-md-3">
+<div class="card dashboard-card text-center p-3 shadow-sm">
+<h4>Attendance Records</h4>
+<h2 class="text-info">{{ total_attendance }}</h2>
+</div>
+</div>
+<div class="col-md-3">
+<div class="card dashboard-card text-center p-3 shadow-sm">
+<h4>Assessments</h4>
+<h2 class="text-warning">{{ total_assessments }}</h2>
+</div>
+</div>
+</div>
+<hr>
+</div>
 {% endblock %}

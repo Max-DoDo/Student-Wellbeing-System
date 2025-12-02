@@ -13,68 +13,65 @@
 {% endif %}
 <style>
    .form-section {
-       background: #fff;
-       padding: 20px;
-       border-radius: 6px;
-       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      background: #fff;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
    }
 </style>
 <div class="form-section">
-<!-- Select Student -->
-<form method="GET" action="">
-<label class="form-label"><strong>Select Student</strong></label>
-<select name="sid" class="form-select" onchange="this.form.submit()">
-<option disabled selected>-- choose a student --</option>
-           {% for s in students %}
-<option value="{{ s.id }}"
-                   {% if selected and selected.id == s.id %} selected {% endif %}>
-                   {{ s.id }} – {{ s.first_name or s.fname }} {{ s.last_name or s.lname }}
-</option>
-           {% endfor %}
-</select>
-</form>
+   <form method="GET" action="">
+      <label class="form-label"><strong>Select Student</strong></label>
+      <select name="sid" class="form-select" onchange="this.form.submit()">
+         <option disabled selected>-- choose a student --</option>
+         {% for s in students %}
+         <option value="{{ s.id }}" {% if selected and selected.id==s.id %} selected {% endif %}>
+            {{ s.id }} – {{ s.first_name or s.fname }} {{ s.last_name or s.lname }}
+         </option>
+         {% endfor %}
+      </select>
+   </form>
    {% if selected %}
-<hr>
-<!-- Update Form -->
-<form method="POST">
-<input type="hidden" name="student_id" value="{{ selected.id }}">
-<div class="row">
-<div class="col-md-4 mb-3">
-<label class="form-label">First Name</label>
-<input type="text" name="first_name" class="form-control"
-                      value="{{ selected.first_name or selected.fname }}" required>
-</div>
-<div class="col-md-4 mb-3">
-<label class="form-label">Last Name</label>
-<input type="text" name="last_name" class="form-control"
-                      value="{{ selected.last_name or selected.lname }}" required>
-</div>
-<div class="col-md-4 mb-3">
-<label class="form-label">Email</label>
-<input type="email" name="email" class="form-control"
-                      value="{{ selected.email or '' }}">
-</div>
-</div>
-<div class="mb-3">
-<label class="form-label">Personal Tutor Email</label>
-<input type="email" name="personal_tutor_email" class="form-control"
-                  value="{{ selected.personal_tutor_email or '' }}">
-</div>
-<h5>Emergency Contact</h5>
-<div class="row">
-<div class="col-md-6 mb-3">
-<label class="form-label">Contact Name</label>
-<input type="text" name="emergency_contact_name" class="form-control"
-                      value="{{ selected.emergency_contact_name or '' }}">
-</div>
-<div class="col-md-6 mb-3">
-<label class="form-label">Contact Phone</label>
-<input type="text" name="emergency_contact_phone" class="form-control"
-                      value="{{ selected.emergency_contact_phone or '' }}">
-</div>
-</div>
-<button class="btn btn-primary mt-3">💾 Update Student</button>
-</form>
+   <hr>
+
+   <form method="POST">
+      <input type="hidden" name="student_id" value="{{ selected.id }}">
+      <div class="row">
+         <div class="col-md-4 mb-3">
+            <label class="form-label">First Name</label>
+            <input type="text" name="first_name" class="form-control"
+               value="{{ selected.first_name or selected.fname }}" required>
+         </div>
+         <div class="col-md-4 mb-3">
+            <label class="form-label">Last Name</label>
+            <input type="text" name="last_name" class="form-control" value="{{ selected.last_name or selected.lname }}"
+               required>
+         </div>
+         <div class="col-md-4 mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" value="{{ selected.email or '' }}">
+         </div>
+      </div>
+      <div class="mb-3">
+         <label class="form-label">Personal Tutor Email</label>
+         <input type="email" name="personal_tutor_email" class="form-control"
+            value="{{ selected.personal_tutor_email or '' }}">
+      </div>
+      <h5>Emergency Contact</h5>
+      <div class="row">
+         <div class="col-md-6 mb-3">
+            <label class="form-label">Contact Name</label>
+            <input type="text" name="emergency_contact_name" class="form-control"
+               value="{{ selected.emergency_contact_name or '' }}">
+         </div>
+         <div class="col-md-6 mb-3">
+            <label class="form-label">Contact Phone</label>
+            <input type="text" name="emergency_contact_phone" class="form-control"
+               value="{{ selected.emergency_contact_phone or '' }}">
+         </div>
+      </div>
+      <button class="btn btn-primary mt-3">💾 Update Student</button>
+   </form>
    {% endif %}
 </div>
 {% endblock %}

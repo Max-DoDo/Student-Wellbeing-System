@@ -10,6 +10,14 @@ from services.student_service import Student_Service
 from repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
 import matplotlib.pyplot as plt
 import os
+import plotly.graph_objects as go
+import plotly.io as pio
+import plotly.graph_objs as go
+import plotly.offline as pyo
+import plotly.graph_objects as go
+from repository.attendance_repo import Attendance_Repo
+from repository.attendance_repo import Attendance_Repo
+from repository.assessment_repo import Assessment_Repo
 
 app = Flask(__name__)
 app.secret_key = "secret123"
@@ -21,34 +29,38 @@ def login():
    if request.method == "POST":
        username = request.form.get("username")
        password = request.form.get("password")
-       # Fetch user from DB
+      
        repo = User_Repo()
        user = repo.getUserByUserName(username)
        if user is None:
            return render_template("login.html", error="User not found")
-       # Check if inactive
+       
        if not user.is_active:
            return render_template("login.html", error="Account disabled")
-       # Validate password
+       
        if user.password != password:
            return render_template("login.html", error="Incorrect password")
-       # -------------------------
+       
     
        session["user_id"] = user.id
        session["username"] = user.username
-       # Convert numeric role_id → string role (needed for sidebar)
+       session["role_id"] = user.role_id
+       session["role"] = (
+           "admin" if user.role_id == 0 else
+           "wellbeing" if user.role_id == 1 else
+           "course_leader"
+       )
        if user.role_id == 0:
            session["role"] = "admin"
        elif user.role_id == 1:
            session["role"] = "wellbeing"
        elif user.role_id == 2:
            session["role"] = "course_leader"
-       # Redirect based on role_id
 
        if user.role_id == 0:
-           return redirect(url_for("student_list"))
+           return redirect(url_for("admin_dashboard"))
        elif user.role_id == 1:
-           return redirect(url_for("student_list"))
+           return redirect(url_for("wellbeing_dashboard"))
        elif user.role_id == 2:
            return redirect(url_for("course_leader_dashboard"))
        return redirect(url_for("dashboard_redirect"))
@@ -60,9 +72,9 @@ def dashboard_redirect():
     role_id = session.get("role_id")
 
     if role_id == 0:
-        return redirect(url_for("student_list"))
+        return redirect(url_for("admin_dashboard"))
     elif role_id == 1:
-        return redirect(url_for("student_list"))
+        return redirect(url_for("wellbeing_dashboard"))
     elif role_id == 2:
         return redirect(url_for("course_leader_dashboard"))
     else:
@@ -72,198 +84,533 @@ def dashboard_redirect():
 
 @app.route("/admin")
 def admin_dashboard():
-    return render_template("admin_dashboard.html", role=session.get("role"))
+   student_repo = Student_Repo()
+   survey_repo = Wellbeing_Survey_Repo()
+   attendance_repo = Attendance_Repo()
+   assessment_repo = Assessment_Repo()
+   total_students = len(student_repo.getAllStudent() or [])
+   total_surveys = len(survey_repo.getWellBeingSurveys() or [])
+   total_attendance = len(attendance_repo.getAllAttendance() or [])
+   total_assessments = len(assessment_repo.getAssessments() or [])
+   return render_template(
+       "admin_dashboard.html",
+       role=session.get("role"),
+       total_students=total_students,
+       total_surveys=total_surveys,
+       total_attendance=total_attendance,
+       total_assessments=total_assessments
+   )
 
 
 @app.route("/wellbeing")
 def wellbeing_dashboard():
-    return redirect(url_for("student_list"))
+   survey_repo = Wellbeing_Survey_Repo()
+   student_repo = Student_Repo()
+   students = student_repo.getAllStudent()
+   surveys = survey_repo.getWellBeingSurveys()
+   total_students = len(students)
 
+   if surveys:
+       avg_stress = round(sum(s.stress_level for s in surveys) / len(surveys), 2)
+       avg_sleep = round(sum(s.hours_slept for s in surveys) / len(surveys), 2)
+   else:
+       avg_stress = "N/A"
+       avg_sleep = "N/A"
+   
+   high_risk_students = []
+   for student in students:
+       s_surveys = survey_repo.getWellBeingSurveysByStudentID(student.id)
+       if not s_surveys:
+           continue
+       avg_s = sum(x.stress_level for x in s_surveys) / len(s_surveys)
+       avg_h = sum(x.hours_slept for x in s_surveys) / len(s_surveys)
+       
+       if avg_s >= 4 or avg_h <= 5:
+        high_risk_students.append({
+       "id": student.id,
+       "name": f"{student.first_name} {student.last_name}",
+       "avg_stress": round(avg_s, 2),
+       "avg_sleep": round(avg_h, 2)
+   })
+   return render_template(
+       "wellbeing_dashboard.html",
+       role=session.get("role"),
+       total_students=total_students,
+       avg_stress=avg_stress,
+       avg_sleep=avg_sleep,
+       high_risk_students=high_risk_students
+   )
 
 @app.route("/course-leader")
 def course_leader_dashboard():
-    return redirect(url_for("student_list"))
+   student_repo = Student_Repo()
+   att_repo = Attendance_Repo()
+   grade_repo = Assessment_Repo()
+   students = student_repo.getAllStudent()
+
+   total_students = len(students)
+   
+   all_att = att_repo.getAllAttendance()
+   if all_att:
+       avg_attendance = round(sum(a.is_present for a in all_att) / len(all_att) * 100, 2)
+   else:
+       avg_attendance = "N/A"
+   
+   all_grades = grade_repo.getAssessments()
+   if all_grades:
+       avg_grade = round(sum(g.grade for g in all_grades) / len(all_grades), 2)
+   else:
+       avg_grade = "N/A"
+   
+   high_risk_students = []
+   for s in students:
+       attendance = att_repo.getAttendancesByStudentID(s.id)
+       grades = grade_repo.getAssessmentsByStudentID(s.id)
+       if not attendance or not grades:
+           continue
+       attendance_rate = sum(a.is_present for a in attendance) / len(attendance)
+       avg_student_grade = sum(g.grade for g in grades) / len(grades)
+       if attendance_rate < 0.50 or avg_student_grade < 50:
+           high_risk_students.append({
+               "id": s.id,
+               "name": f"{s.first_name} {s.last_name}",
+               "attendance": round(attendance_rate * 100, 1),
+               "grade": round(avg_student_grade, 1)
+           })
+   return render_template(
+       "course_leader_dashboard.html",
+       role=session.get("role"),
+       total_students=total_students,
+       avg_attendance=avg_attendance,
+       avg_grade=avg_grade,
+       high_risk_students=high_risk_students
+   )
 
 # ---------------- STUDENT LIST ----------------
 
 @app.route("/students")
 def student_list():
    repo = Student_Repo()
-   students = repo.getAllStudent()  
+   students = repo.getAllStudent()
+   sort_key = request.args.get("sort")
+   sort = sort_key  
+   if sort_key == "first_name":
+       students.sort(key=lambda s: (s.first_name or "").lower())
+   elif sort_key == "last_name":
+       students.sort(key=lambda s: (s.last_name or "").lower())
+   elif sort_key == "id":
+       students.sort(key=lambda s: s.id)
    return render_template(
        "student_list.html",
        students=students,
-       role=session.get("role")
+       role=session.get("role"),
+       sort=sort
    )
-
 
 # ---------------- WELLBEING GROUP REPORT ----------------
 
 @app.route("/group-report")
 def group_report():
-    names = [s["fname"] for s in students_data]
-    stress = [dummy_wellbeing[s["id"]]["stress"] for s in students_data]
-    sleep = [dummy_wellbeing[s["id"]]["sleep"] for s in students_data]
+   survey_repo = Wellbeing_Survey_Repo()
+   student_repo = Student_Repo()
+   att_repo = Attendance_Repo()
+   students = student_repo.getAllStudent()
+   surveys_all = survey_repo.getWellBeingSurveys()
+   if not surveys_all:
+       return render_template(
+           "group_report.html",
+           role=session.get("role"),
+           avg_stress_chart="No data available.",
+           avg_sleep_chart="No data available.",
+           stress_distribution_chart="No data available."
+       )
+   week_map = {}
+   sleep_map = {}
+   for s in surveys_all:
+       week_map.setdefault(s.week_number, []).append(s.stress_level)
+       sleep_map.setdefault(s.week_number, []).append(s.hours_slept)
+   weeks = sorted(week_map.keys())
+   avg_stress = [round(sum(v) / len(v), 2) for v in week_map.values()]
+   avg_sleep = [round(sum(v) / len(v), 2) for v in sleep_map.values()]
+   stress_fig = go.Figure()
+   stress_fig.add_trace(go.Scatter(
+       x=weeks,
+       y=avg_stress,
+       mode="lines+markers",
+       marker=dict(size=8)
+   ))
+   stress_fig.update_layout(
+       title="Average Stress Level per Week",
+       xaxis_title="Week Number",
+       yaxis_title="Stress Level (1–5)",
+       template="plotly_white",
+       height=350
+   )
+   avg_stress_chart = stress_fig.to_html(full_html=False)
+   sleep_fig = go.Figure()
+   sleep_fig.add_trace(go.Scatter(
+       x=weeks,
+       y=avg_sleep,
+       mode="lines+markers",
+       marker=dict(size=8)
+   ))
+   sleep_fig.update_layout(
+       title="Average Sleep Hours per Week",
+       xaxis_title="Week Number",
+       yaxis_title="Hours Slept",
+       template="plotly_white",
+       height=350
+   )
+   avg_sleep_chart = sleep_fig.to_html(full_html=False)
+   stress_groups = {
+       "Low Stress (1–2)": 0,
+       "Moderate Stress (2–3.5)": 0,
+       "High Stress (3.5+)": 0
+   }
+   for st in students:
+       st_surveys = survey_repo.getWellBeingSurveysByStudentID(st.id)
+       if not st_surveys:
+           continue
+       avg_s = sum(s.stress_level for s in st_surveys) / len(st_surveys)
+       if avg_s <= 2:
+           stress_groups["Low Stress (1–2)"] += 1
+       elif avg_s <= 3.5:
+           stress_groups["Moderate Stress (2–3.5)"] += 1
+       else:
+           stress_groups["High Stress (3.5+)"] += 1
+   pie_fig = go.Figure(
+       data=[go.Pie(
+           labels=list(stress_groups.keys()),
+           values=list(stress_groups.values()),
+           hole=0.4
+       )]
+   )
+   pie_fig.update_layout(
+       title="Student Stress Distribution (All Students)",
+       height=350
+   )
+   stress_distribution_chart = pie_fig.to_html(full_html=False)
 
-    fig = go.Figure()
-    fig.add_trace(go.Bar(name="Avg Stress", x=names, y=stress))
-    fig.add_trace(go.Bar(name="Avg Sleep", x=names, y=sleep))
-
-    fig.update_layout(
-        barmode="group",
-        title="Group Wellbeing Overview",
-        height=400
-    )
-
-    chart_html = fig.to_html(full_html=False)
-
-    return render_template(
-        "group_report.html",
-        role=session.get("role"),
-        chart_html=chart_html
-    )
+   return render_template(
+       "group_report.html",
+       role=session.get("role"),
+       avg_stress_chart=avg_stress_chart,
+       avg_sleep_chart=avg_sleep_chart,
+       stress_distribution_chart=stress_distribution_chart
+   )
 
 # ---------------- WELLBEING INDIVIDUAL ----------------
 @app.route("/wellbeing/student/<int:sid>")
 def wellbeing_student_detail(sid):
-   repo = Wellbeing_Survey_Repo()
-   student = Student_Repo().getStudent(sid)
-   surveys = repo.getWellBeingSurveysByStudentID(sid)
+   survey_repo = Wellbeing_Survey_Repo()
+   student_repo = Student_Repo()
+
+   student = student_repo.getStudent(sid)
+   if not student:
+       return "<h3>Student not found.</h3>", 404
+  
+   surveys = survey_repo.getWellBeingSurveysByStudentID(sid) or []
    if not surveys:
        return render_template(
            "wellbeing_student_detail.html",
-           student = student,
-           surveys=[],
-           charts=[],
-           total_weeks=0,
-           selected_week=None
+           role=session.get("role"),
+           student=student,
+           avg_stress="N/A",
+           avg_sleep="N/A",
+           stress_chart="<p>No wellbeing data available.</p>",
+           sleep_chart="<p>No wellbeing data available.</p>",
+           stress_sleep_charts="<p>No data</p>",
+           pie_chart="<p>No submission related chart for wellbeing.</p>",
+           warnings=[],
+           weekly_rows=[]
        )
-   # Convert objects into dicts for HTML
-   rows = []
-   for s in surveys:
-       rows.append({
-           "survey_id": s.survey_id,
-           "student_id": s.student_id,
-           "week_number": s.week_number,
-           "stress_level": s.stress_level,
-           "hours_slept": s.hours_slept,
-           "survey_date": s.survey_date
+
+   avg_stress = round(sum(s.stress_level for s in surveys) / len(surveys), 2)
+   avg_sleep = round(sum(s.hours_slept for s in surveys) / len(surveys), 2)
+ 
+   warnings = []
+   if avg_stress >= 4:
+       warnings.append("⚠ High average stress level detected.")
+   if avg_sleep <= 5:
+       warnings.append("⚠ Consistently low sleep duration detected.")
+
+   weeks = [s.week_number for s in surveys]
+   stress_vals = [s.stress_level for s in surveys]
+   stress_fig = go.Figure()
+   stress_fig.add_trace(go.Scatter(
+       x=weeks, y=stress_vals, mode="lines+markers", name="Stress Level"
+   ))
+   stress_fig.update_layout(
+       title="Stress Level Across Weeks",
+       xaxis_title="Week",
+       yaxis_title="Stress (1–5)",
+       template="plotly_white",
+       height=300
+   )
+   stress_chart = stress_fig.to_html(full_html=False)
+ 
+   sleep_vals = [s.hours_slept for s in surveys]
+   sleep_fig = go.Figure()
+   sleep_fig.add_trace(go.Scatter(
+       x=weeks, y=sleep_vals, mode="lines+markers", name="Sleep (hrs)"
+   ))
+   sleep_fig.update_layout(
+       title="Sleep Hours Across Weeks",
+       xaxis_title="Week",
+       yaxis_title="Hours Slept",
+       template="plotly_white",
+       height=300
+   )
+   sleep_chart = sleep_fig.to_html(full_html=False)
+
+   high = len([s for s in surveys if s.stress_level >= 4])
+   normal = len(surveys) - high
+   pie_fig = go.Figure(data=[go.Pie(
+       labels=["High Stress", "Normal"],
+       values=[high, normal],
+       hole=0.45
+   )])
+   pie_fig.update_layout(title="Stress Severity Breakdown", height=300)
+   pie_chart = pie_fig.to_html(full_html=False)
+   weekly_rows = []
+   for s in sorted(surveys, key=lambda x: x.week_number):
+       weekly_rows.append({
+           "week": s.week_number,
+           "stress": s.stress_level,
+           "sleep": s.hours_slept
        })
-   # ---- CREATE CHART IMAGES ----
-   chart_paths = []
-   static_folder = os.path.join(os.path.dirname(__file__), "static")
-   os.makedirs(static_folder, exist_ok=True)
-   weeks = [r["week_number"] for r in rows]
-   stress = [r["stress_level"] for r in rows]
-   sleep = [r["hours_slept"] for r in rows]
-   # 1. Stress Trend
-   plt.figure()
-   plt.plot(weeks, stress, marker="o")
-   plt.title("Stress Level Over Time")
-   plt.xlabel("Week Number")
-   plt.ylabel("Stress Level")
-   stress_path = os.path.join(static_folder, f"stress_{sid}.png")
-   plt.savefig(stress_path)
-   chart_paths.append("/static/" + os.path.basename(stress_path))
-   plt.close()
-   # 2. Sleep Trend
-   plt.figure()
-   plt.plot(weeks, sleep, marker="o")
-   plt.title("Hours Slept Over Time")
-   plt.xlabel("Week Number")
-   plt.ylabel("Hours Slept")
-   sleep_path = os.path.join(static_folder, f"sleep_{sid}.png")
-   plt.savefig(sleep_path)
-   chart_paths.append("/static/" + os.path.basename(sleep_path))
-   plt.close()
-   # 3. Stress vs Sleep
-   plt.figure()
-   plt.scatter(stress, sleep)
-   plt.title("Stress vs Sleep")
-   plt.xlabel("Stress Level")
-   plt.ylabel("Hours Slept")
-   comp_path = os.path.join(static_folder, f"comparison_{sid}.png")
-   plt.savefig(comp_path)
-   chart_paths.append("/static/" + os.path.basename(comp_path))
-   plt.close()
-   # Total weeks = max week value
-   total_weeks = max(weeks)
    return render_template(
        "wellbeing_student_detail.html",
-       surveys=rows,
-       charts=chart_paths,
+       role=session.get("role"),
        student=student,
-       total_weeks=total_weeks,
-       selected_week=None
+       avg_stress=avg_stress,
+       avg_sleep=avg_sleep,
+       stress_chart=stress_chart,
+       sleep_chart=sleep_chart,
+       pie_chart=pie_chart,
+       warnings=warnings,
+       weekly_rows=weekly_rows,
    )
+
 # ---------------- COURSE LEADER INDIVIDUAL ----------------
 @app.route("/course-leader/student/<int:sid>")
 def course_leader_student_detail(sid):
-    # ---- Handle week selection ----
-    selected_week = int(request.args.get("week", 1))
-    total_weeks = 10
-    data = dummy_academics[sid]
-    # Attendance for selected week (fake demo: pick one value)
-    attendance_week = data["attendance"][selected_week - 1 : selected_week] \
-                        + data["attendance"]  # fallback to old behaviour
-    # Assignments stay same for all weeks
-    grade_list = data["grades"]
-    assignments = [f"A{i+1}" for i in range(len(grade_list))]
-    days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-    # Attendance Chart (Plotly)
-    attendance_fig = go.Figure()
-    attendance_fig.add_trace(go.Scatter(x=days, y=data["attendance"], mode="lines+markers"))
-    attendance_fig.update_layout(title=f"Attendance Trend – Week {selected_week}", height=300)
-    attendance_chart = attendance_fig.to_html(full_html=False)
-    # Grades Chart (Plotly)
-    grade_fig = go.Figure()
-    grade_fig.add_trace(go.Bar(x=assignments, y=grade_list))
-    grade_fig.update_layout(title="Assignment Grades", height=300)
-    grade_chart = grade_fig.to_html(full_html=False)
-    student = next(s for s in students_data if s["id"] == sid)
-    return render_template(
-        "course_leader_individual_report.html",
-        role=session.get("role"),
-        student=student,
-        attendance_chart=attendance_chart,
-        grade_chart=grade_chart,
-        selected_week=selected_week,
-        total_weeks=total_weeks
-    )
+   student_repo = Student_Repo()
+   att_repo = Attendance_Repo()
+   grade_repo = Assessment_Repo()
+   student = student_repo.getStudent(sid)
+   if not student:
+       return "<h3>Student not found.</h3>"
+   attendance = att_repo.getAttendancesByStudentID(sid) or []
+   grades = grade_repo.getAssessmentsByStudentID(sid) or []
 
+   avg_attendance = (
+       round(sum(a.is_present for a in attendance) / len(attendance) * 100, 2)
+       if attendance else 0
+   )
+   avg_grade = (
+       round(sum(g.grade for g in grades) / len(grades), 2)
+       if grades else 0
+   )
+
+   alerts = []
+   if avg_attendance < 60:
+       alerts.append("⚠ Low Attendance Risk")
+   if avg_grade < 40:
+       alerts.append("⚠ Failing Average Grade")
+
+   weeks = [a.week_number for a in attendance]
+   present_vals = [1 if a.is_present else 0 for a in attendance]
+   att_fig = go.Figure()
+   att_fig.add_trace(go.Scatter(
+       x=weeks,
+       y=present_vals,
+       mode="lines+markers",
+       line=dict(width=3),
+       marker=dict(size=7)
+   ))
+   att_fig.update_layout(
+       title="Attendance Trend (Present = 1, Absent = 0)",
+       xaxis_title="Week",
+       yaxis_title="Present / Absent",
+       yaxis=dict(range=[-0.1, 1.1]),
+       template="plotly_white",
+       height=330
+   )
+   attendance_chart = att_fig.to_html(full_html=False)
+
+   if grades:
+       labels = [g.assignment_name for g in grades]
+       grade_vals = [g.grade for g in grades]
+       grade_fig = go.Figure()
+       grade_fig.add_trace(go.Bar(x=labels, y=grade_vals))
+       grade_fig.update_layout(
+           title="Assignment Grade Performance",
+           yaxis_title="Grade (%)",
+           template="plotly_white",
+           height=330
+       )
+       grade_chart = grade_fig.to_html(full_html=False)
+   else:
+       grade_chart = "<p>No grade data available.</p>"
+
+   if grades:
+       on_time = sum(1 for g in grades if g.submitted_on_time == 1)
+       late = sum(1 for g in grades if g.submitted_on_time == 0)
+       pie_fig = go.Figure(data=[go.Pie(
+           labels=["Submitted On Time", "Late Submission"],
+           values=[on_time, late],
+           hole=0.45
+       )])
+       pie_fig.update_layout(
+           title="Submission Timeliness",
+           height=290
+       )
+       submission_pie = pie_fig.to_html(full_html=False)
+   else:
+       submission_pie = "<p>No submission data.</p>"
+ 
+   weekly_summary = []
+   for w in sorted(set(a.week_number for a in attendance)):
+       week_att = [a for a in attendance if a.week_number == w]
+       att_percent = round(sum(a.is_present for a in week_att) / len(week_att) * 100, 2)
+       weekly_summary.append({
+           "week": w,
+           "attendance": att_percent
+       })
+   return render_template(
+       "course_leader_individual_report.html",
+       role=session.get("role"),
+       student=student,
+       avg_attendance=avg_attendance,
+       avg_grade=avg_grade,
+       attendance_chart=attendance_chart,
+       grade_chart=grade_chart,
+       submission_pie=submission_pie,
+       alerts=alerts,
+       weekly_summary=weekly_summary
+   )
 # ---------------- COURSE LEADER GROUP REPORT ----------------
 @app.route("/course-leader/group-report")
 def course_leader_group_report():
+   student_repo = Student_Repo()
+   att_repo = Attendance_Repo()
+   grade_repo = Assessment_Repo()
+   students = student_repo.getAllStudent()
 
-    import plotly.graph_objs as go
+   attendance_all = att_repo.getAllAttendance()
+   if not attendance_all:
+       weeks = []
+       avg_attendance = []
+   else:
+       attendance_map = {}     
+       for a in attendance_all:
+           attendance_map.setdefault(a.week_number, []).append(a.is_present)
+       weeks = sorted(attendance_map.keys())
+       avg_attendance = [
+           round(sum(vals) / len(vals) * 100, 1)
+           for vals in attendance_map.values()
+       ]
+   # Build chart
+   att_fig = go.Figure()
+   att_fig.add_trace(go.Scatter(
+       x=weeks,
+       y=avg_attendance,
+       mode="lines+markers",
+       marker=dict(size=8)
+   ))
+   att_fig.update_layout(
+       title="Average Attendance Per Week (%)",
+       xaxis_title="Week Number",
+       yaxis_title="Avg Attendance %",
+       template="plotly_white",
+       height=350
+   )
+   attendance_chart = att_fig.to_html(full_html=False)
+  
+   grades_all = grade_repo.getAssessments()
+   assignment_map = {}       
+   if grades_all:
+       for g in grades_all:
+           assignment_map.setdefault(g.assignment_name, []).append(g.grade)
+       assignments = list(assignment_map.keys())
+       avg_grades = [
+           round(sum(assignment_map[a]) / len(assignment_map[a]), 1)
+           for a in assignments
+       ]
+   else:
+       assignments = []
+       avg_grades = []
+   grade_fig = go.Figure()
+   grade_fig.add_trace(go.Bar(x=assignments, y=avg_grades))
+   grade_fig.update_layout(
+       title="Average Grade Per Assignment",
+       xaxis_title="Assessment",
+       yaxis_title="Average Grade (%)",
+       template="plotly_white",
+       height=350
+   )
+   grade_chart = grade_fig.to_html(full_html=False)
 
-    names = [s["fname"] for s in students_data]
-    avg_attendance = [
-        sum(dummy_academics[s["id"]]["attendance"]) / 7 for s in students_data
-    ]
-    avg_grades = [
-        sum(dummy_academics[s["id"]]["grades"]) / len(dummy_academics[s["id"]]["grades"])
-        for s in students_data
-    ]
+   def academic_risk(att_rate, avg_grade):
+       if att_rate < 50 or avg_grade < 40:
+           return "High Risk"
+       if att_rate < 75 or avg_grade < 60:
+           return "Moderate Risk"
+       return "Low Risk"
+   category_count = {}
+   for st in students:
+       st_att = att_repo.getAttendancesByStudentID(st.id)
+       st_grades = grade_repo.getAssessmentsByStudentID(st.id)
+       if not st_att or not st_grades:
+           cat = "No Data"
+       else:
+           att_rate = sum(a.is_present for a in st_att) / len(st_att) * 100
+           avg_grade = sum(g.grade for g in st_grades) / len(st_grades)
+           cat = academic_risk(att_rate, avg_grade)
+       category_count[cat] = category_count.get(cat, 0) + 1
+   risk_fig = go.Figure(
+       data=[go.Pie(
+           labels=list(category_count.keys()),
+           values=list(category_count.values()),
+           hole=0.45
+       )]
+   )
+   risk_fig.update_layout(
+       title="Academic Risk Distribution",
+       height=350
+   )
+   category_chart = risk_fig.to_html(full_html=False)
+   submitted = 0
+   late = 0
+   if grades_all:
+       for g in grades_all:
+           if g.submitted_on_time == 1:
+               submitted += 1
+           else:
+               late += 1
+   submission_fig = go.Figure(
+       data=[go.Pie(
+           labels=["Submitted On Time", "Late Submission"],
+           values=[submitted, late],
+           marker=dict(colors=["#4CAF50", "#FF5252"]),
+           hole=0.45
+       )]
+   )
+   submission_fig.update_layout(
+       title="Coursework Submission Rate",
+       height=350
+   )
+   submission_chart = submission_fig.to_html(full_html=False)
 
-    fig = go.Figure()
-    fig.add_trace(go.Bar(name="Avg Attendance %", x=names, y=avg_attendance))
-    fig.add_trace(go.Bar(name="Avg Grade %", x=names, y=avg_grades))
-
-    fig.update_layout(
-        barmode="group",
-        title="Course Group Academic Overview",
-        height=400
-    )
-
-    chart_html = fig.to_html(full_html=False)
-
-    return render_template(
-        "leader_dashboard.html",
-        role=session.get("role"),
-        chart_html=chart_html
-    )
-
+   return render_template(
+       "leader_dashboard.html",
+       role=session.get("role"),
+       attendance_chart=attendance_chart,
+       grade_chart=grade_chart,
+       category_chart=category_chart,
+       submission_chart=submission_chart
+   )
 # ---------------- UPDATE STUDENT ----------------
 
 @app.route("/update-student", methods=["GET", "POST"])
@@ -273,16 +620,16 @@ def update_student_page():
    error_message = None    
    if request.method == "POST":
        sid = int(request.form["student_id"])
-       # Read new form values
+ 
        new_email = request.form["email"]
-       # --- CHECK DUPLICATE EMAIL (belongs to another student) ---
+     
        all_students = repo.getAllStudent()
        for s in all_students:
            if s.email == new_email and s.id != sid:
                error_message = "Email already exists for another student."
                break
        if error_message:
-           # reload page with error message
+           
            students = repo.getAllStudent()
            selected_student = repo.getStudent(sid)
            return render_template(
@@ -293,7 +640,6 @@ def update_student_page():
                success=False,
                error=error_message
            )
-       # ---------------- PROCEED WITH UPDATE ----------------
        updated_student = Student(
            id=sid,
            first_name=request.form["first_name"],
@@ -305,7 +651,6 @@ def update_student_page():
        )
        repo.updateStudent(updated_student)
        success = True
-   # ---------------- GET: LOAD STUDENT LIST ----------------
    students = repo.getAllStudent()
    selected_id = request.args.get("sid")
    selected_student = None
@@ -355,9 +700,9 @@ def add_student_page():
        return redirect(url_for("dashboard_redirect"))
    repo = Student_Repo()
    success = False
-   error = None     # <-- NEW: to send error messages
+   error = None     
    if request.method == "POST":
-       # Read form values
+       
        sid = request.form.get("student_id")
        sid = int(sid) if sid else -1
        first = request.form["first_name"]
@@ -366,7 +711,7 @@ def add_student_page():
        tutor = request.form["personal_tutor_email"]
        em_name = request.form["emergency_contact_name"]
        em_phone = request.form["emergency_contact_phone"]
-       # --- DUPLICATE CHECK LOGIC ---
+       
        students = repo.getAllStudent()
        id_exists = any(s.id == sid for s in students) if sid != -1 else False
        email_exists = any(s.email.lower() == email.lower() for s in students)
@@ -376,7 +721,7 @@ def add_student_page():
            error = "Student ID already exists!"
        elif email_exists:
            error = "A student with this Email already exists!"
-       # If ANY error → re-render page with error msg
+       
        if error:
            return render_template(
                "add_student.html",
@@ -385,7 +730,6 @@ def add_student_page():
                success=False,
                error=error
            )
-       # No duplicates → Create Student object
        student = Student(
            id=sid,
            first_name=first,
@@ -411,6 +755,3 @@ def add_student_page():
 def logout():
     session.clear()
     return redirect(url_for("login"))
-#---------------------------------------
-# if __name__ == "__main__":
-#     app.run(debug=True)

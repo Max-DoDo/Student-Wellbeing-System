@@ -10,7 +10,6 @@ class Assessment:
     submitted_on_time:str
 
     def __post_init__(self):
-        super().__post_init__()
         if self.submitted_on_time == None:
             self.submitted_on_time = MyTools.getFormattedDate();
         

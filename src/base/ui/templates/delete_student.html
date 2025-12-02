@@ -4,45 +4,50 @@
 <p>Select a student to delete. This action cannot be undone.</p>
 {% if success %}
 <div class="alert alert-danger mt-3">
-   ❗ Student has been deleted successfully.
+    ❗ Student has been deleted successfully.
 </div>
 {% endif %}
 <style>
-   .student-box {
-       border: 1px solid #ddd;
-       background: #fff;
-       padding: 15px;
-       margin-bottom: 12px;
-       border-radius: 6px;
-   }
-   .student-box h5 {
-       margin: 0;
-       font-size: 18px;
-   }
-   .info-line {
-       margin: 3px 0;
-   }
+    .student-box {
+        border: 1px solid #ddd;
+        background: #fff;
+        padding: 15px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+    }
+
+    .student-box h5 {
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .info-line {
+        margin: 3px 0;
+    }
 </style>
 {% for s in students %}
 <div class="student-box">
-<h5>
-       ID: {{ s.id }} —
-       {{ s.first_name if s.first_name else s.fname }}
-       {{ s.last_name if s.last_name else s.lname }}
-</h5>
-<div class="info-line"><strong>Email:</strong> {{ s.email if s.email else 'test_email@example.com' }}</div>
-<div class="info-line"><strong>Personal Tutor:</strong> {{ s.personal_tutor_email if s.personal_tutor_email else 'tutor@example.com' }}</div>
-<div class="info-line"><strong>Emergency Contact:</strong> {{ s.emergency_contact_name if s.emergency_contact_name else "Not Provided" }}</div>
-<div class="info-line"><strong>Emergency Phone:</strong> {{ s.emergency_contact_phone if s.emergency_contact_phone else "000-000-0000" }}</div>
-<form method="POST"onsubmit="return confirmDelete();" action="{{ url_for('delete_student_page') }}" class="mt-2">
-<input type="hidden" name="student_id" value="{{ s.id }}">
-<button class="btn btn-danger btn-sm">Delete</button>
-</form>
-<script>
-    function confirmDelete() {
-        return confirm("Are you sure you want to delete this student?\nThis action cannot be undone.")
-    }
-</script>    
+    <h5>
+        ID: {{ s.id }} —
+        {{ s.first_name if s.first_name else s.fname }}
+        {{ s.last_name if s.last_name else s.lname }}
+    </h5>
+    <div class="info-line"><strong>Email:</strong> {{ s.email if s.email else 'test_email@example.com' }}</div>
+    <div class="info-line"><strong>Personal Tutor:</strong> {{ s.personal_tutor_email if s.personal_tutor_email else
+        'tutor@example.com' }}</div>
+    <div class="info-line"><strong>Emergency Contact:</strong> {{ s.emergency_contact_name if s.emergency_contact_name
+        else "Not Provided" }}</div>
+    <div class="info-line"><strong>Emergency Phone:</strong> {{ s.emergency_contact_phone if s.emergency_contact_phone
+        else "000-000-0000" }}</div>
+    <form method="POST" onsubmit="return confirmDelete();" action="{{ url_for('delete_student_page') }}" class="mt-2">
+        <input type="hidden" name="student_id" value="{{ s.id }}">
+        <button class="btn btn-danger btn-sm">Delete</button>
+    </form>
+    <script>
+        function confirmDelete() {
+            return confirm("Are you sure you want to delete this student?\nThis action cannot be undone.")
+        }
+    </script>
 </div>
 {% endfor %}
 {% endblock %}
