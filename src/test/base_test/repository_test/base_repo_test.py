@@ -8,17 +8,20 @@ class Base_Repo_test:
     def __init__(self):
         if self.DB_PATH_test is None:
             raise RuntimeError("DB_PATH_test is not set. Call BaseRepo_test.set_db_path_test() before creating repo objects.")
-        self.conn_test = sqlite3.connect(self.DB_PATH_test)
-        self.conn_test.row_factory = sqlite3.Row
-        self.cursor_test = self.conn_test.cursor()
+        self.conn = sqlite3.connect(self.DB_PATH_test)
+        self.conn.row_factory = sqlite3.Row
+        self.cursor = self.conn.cursor()
 
     @classmethod
     def set_db_path_test(cls, path: str):
         cls.DB_PATH_test = path
 
-    def close_test(self):
-        if self.conn_test:
-            self.conn_test.close()
+    def close(self):
+        if self.conn:
+            self.conn.close()
 
     def __del__(self):
-        self.conn_test.close()
+        try:
+            self.conn.close()
+        except:
+            pass

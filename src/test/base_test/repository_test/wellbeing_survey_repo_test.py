@@ -4,47 +4,47 @@ import os
 
 CURRENT_DIR = os.path.dirname(__file__)
 
-SRC_PATH = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
+SRC_PATH = os.path.abspath(os.path.join(CURRENT_DIR, "..","..",".."))
 sys.path.insert(0, SRC_PATH)
 
-from entity_test.wellbeing_survey_test import Wellbeing_Survey_test
-from repository_test.base_repo_test import Base_Repo_test
+from test.base_test.entity_test.wellbeing_survey_test import Wellbeing_Survey_test
+from test.base_test.repository_test.base_repo_test import Base_Repo_test
 
 class Wellbeing_Survey_Repo_test(Base_Repo_test):
     
-    def getWellBeingSurvey_test(self, id_test=int) -> Optional[Wellbeing_Survey_test]:
+    def getWellBeingSurvey(self, id=int) -> Optional[Wellbeing_Survey_test]:
         query = "SELECT * FROM wellbeing_surveys WHERE survey_id = ?"
-        self.cursor_test.execute(query, (id_test,))
-        row = self.cursor_test.fetchone()
+        self.cursor.execute(query, (id,))
+        row = self.cursor.fetchone()
         if row:
-            return self.toWellBeingSurvey_test(row)
+            return self.toWellBeingSurvey(row)
         return None
 
-    def getWellBeingSurveys_test(self) -> List[Wellbeing_Survey_test]:
+    def getWellBeingSurveys(self) -> List[Wellbeing_Survey_test]:
         query = "SELECT * FROM wellbeing_surveys"
-        self.cursor_test.execute(query)
-        rows = self.cursor_test.fetchall()
+        self.cursor.execute(query)
+        rows = self.cursor.fetchall()
         if rows:
-            return self.toWellBeingSurveys_test(rows)
+            return self.toWellBeingSurveys(rows)
         return None
     
-    def getWellBeingSurveysByStudentID_test(self, student_id_test = int) -> List[Optional[Wellbeing_Survey_test]]:
+    def getWellBeingSurveysByStudentID(self, student_id = int) -> List[Optional[Wellbeing_Survey_test]]:
         query = "SELECT * FROM wellbeing_surveys WHERE student_id = ?"
-        self.cursor_test.execute(query, (student_id_test,))
-        rows = self.cursor_test.fetchall()
+        self.cursor.execute(query, (student_id,))
+        rows = self.cursor.fetchall()
         if rows:
-            return self.toWellBeingSurveys_test(rows)
+            return self.toWellBeingSurveys(rows)
         return None
 
-    def toWellBeingSurvey_test(self, row) -> Wellbeing_Survey_test:
+    def toWellBeingSurvey(self, row) -> Wellbeing_Survey_test:
         return Wellbeing_Survey_test(
-            survey_id_test=row["survey_id"],
-            student_id_test=row["student_id"],
-            week_number_test=row["week_number"],
-            stress_level_test=row["stress_level"],
-            hours_slept_test=row["hours_slept"],
-            survey_date_test=row["survey_date"]
+            survey_id=row["survey_id"],
+            student_id=row["student_id"],
+            week_number=row["week_number"],
+            stress_level=row["stress_level"],
+            hours_slept=row["hours_slept"],
+            survey_date=row["survey_date"]
         )
 
-    def toWellBeingSurveys_test(self, rows) -> List[Wellbeing_Survey_test]:
-        return [self.toWellBeingSurvey_test(row) for row in rows]
+    def toWellBeingSurveys(self, rows) -> List[Wellbeing_Survey_test]:
+        return [self.toWellBeingSurvey(row) for row in rows]

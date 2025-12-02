@@ -2,13 +2,15 @@ import unittest
 import sys
 import os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+CURRENT_DIR = os.path.dirname(__file__)
 
+SRC_PATH = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..", ".." ,".."))
+sys.path.insert(0, SRC_PATH)
 # ===========================================================================
 # PLACEHOLDERS (STUBS)
 # ===========================================================================
 
-from assessments_test import Assessment_test
+from test.base_test.entity_test.assessments_test import Assessment_test
 
 def create_assessment_test(aid, sid, name, grade, date):
     return Assessment_test(

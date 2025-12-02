@@ -3,12 +3,12 @@ import os
 
 CURRENT_DIR = os.path.dirname(__file__)
 
-SRC_PATH = os.path.abspath(os.path.join(CURRENT_DIR, ".." ))
+SRC_PATH = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..", ".." ))
 sys.path.insert(0, SRC_PATH)
 
 from typing import List, Optional
-from entity_test.assessments_test import Assessment_test
-from repository_test.base_repo_test import Base_Repo_test
+from test.base_test.entity_test.assessments_test import Assessment_test
+from test.base_test.repository_test.base_repo_test import Base_Repo_test
 
 class Assessment_Repo_test(Base_Repo_test):
     
@@ -35,7 +35,7 @@ class Assessment_Repo_test(Base_Repo_test):
         if rows:
             return self.toAssessment(rows)
         return None
-
+    
     def toAssessment(self, row)-> Assessment_test:
         return Assessment_test(
             assessment_id=row["assessment_id"],

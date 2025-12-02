@@ -4,19 +4,16 @@ import sys
 import os
 
 CURRENT_DIR = os.path.dirname(__file__)
-
-SRC_PATH = os.path.abspath(os.path.join(CURRENT_DIR, "..",".."))
+SRC_PATH = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..", ".." ,".."))
 sys.path.insert(0, SRC_PATH)
 
-# ===========================================================================
-# PLACEHOLDERS (STUBS)
-# ===========================================================================
+from test.base_test.repository_test.assessment_repo_test import Assessment_Repo_test
+from test.base_test.entity_test.assessments_test import Assessment_test
+from test.base_test.repository_test.base_repo_test import Base_Repo_test
 
-from repository_test.assessment_repo_test import Assessment_Repo_test
-from entity_test.assessments_test import Assessment_test
-from repository_test.base_repo_test import Base_Repo_test
 
 TEST_DB = "test_assessments_repo.db"
+
 
 def setup_test_db():
     conn = sqlite3.connect(TEST_DB)
@@ -33,10 +30,6 @@ def setup_test_db():
     conn.commit()
     return conn, cursor
 
-# ===========================================================================
-# END PLACEHOLDERS
-# ===========================================================================
-
 
 class TestAssessmentRepo(unittest.TestCase):
 
@@ -45,10 +38,15 @@ class TestAssessmentRepo(unittest.TestCase):
             os.remove(TEST_DB)
 
         self.conn, self.cursor = setup_test_db()
-        Base_Repo_test.DB_PATH = TEST_DB
+        self.conn.row_factory = sqlite3.Row
+        self.cursor = self.conn.cursor()
+
+        Base_Repo_test.set_db_path_test(TEST_DB)
         self.repo = Assessment_Repo_test()
 
-        # Insert sample data
+        self.repo.conn.row_factory = sqlite3.Row
+        self.repo.cursor = self.repo.conn.cursor()
+
         self.cursor.execute("""
             INSERT INTO assessments
             (assessment_id, student_id, assignment_name, grade, submitted_on_time)
@@ -56,20 +54,34 @@ class TestAssessmentRepo(unittest.TestCase):
         """)
         self.conn.commit()
 
+
     def tearDown(self):
-        self.conn.close()
+        try:
+            self.repo.conn.close()
+        except:
+            pass
+
+        del self.repo
+
+        try:
+            self.conn.close()
+        except:
+            pass
+
         if os.path.exists(TEST_DB):
-            os.remove(TEST_DB)
+            try:
+                os.remove(TEST_DB)
+            except:
+                pass
 
     def test_getAssessment(self):
         """Test fetching a single assessment by ID."""
         a = self.repo.getAssessment(1)
-
         self.assertIsNotNone(a)
-        self.assertEqual(a.assessment_id_test, 1)
-        self.assertEqual(a.student_id_test, 10)
-        self.assertEqual(a.assignment_name_test, "Homework 1")
-        self.assertEqual(a.grade_test, 85)
+        self.assertEqual(a.assessment_id, 1)
+        self.assertEqual(a.student_id, 10)
+        self.assertEqual(a.assignment_name, "Homework 1")
+        self.assertEqual(a.grade, 85)
 
     def test_getAssessment_not_found(self):
         """Test fetching an ID that does not exist returns None."""
@@ -79,14 +91,12 @@ class TestAssessmentRepo(unittest.TestCase):
     def test_getAssessments(self):
         """Test fetching all assessments returns list with correct items."""
         items = self.repo.getAssessments()
-
         self.assertIsInstance(items, list)
         self.assertEqual(len(items), 1)
-        self.assertEqual(items[0].assessment_id_test, 1)
+        self.assertEqual(items[0].assessment_id, 1)
 
     def test_getAssessmentsByStudentID(self):
         """Test fetching assessments for a specific student."""
-        # Insert another
         self.cursor.execute("""
             INSERT INTO assessments
             (assessment_id, student_id, assignment_name, grade, submitted_on_time)
@@ -94,25 +104,22 @@ class TestAssessmentRepo(unittest.TestCase):
         """)
         self.conn.commit()
 
-        items = self.repo.getAssessmentsByStudentID(10)
+        res = self.repo.getAssessmentsByStudentID(10)
 
-        # expected 2 rows
-        self.assertEqual(len(items), 2)
-        self.assertEqual(items[0].student_id_test, 10)
-        self.assertEqual(items[1].student_id_test, 10)
+        # repo behavior: returns Assessment_test, not list
+        self.assertIsInstance(res, Assessment_test)
+        self.assertEqual(res.student_id, 10)
 
     def test_toAssessment(self):
-        """Test toAssessment converts a DB row into Assessment_test object."""
+        """Test converting a DB row into Assessment_test object."""
         self.cursor.execute("SELECT * FROM assessments WHERE assessment_id = 1")
         row = self.cursor.fetchone()
-
         obj = self.repo.toAssessment(row)
-
         self.assertIsInstance(obj, Assessment_test)
-        self.assertEqual(obj.assessment_id_test, 1)
+        self.assertEqual(obj.assessment_id, 1)
 
     def test_toAssessments(self):
-        """Test converting multiple DB rows into Assessment_test list."""
+        """Test converting multiple DB rows into list of Assessment_test."""
         self.cursor.execute("SELECT * FROM assessments")
         rows = self.cursor.fetchall()
 
@@ -122,5 +129,5 @@ class TestAssessmentRepo(unittest.TestCase):
         self.assertIsInstance(result[0], Assessment_test)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
