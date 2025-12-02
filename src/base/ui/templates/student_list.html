@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Student List</h2>
+<style>
+   /* Card container */
+   details.student-card {
+       margin-bottom: 14px;
+       border-radius: 10px;
+       background: #ffffff;
+       border: 1px solid #e5e5e5;
+       transition: box-shadow 0.2s ease, transform 0.1s ease;
+       overflow: hidden;
+   }
+   /* Hover animation */
+   details.student-card:hover {
+       box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+       transform: translateY(-2px);
+   }
+   /* Header clickable area */
+   summary {
+       cursor: pointer;
+       padding: 16px 18px;
+       font-size: 18px;
+       font-weight: 600;
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       list-style: none;
+   }
+   /* Remove default arrow */
+   summary::-webkit-details-marker {
+       display: none;
+   }
+   /* Student name & ID */
+   .student-title {
+       display: flex;
+       align-items: center;
+       gap: 10px;
+       font-size: 18px;
+       font-weight: 600;
+   }
+   /* Animated arrow icon */
+   .arrow {
+       transition: transform 0.2s ease;
+       font-size: 18px;
+       color: #555;
+   }
+   details[open] .arrow {
+       transform: rotate(90deg);
+   }
+   /* Expanded section */
+   .student-details {
+       padding: 16px 20px;
+       background: #fafafa;
+       border-top: 1px solid #eee;
+   }
+   .detail-row {
+       margin-bottom: 6px;
+       font-size: 15px;
+   }
+   .detail-row strong {
+       width: 160px;
+       display: inline-block;
+       color: #444;
+   }
+   /* View buttons */
+   .view-btn {
+       padding: 6px 14px;
+       border-radius: 6px;
+       font-size: 14px;
+   }
+</style>
+{% for s in students %}
+<details class="student-card">
+<summary>
+<div class="student-title">
+<span class="arrow">▶</span>
+           ID: {{ s.id }} —
+           {{ s.first_name if s.first_name else s.fname }}
+           {{ s.last_name if s.last_name else s.lname }}
+</div>
+       {% if role == 'wellbeing' %}
+<a class="btn btn-primary btn-sm view-btn"
+              href="{{ url_for('wellbeing_student_detail', sid=s.id) }}">
+               View Analytics
+</a>
+       {% elif role == 'course_leader' %}
+<a class="btn btn-primary btn-sm view-btn"
+              href="{{ url_for('course_leader_student_detail', sid=s.id) }}">
+               View Academic
+</a>
+       {% endif %}
+</summary>
+<div class="student-details">
+<div class="detail-row">
+<strong>Email:</strong>
+           {{ s.email if s.email else "test_email@example.com" }}
+</div>
+<div class="detail-row">
+<strong>Personal Tutor:</strong>
+           {{ s.personal_tutor_email if s.personal_tutor_email else "tutor@example.com" }}
+</div>
+<div class="detail-row">
+<strong>Emergency Contact:</strong>
+           {{ s.emergency_contact_name if s.emergency_contact_name else "Not Provided" }}
+</div>
+<div class="detail-row">
+<strong>Emergency Phone:</strong>
+           {{ s.emergency_contact_phone if s.emergency_contact_phone else "000-000-0000" }}
+</div>
+</div>
+</details>
+{% endfor %}
+{% endblock %}

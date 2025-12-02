@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+
+    <!-- BOOTSTRAP -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      
+      rel="stylesheet"
+    >
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        body { background: #f5f6fa; }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: #1e1f29;
+            position: fixed;
+            color: white;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            display: block;
+            padding: 12px 20px;
+            color: #ccc;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background: #343545;
+            color: #fff;
+        }
+
+        /* ✅ If no role → full width for login page */
+        .main-no-sidebar {
+            margin: 0 auto;
+            padding-top: 40px;
+            width: 100%;
+        }
+
+        .main {
+            margin-left: 270px;
+            padding: 20px;
+        }
+
+        .card {
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .chart-card {
+        max-width: 750px;
+        margin: 0 auto 25px;
+        padding: 20px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+
+    .chart-img {
+        width: 100%;
+        max-height: 330px;
+        object-fit: contain;
+    }
+    .quick-card {
+   padding: 20px;
+   background: white;
+   border-radius: 10px;
+   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+   margin-bottom: 20px;
+   text-align: center;
+}
+.quick-card h4 {
+   margin-bottom: 10px;
+}
+.quick-card p {
+   color: #666;
+}
+/* --- Sidebar Container --- */
+.sidebar {
+   width: 250px;
+   height: 100vh;
+   position: fixed;
+   left: 0;
+   top: 0;
+   background: linear-gradient(180deg, #1e1f29, #171821);
+   color: white;
+   padding: 25px 20px;
+   box-shadow: 4px 0 20px rgba(0,0,0,0.25);
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+}
+/* --- Header Section --- */
+.sidebar-header {
+   margin-bottom: 30px;
+}
+.app-title {
+   font-size: 20px;
+   font-weight: 700;
+   margin-bottom: 5px;
+}
+.role-badge {
+   background: #2d2f3a;
+   padding: 6px 12px;
+   border-radius: 6px;
+   font-size: 13px;
+   display: inline-block;
+   opacity: 0.85;
+}
+/* --- Menu Section --- */
+.sidebar-menu {
+   flex-grow: 1;
+}
+.menu-item {
+   display: block;
+   padding: 12px 14px;
+   margin: 6px 0;
+   color: #d7d7e0;
+   text-decoration: none;
+   border-radius: 6px;
+   transition: all 0.2s ease-in-out;
+   font-size: 15px;
+   font-weight: 500;
+}
+.menu-item i {
+   margin-right: 8px;
+   font-size: 17px;
+}
+/* Hover + Active effect */
+.menu-item:hover {
+   background: #3a3d49;
+   color: #fff;
+   transform: translateX(3px);
+}
+/* --- Logout Styling --- */
+.logout-item {
+   color: #ffb4a2;
+}
+.logout-item:hover {
+   background: #ff6b6b;
+   color: white;
+   transform: translateX(3px);
+}
+/* --- Main Content adjustment --- */
+.main {
+   margin-left: 270px;
+   padding: 20px;
+}
+    </style>
+</head>
+
+<body>
+
+{% if role %}
+<!-- ✅ SIDEBAR ONLY WHEN LOGGED IN -->
+<div class="sidebar">
+<div class="sidebar-header">
+<div class="app-title">📘 StudentWell</div>
+<div class="role-badge">
+           {{ role|capitalize }} Dashboard
+</div>
+</div>
+<nav class="sidebar-menu">
+<!-- ALWAYS AVAILABLE -->
+<a class="menu-item" href="{{ url_for('student_list') }}">
+<i class="bi bi-people-fill"></i> Student List
+</a>
+       {% if role == 'wellbeing' %}
+<a class="menu-item" href="{{ url_for('group_report') }}">
+<i class="bi bi-bar-chart-fill"></i> Wellbeing Group Report
+</a>
+       {% endif %}
+       {% if role == 'course_leader' %}
+<a class="menu-item" href="{{ url_for('course_leader_group_report') }}">
+<i class="bi bi-graph-up-arrow"></i> Academic Group Report
+</a>
+       {% endif %}
+<!-- Update Available to All -->
+<a class="menu-item" href="{{ url_for('update_student_page') }}">
+<i class="bi bi-pencil-fill"></i> Update Student
+</a>
+       {% if role == 'admin' %}
+<a class="menu-item" href="{{ url_for('add_student_page') }}">
+<i class="bi bi-person-plus-fill"></i> Add Student
+</a>
+<a class="menu-item" href="{{ url_for('delete_student_page') }}">
+<i class="bi bi-trash-fill"></i> Delete Student
+</a>
+       {% endif %}
+</nav>
+<div class="sidebar-footer">
+<a class="menu-item logout-item" href="{{ url_for('logout') }}">
+<i class="bi bi-box-arrow-right"></i> Logout
+</a>
+</div>
+</div>
+{% endif %}
+
+<!-- ✅ MAIN CONTENT AREA -->
+<div class="{% if role %}main{% else %}main-no-sidebar{% endif %}">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

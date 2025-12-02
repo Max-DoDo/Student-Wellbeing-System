@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Group Academic Report</h2>
+<p class="text-muted">Weekly average attendance & grade trends.</p>
+<!-- Week Navigation -->
+<div class="week-nav mb-4">
+   {% for w in range(1, 10) %}
+<a href="{{ url_for('course_leader_group_report', week=w) }}"
+          class="btn btn-sm {% if week == w %}btn-primary{% else %}btn-outline-primary{% endif %} mx-1">
+           Week {{ w }}
+</a>
+   {% endfor %}
+</div>
+<!-- Chart -->
+<div class="chart-card">
+   {{ chart_html | safe }}
+</div>
+<a href="{{ url_for('student_list') }}" class="btn btn-secondary mt-3">
+   ⬅ Back
+</a>
+{% endblock %}

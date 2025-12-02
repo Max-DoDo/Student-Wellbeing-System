@@ -1,0 +1,294 @@
+/* Layout Structure */
+.layout {
+    display: flex;
+    height: 100vh;
+    background-color: #f4f6f9;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 250px;
+    background: #1f2937;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+/* Sidebar Header */
+.sidebar-header h2 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 22px;
+}
+
+.role-label {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-top: 4px;
+}
+
+/* Sidebar Links */
+.sidebar-links {
+    margin-top: 25px;
+    flex-grow: 1;
+}
+
+.section-title {
+    margin: 18px 0 6px;
+    font-size: 13px;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Navigation Items */
+.nav-item {
+    display: block;
+    padding: 10px 12px;
+    margin: 4px 0;
+    color: #e5e7eb;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: 0.2s;
+    font-size: 15px;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    background: #374151;
+}
+
+/* Logout Section */
+.logout-area {
+    margin-top: auto;
+}
+
+.logout-btn {
+    display: block;
+    padding: 10px 12px;
+    background: #dc2626;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 6px;
+    transition: 0.2s;
+    font-size: 15px;
+}
+
+.logout-btn:hover {
+    background: #b91c1c;
+}
+
+/* Main Content */
+.content {
+    flex-grow: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.content-wrapper {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* Page heading */
+.page-heading {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* Table styling */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.styled-table thead {
+    background: #1f2937;
+    color: white;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.styled-table tr:hover {
+    background: #f9fafb;
+}
+
+/* Buttons */
+.btn-primary {
+    padding: 6px 12px;
+    background: #2563eb;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-danger {
+    background: #d9534f;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c9302c;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f6fa;
+}
+
+/* Layout */
+.layout {
+    display: flex;
+}
+
+.sidebar {
+    width: 220px;
+    background: #2c3e50;
+    padding: 20px;
+    height: 100vh;
+    color: white;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    padding: 10px 0;
+    text-decoration: none;
+}
+
+.sidebar a:hover {
+    background: #34495e;
+}
+
+.content {
+    flex: 1;
+    padding: 30px;
+}
+
+/* Cards */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+/* Table */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.styled-table th, .styled-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.styled-table thead {
+    background: #ecf0f1;
+}
+
+/* Buttons */
+.btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-warning {
+    background: #f0ad4e;
+    color: white;
+}
+
+.btn-danger {
+    background: #d9534f;
+    color: white;
+}
+
+.btn-primary {
+    background: #3498db;
+    color: white;
+}
+
+/* Login */
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-box {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    width: 300px;
+}
+
+.card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+}
+
+.chart-img {
+    max-width: 100%;
+    height: auto;
+}
+
+.student-list li {
+    margin: 8px 0;
+    font-size: 18px;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.btn-secondary {
+    background: gray;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.student-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    padding: 6px 0;
+}
+
+.student-link:hover {
+    background-color: #f2f2f2;
+    border-radius: 4px;
+}
