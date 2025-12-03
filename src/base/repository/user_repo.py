@@ -42,7 +42,9 @@ class User_Repo(Base_Repo):
             password=row["password"],
             role_id=row["role_id"],
             is_active=row["is_active"],
-            created_at=row["created_at"]
+            created_at=row["created_at"],
+            is_subscribed=row["is_subscribed"],
+            received_report_at=row["received_report_at"]
         )
 
     def toUsers(self,rows) -> List[User]:

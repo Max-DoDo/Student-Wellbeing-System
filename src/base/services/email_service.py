@@ -21,10 +21,10 @@ class Email_Service:
     def sendEmail(self):
         try:
             msg = EmailMessage()
-            msg["Subject"] = "测试邮件"
+            msg["Subject"] = "test email"
             msg["From"] = "greatflage@gmail.com"
             msg["To"] = "great_maxwell@outlook.com"
-            msg.set_content("这是来自 Python 的测试邮件。")
+            msg.set_content("come from python。")
             context = ssl.create_default_context()
 
 
