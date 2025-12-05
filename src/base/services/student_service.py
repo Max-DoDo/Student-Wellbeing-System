@@ -1,36 +1,38 @@
-from entity.student import Student
-from entity.assessments import Assessment
-from entity.wellbeing_survey import Wellbeing_Survey
+from base.entity.student import Student
+from base.entity.assessments import Assessment
+from base.entity.wellbeing_survey import Wellbeing_Survey
 from typing import List, Optional
-from repository.student_repo import Student_Repo
-from repository.attendance_repo import Attendance_Repo
-from repository.assessment_repo import Assessment_Repo
-from repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
-from entity.attendance import Attendance
+from base.repository.student_repo import Student_Repo
+from base.repository.attendance_repo import Attendance_Repo
+from base.repository.assessment_repo import Assessment_Repo
+from base.repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
+from base.entity.attendance import Attendance
 
 class Student_Service:
 
-    '''
-    Return value: A list of Student object
-    to access the attribute in the student object, see the class file for details.
-    '''
+    def __init__(self, student_repo: Student_Repo = None, attendance_repo: Attendance_Repo = None, assessment_repo: Assessment_Repo = None, wellbeing_survey_repo: Wellbeing_Survey_Repo = None):
+        self.student_repo = student_repo if student_repo else Student_Repo()
+        self.attendance_repo = attendance_repo if attendance_repo else Attendance_Repo()
+        self.assessment_repo = assessment_repo if assessment_repo else Assessment_Repo()
+        self.wellbeing_survey_repo = wellbeing_survey_repo if wellbeing_survey_repo else Wellbeing_Survey_Repo()
+
     def getAllStudent(self) -> List[Student]:
-        return Student_Repo().getAllStudent()
+        return self.student_repo.getAllStudent()
     
     def getAttdenceByID(self, id: int) -> List[Optional[Attendance]]:
-        return Attendance_Repo().getAttendancesByStudentID(id);
+        return self.attendance_repo.getAttendancesByStudentID(id);
 
     def getAssessmentByID(self, id: int) -> List[Optional[Assessment]]:
-        return  Assessment_Repo().getAssessmentsByStudentID(id);
+        return self.assessment_repo.getAssessmentsByStudentID(id);
 
     def getWellBeingSurveyByID(self, id : int) -> List[Optional[Wellbeing_Survey]]:
-        return Wellbeing_Survey_Repo().getWellBeingSurveysByStudentID(id);
+        return self.wellbeing_survey_repo.getWellBeingSurveysByStudentID(id);
 
-    def update(self, student = Student):
-        Student_Repo.updateStudent(student)
+    def update(self, student: Student):
+        self.student_repo.updateStudent(student)
 
-    def add(self, student = Student):
-        Student_Repo.addStudent(student)
+    def add(self, student: Student):
+        self.student_repo.addStudent(student)
 
-    def delete(self, student = Student):
-        Student_Repo.deleteStudent(student)
+    def delete(self, student: Student):
+        self.student_repo.deleteStudent(student)

@@ -1,6 +1,6 @@
 from typing import List, Optional
-from entity.attendance import Attendance
-from repository.base_repo import Base_Repo
+from base.entity.attendance import Attendance
+from base.repository.base_repo import Base_Repo
 
 class Attendance_Repo(Base_Repo):
     

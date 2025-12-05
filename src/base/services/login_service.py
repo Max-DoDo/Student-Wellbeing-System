@@ -1,17 +1,14 @@
-from repository.user_repo import User_Repo
+from base.repository.user_repo import User_Repo
 from typing import List
-from tools.log import Log
+from base.tools.log import Log
 
 class Login_Service:
 
-    ''' 
-    return value:  bool -> 
-    - True for correct password. 
-    - False for wrong password or username or did not find the user
-    '''
+    def __init__(self, user_repo: User_Repo = None):
+        self.user_repo = user_repo if user_repo else User_Repo()
+
     def login_user(self, username: str, password: str):
-        user_repo = User_Repo()
-        user = user_repo.getUserByUserName(username)
+        user = self.user_repo.getUserByUserName(username)
         
         if user is None:
             Log.warn("User is not fonded")

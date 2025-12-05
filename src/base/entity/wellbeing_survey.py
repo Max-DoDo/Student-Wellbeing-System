@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-from tools.mytools import MyTools
+from base.tools.mytools import MyTools
 
 @dataclass
 class Wellbeing_Survey:
@@ -16,5 +16,5 @@ class Wellbeing_Survey:
 
     def __post_init__(self):
         if self.survey_date == None:
-            self.survey_date = MyTools.getFormattedDate();
+            self.survey_date = MyTools().getFormattedDate()
         
