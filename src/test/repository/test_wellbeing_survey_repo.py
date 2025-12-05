@@ -1,7 +1,7 @@
 import unittest
 from base.repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
 from base.entity.wellbeing_survey import Wellbeing_Survey
-from test_refactored.base_repository_test import BaseRepositoryTest
+from test.base_repository_test import BaseRepositoryTest
 
 class TestWellbeingSurveyRepo(BaseRepositoryTest):
 

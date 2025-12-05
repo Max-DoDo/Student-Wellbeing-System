@@ -1,5 +1,5 @@
 import unittest
-from test_refactored.base_repository_test import BaseRepositoryTest
+from test.base_repository_test import BaseRepositoryTest
 from base.repository.attendance_repo import Attendance_Repo
 from base.repository.assessment_repo import Assessment_Repo
 from base.repository.student_repo import Student_Repo # Import Student_Repo

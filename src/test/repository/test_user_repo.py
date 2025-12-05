@@ -1,7 +1,7 @@
 import unittest
 from base.repository.user_repo import User_Repo
 from base.entity.user import User
-from test_refactored.base_repository_test import BaseRepositoryTest
+from test.base_repository_test import BaseRepositoryTest
 
 class TestUserRepo(BaseRepositoryTest):
 

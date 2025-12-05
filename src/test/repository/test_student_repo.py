@@ -1,7 +1,7 @@
 import unittest
 from base.repository.student_repo import Student_Repo
 from base.entity.student import Student
-from test_refactored.base_repository_test import BaseRepositoryTest
+from test.base_repository_test import BaseRepositoryTest
 
 class TestStudentRepo(BaseRepositoryTest):
 

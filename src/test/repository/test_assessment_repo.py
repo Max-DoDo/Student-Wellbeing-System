@@ -1,7 +1,7 @@
 import unittest
 from base.repository.assessment_repo import Assessment_Repo
 from base.entity.assessments import Assessment
-from test_refactored.base_repository_test import BaseRepositoryTest
+from test.base_repository_test import BaseRepositoryTest
 
 class TestAssessmentRepo(BaseRepositoryTest):
 

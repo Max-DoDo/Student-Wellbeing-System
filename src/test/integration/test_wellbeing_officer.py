@@ -1,5 +1,5 @@
 import unittest
-from test_refactored.base_repository_test import BaseRepositoryTest
+from test.base_repository_test import BaseRepositoryTest
 from base.repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
 
 class TestWellbeingFeatures(BaseRepositoryTest):

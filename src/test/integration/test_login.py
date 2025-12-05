@@ -1,7 +1,7 @@
 import unittest
 import sqlite3
 from base.services.login_service import Login_Service
-from test_refactored.base_repository_test import BaseRepositoryTest
+from test.base_repository_test import BaseRepositoryTest
 from base.repository.base_repo import Base_Repo
 from base.repository.user_repo import User_Repo # Import User_Repo
 

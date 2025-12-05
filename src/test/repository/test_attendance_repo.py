@@ -1,7 +1,7 @@
 import unittest
 from base.repository.attendance_repo import Attendance_Repo
 from base.entity.attendance import Attendance
-from test_refactored.base_repository_test import BaseRepositoryTest
+from test.base_repository_test import BaseRepositoryTest
 
 class TestAttendanceRepo(BaseRepositoryTest):
 
