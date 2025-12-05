@@ -403,7 +403,7 @@ def course_leader_student_detail(sid):
        return "<h3>Student not found.</h3>"
    attendance = att_repo.getAttendancesByStudentID(sid) or []
    grades = grade_repo.getAssessmentsByStudentID(sid) or []
-
+   # ---- AVERAGES ----
    avg_attendance = (
        round(sum(a.is_present for a in attendance) / len(attendance) * 100, 2)
        if attendance else 0
@@ -412,22 +412,37 @@ def course_leader_student_detail(sid):
        round(sum(g.grade for g in grades) / len(grades), 2)
        if grades else 0
    )
-
+   # ---- ALERTS ----
    alerts = []
    if avg_attendance < 60:
        alerts.append("⚠ Low Attendance Risk")
    if avg_grade < 40:
        alerts.append("⚠ Failing Average Grade")
-
+   # ---- ATTENDANCE TREND (with red line for absence) ----
    weeks = [a.week_number for a in attendance]
    present_vals = [1 if a.is_present else 0 for a in attendance]
    att_fig = go.Figure()
+   # Build line segments week → week (with colour per segment)
+   for i in range(len(weeks) - 1):
+       x_segment = [weeks[i], weeks[i+1]]
+       y_segment = [present_vals[i], present_vals[i+1]]
+       # Entire segment = red if ANY of the two points is 0
+       seg_color = "#ff0000" if (y_segment[0] == 0 or y_segment[1] == 0) else "#1f77b4"
+       att_fig.add_trace(go.Scatter(
+           x=x_segment,
+           y=y_segment,
+           mode="lines",
+           line=dict(width=3, color=seg_color),
+           showlegend=False
+       ))
+   # Add markers (blue = present, red = absent)
+   marker_colors = ["#1f77b4" if v == 1 else "#ff0000" for v in present_vals]
    att_fig.add_trace(go.Scatter(
        x=weeks,
        y=present_vals,
-       mode="lines+markers",
-       line=dict(width=3),
-       marker=dict(size=7)
+       mode="markers",
+       marker=dict(size=10, color=marker_colors),
+       showlegend=False
    ))
    att_fig.update_layout(
        title="Attendance Trend (Present = 1, Absent = 0)",
@@ -438,7 +453,7 @@ def course_leader_student_detail(sid):
        height=330
    )
    attendance_chart = att_fig.to_html(full_html=False)
-
+   # ---- GRADES BAR CHART ----
    if grades:
        labels = [g.assignment_name for g in grades]
        grade_vals = [g.grade for g in grades]
@@ -453,7 +468,7 @@ def course_leader_student_detail(sid):
        grade_chart = grade_fig.to_html(full_html=False)
    else:
        grade_chart = "<p>No grade data available.</p>"
-
+   # ---- SUBMISSION PIE CHART ----
    if grades:
        on_time = sum(1 for g in grades if g.submitted_on_time == 1)
        late = sum(1 for g in grades if g.submitted_on_time == 0)
@@ -469,7 +484,7 @@ def course_leader_student_detail(sid):
        submission_pie = pie_fig.to_html(full_html=False)
    else:
        submission_pie = "<p>No submission data.</p>"
- 
+   # ---- WEEKLY SUMMARY TABLE ----
    weekly_summary = []
    for w in sorted(set(a.week_number for a in attendance)):
        week_att = [a for a in attendance if a.week_number == w]
@@ -497,13 +512,15 @@ def course_leader_group_report():
    att_repo = Attendance_Repo()
    grade_repo = Assessment_Repo()
    students = student_repo.getAllStudent()
-
+   # -------------------------
+   # 1. WEEKLY ATTENDANCE AVG
+   # -------------------------
    attendance_all = att_repo.getAllAttendance()
    if not attendance_all:
        weeks = []
        avg_attendance = []
    else:
-       attendance_map = {}     
+       attendance_map = {}
        for a in attendance_all:
            attendance_map.setdefault(a.week_number, []).append(a.is_present)
        weeks = sorted(attendance_map.keys())
@@ -511,7 +528,6 @@ def course_leader_group_report():
            round(sum(vals) / len(vals) * 100, 1)
            for vals in attendance_map.values()
        ]
-   # Build chart
    att_fig = go.Figure()
    att_fig.add_trace(go.Scatter(
        x=weeks,
@@ -527,9 +543,11 @@ def course_leader_group_report():
        height=350
    )
    attendance_chart = att_fig.to_html(full_html=False)
-  
+   # -------------------------
+   # 2. AVERAGE GRADE CHART
+   # -------------------------
    grades_all = grade_repo.getAssessments()
-   assignment_map = {}       
+   assignment_map = {}
    if grades_all:
        for g in grades_all:
            assignment_map.setdefault(g.assignment_name, []).append(g.grade)
@@ -551,44 +569,47 @@ def course_leader_group_report():
        height=350
    )
    grade_chart = grade_fig.to_html(full_html=False)
-
+   # -------------------------
+   # 3. ACADEMIC RISK CHART
+   # -------------------------
    def academic_risk(att_rate, avg_grade):
        if att_rate < 50 or avg_grade < 40:
            return "High Risk"
        if att_rate < 75 or avg_grade < 60:
            return "Moderate Risk"
        return "Low Risk"
-   category_count = {}
+   category_count = {"No Data": 0, "Low Risk": 0, "Moderate Risk": 0, "High Risk": 0}
    for st in students:
        st_att = att_repo.getAttendancesByStudentID(st.id)
        st_grades = grade_repo.getAssessmentsByStudentID(st.id)
        if not st_att or not st_grades:
-           cat = "No Data"
+           category_count["No Data"] += 1
        else:
            att_rate = sum(a.is_present for a in st_att) / len(st_att) * 100
            avg_grade = sum(g.grade for g in st_grades) / len(st_grades)
            cat = academic_risk(att_rate, avg_grade)
-       category_count[cat] = category_count.get(cat, 0) + 1
+           category_count[cat] += 1
+   labels = ["No Data", "Low Risk", "Moderate Risk", "High Risk"]
+   values = [category_count[l] for l in labels]
+   colors = ["#b39ddb", "#66bb6a", "#42a5f5", "#ef5350"]  # pastel / clean colours
    risk_fig = go.Figure(
        data=[go.Pie(
-           labels=list(category_count.keys()),
-           values=list(category_count.values()),
-           hole=0.45
+           labels=labels,
+           values=values,
+           hole=0.45,
+           marker=dict(colors=colors)
        )]
    )
    risk_fig.update_layout(
-       title="Academic Risk Distribution",
+       title="Academic Risk Distribution For All Students",
        height=350
    )
    category_chart = risk_fig.to_html(full_html=False)
-   submitted = 0
-   late = 0
-   if grades_all:
-       for g in grades_all:
-           if g.submitted_on_time == 1:
-               submitted += 1
-           else:
-               late += 1
+   # -------------------------
+   # 4. SUBMISSION PIE CHART
+   # -------------------------
+   submitted = sum(1 for g in grades_all if g.submitted_on_time == 1) if grades_all else 0
+   late = sum(1 for g in grades_all if g.submitted_on_time == 0) if grades_all else 0
    submission_fig = go.Figure(
        data=[go.Pie(
            labels=["Submitted On Time", "Late Submission"],
@@ -598,11 +619,13 @@ def course_leader_group_report():
        )]
    )
    submission_fig.update_layout(
-       title="Coursework Submission Rate",
+       title="Coursework Submission Rate For All Students",
        height=350
    )
    submission_chart = submission_fig.to_html(full_html=False)
-
+   # -------------------------
+   # RETURN
+   # -------------------------
    return render_template(
        "leader_dashboard.html",
        role=session.get("role"),

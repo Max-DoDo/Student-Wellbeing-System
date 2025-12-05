@@ -4,14 +4,19 @@
        <h2>📊 Academic Group Report</h2>
        <p class="text-muted mb-4">Overview of academic performance across all students.</p>
        <!-- Average Attendance -->
-       <div class="card p-3 mb-4">
-              <h4>Average Attendance Per Week</h4>
-              {{ attendance_chart | safe }}
-       </div>
-       <!-- Average Grades -->
-       <div class="card p-3 mb-4">
-              <h4>Average Grade Per Assignment</h4>
-              {{ grade_chart | safe }}
+       <div class="row">
+              <div class="col-md-6">
+                     <div class="card p-4 mb-4">
+                            <h5 class="mb-3">Average Attendance Per Week (%)</h5>
+                            {{ attendance_chart | safe }}
+                     </div>
+              </div>
+              <div class="col-md-6">
+                     <div class="card p-4 mb-4">
+                            <h5 class="mb-3">Average Grade Per Assignment</h5>
+                            {{ grade_chart | safe }}
+                     </div>
+              </div>
        </div>
        <!-- Academic Risk Distribution -->
        <div class="row mt-4">
