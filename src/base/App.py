@@ -18,7 +18,7 @@ from werkzeug.serving import run_simple
 hn = "127.0.0.1"
 
 # Port Number
-pt = 521
+pt = 5000
 
 # is flask working on debug mode
 debug = False
