@@ -1,6 +1,6 @@
 from typing import List, Optional
-from base.entity.assessments import Assessment
-from base.repository.base_repo import Base_Repo
+from entity.assessments import Assessment
+from repository.base_repo import Base_Repo
 
 class Assessment_Repo(Base_Repo):
     

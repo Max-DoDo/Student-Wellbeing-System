@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
-from base.tools.mytools import MyTools
-from base.entity.person import Person
+from tools.mytools import MyTools
+from entity.person import Person
 
 
 @dataclass

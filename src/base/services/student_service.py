@@ -1,12 +1,12 @@
-from base.entity.student import Student
-from base.entity.assessments import Assessment
-from base.entity.wellbeing_survey import Wellbeing_Survey
+from entity.student import Student
+from entity.assessments import Assessment
+from entity.wellbeing_survey import Wellbeing_Survey
 from typing import List, Optional
-from base.repository.student_repo import Student_Repo
-from base.repository.attendance_repo import Attendance_Repo
-from base.repository.assessment_repo import Assessment_Repo
-from base.repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
-from base.entity.attendance import Attendance
+from repository.student_repo import Student_Repo
+from repository.attendance_repo import Attendance_Repo
+from repository.assessment_repo import Assessment_Repo
+from repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
+from entity.attendance import Attendance
 
 class Student_Service:
 

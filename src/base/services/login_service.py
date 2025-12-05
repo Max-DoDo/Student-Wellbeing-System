@@ -1,6 +1,6 @@
-from base.repository.user_repo import User_Repo
+from repository.user_repo import User_Repo
 from typing import List
-from base.tools.log import Log
+from tools.log import Log
 
 class Login_Service:
 

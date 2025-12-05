@@ -1,6 +1,6 @@
 
 from dataclasses import dataclass
-from base.entity.person import Person
+from entity.person import Person
 from typing import Optional
 
 @dataclass
