@@ -52,7 +52,9 @@ def init_database():
         email TEXT UNIQUE NOT NULL,
         role_id INTEGER NOT NULL, -- 1 wellbeing users, 2 course leader, 0 admin
         is_active INTEGER DEFAULT 1 CHECK(is_active IN (0, 1)), -- 1=Active, 0=Suspended
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        is_subscribed INTEGER DEFAULT 1 CHECK(is_subscribed IN (0, 1)),
+        received_report_at TIMESTAMP
     );
 
     -- 3. Table: Attendance
@@ -133,13 +135,15 @@ def populate_database():
 
     # create users
     users = [
-        ('admin', 'admin123', 'System', 'Admin', 'admin@warwick.uni.ac.uk', 0),
-        ('wellbeing', 'safe123', 'Sarah', 'Care', 'wellbeing@warwick.uni.ac.uk', 1),
-        ('course_leader', 'teach123', 'Prof', 'Smart', 'course_leader@warwick.uni.ac.uk', 2)
+    ('admin', 'admin123', 'System', 'Admin', 'admin@warwick.uni.ac.uk', 0, 1, 1, None),
+    
+    ('wellbeing', 'safe123', 'Sarah', 'Care', 'wellbeing@warwick.uni.ac.uk', 1, 1, 1, None),
+    
+    ('course_leader', 'teach123', 'Prof', 'Smart', 'course_leader@warwick.uni.ac.uk', 2, 1, 1, None)
     ]
     cursor.executemany("""
-        INSERT INTO users (username, password, first_name, last_name, email, role_id)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO users (username, password, first_name, last_name, email, role_id, is_active, is_subscribed, received_report_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, users)
     print(f"[INFO] Created {len(users)} system users.")
 

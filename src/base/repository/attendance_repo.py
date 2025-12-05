@@ -1,6 +1,6 @@
 from typing import List, Optional
-from entity.attendance import Attendance
-from repository.base_repo import Base_Repo
+from base.entity.attendance import Attendance
+from base.repository.base_repo import Base_Repo
 
 class Attendance_Repo(Base_Repo):
     
@@ -15,7 +15,7 @@ class Attendance_Repo(Base_Repo):
     
     def getAttendancesByStudentID(self, studentid = int) -> List[Optional[Attendance]]:
         query = "SELECT * FROM attendance WHERE student_id = ?"
-        self.cursor.execute(query,(studentid))
+        self.cursor.execute(query,(studentid,))
         rows = self.cursor.fetchall()
         if rows:
             return self.toAttendances(rows)

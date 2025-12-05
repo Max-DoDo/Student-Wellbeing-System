@@ -1,114 +1,114 @@
 {% extends "base.html" %}
 {% block content %}
 <h2 class="mb-4">Student List</h2>
+
+<form method="GET" action="{{ url_for('student_list') }}" class="mb-4">
+   <label class="fw-bold mb-2">Sort students by:</label>
+   <div style="display:flex; gap:10px; align-items:center;">
+      <select name="sort" class="form-select" style="width:200px;">
+         <option value="">-- Select --</option>
+         <option value="first_name" {% if sort=="first_name" %}selected{% endif %}>
+            First Name (A → Z)
+         </option>
+         <option value="last_name" {% if sort=="last_name" %}selected{% endif %}>
+            Last Name (A → Z)
+         </option>
+         <option value="id" {% if sort=="id" %}selected{% endif %}>
+            Student ID (Ascending)
+         </option>
+      </select>
+      <button class="btn btn-primary btn-sm">Apply Sort</button>
+   </div>
+</form>
 <style>
-   /* Card container */
-   details.student-card {
-       margin-bottom: 14px;
-       border-radius: 10px;
-       background: #ffffff;
-       border: 1px solid #e5e5e5;
-       transition: box-shadow 0.2s ease, transform 0.1s ease;
-       overflow: hidden;
+   .student-card {
+      margin-bottom: 16px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid #e3e6ee;
+      transition: all 0.25s ease;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
    }
-   /* Hover animation */
-   details.student-card:hover {
-       box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-       transform: translateY(-2px);
+
+   .student-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
    }
-   /* Header clickable area */
-   summary {
-       cursor: pointer;
-       padding: 16px 18px;
-       font-size: 18px;
-       font-weight: 600;
-       display: flex;
-       align-items: center;
-       justify-content: space-between;
-       list-style: none;
+
+   .student-summary {
+      cursor: pointer;
+      padding: 18px 20px;
+      font-size: 17px;
+      font-weight: 600;
+      background: #fafbff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
    }
-   /* Remove default arrow */
-   summary::-webkit-details-marker {
-       display: none;
+
+   .student-summary::-webkit-details-marker {
+      display: none;
    }
-   /* Student name & ID */
-   .student-title {
-       display: flex;
-       align-items: center;
-       gap: 10px;
-       font-size: 18px;
-       font-weight: 600;
+
+   .student-arrow {
+      transition: transform 0.25s ease;
+      margin-right: 10px;
+      color: #666;
    }
-   /* Animated arrow icon */
-   .arrow {
-       transition: transform 0.2s ease;
-       font-size: 18px;
-       color: #555;
+
+   details[open] .student-arrow {
+      transform: rotate(90deg);
    }
-   details[open] .arrow {
-       transform: rotate(90deg);
+
+   .student-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
    }
-   /* Expanded section */
-   .student-details {
-       padding: 16px 20px;
-       background: #fafafa;
-       border-top: 1px solid #eee;
+
+   .student-details-box {
+      padding: 15px 22px;
+      background: #f8f9fc;
+      border-top: 1px solid #e5e5e5;
    }
-   .detail-row {
-       margin-bottom: 6px;
-       font-size: 15px;
+
+   .info-row {
+      margin-bottom: 6px;
+      font-size: 15px;
    }
-   .detail-row strong {
-       width: 160px;
-       display: inline-block;
-       color: #444;
-   }
-   /* View buttons */
+
    .view-btn {
-       padding: 6px 14px;
-       border-radius: 6px;
-       font-size: 14px;
+      font-size: 14px;
+      padding: 6px 14px;
    }
 </style>
+
 {% for s in students %}
 <details class="student-card">
-<summary>
-<div class="student-title">
-<span class="arrow">▶</span>
-           ID: {{ s.id }} —
-           {{ s.first_name if s.first_name else s.fname }}
-           {{ s.last_name if s.last_name else s.lname }}
-</div>
-       {% if role == 'wellbeing' %}
-<a class="btn btn-primary btn-sm view-btn"
-              href="{{ url_for('wellbeing_student_detail', sid=s.id) }}">
-               View Analytics
-</a>
-       {% elif role == 'course_leader' %}
-<a class="btn btn-primary btn-sm view-btn"
-              href="{{ url_for('course_leader_student_detail', sid=s.id) }}">
-               View Academic
-</a>
-       {% endif %}
-</summary>
-<div class="student-details">
-<div class="detail-row">
-<strong>Email:</strong>
-           {{ s.email if s.email else "test_email@example.com" }}
-</div>
-<div class="detail-row">
-<strong>Personal Tutor:</strong>
-           {{ s.personal_tutor_email if s.personal_tutor_email else "tutor@example.com" }}
-</div>
-<div class="detail-row">
-<strong>Emergency Contact:</strong>
-           {{ s.emergency_contact_name if s.emergency_contact_name else "Not Provided" }}
-</div>
-<div class="detail-row">
-<strong>Emergency Phone:</strong>
-           {{ s.emergency_contact_phone if s.emergency_contact_phone else "000-000-0000" }}
-</div>
-</div>
+   <summary class="student-summary">
+      <div class="student-name">
+         <span class="student-arrow">▶</span>
+         <span>ID: {{ s.id }} — {{ s.first_name }} {{ s.last_name }}</span>
+      </div>
+      {% if role == 'wellbeing' %}
+      <a class="btn btn-primary btn-sm view-btn" href="{{ url_for('wellbeing_student_detail', sid=s.id) }}">
+         View Analytics
+      </a>
+      {% elif role == 'course_leader' %}
+      <a class="btn btn-primary btn-sm view-btn" href="{{ url_for('course_leader_student_detail', sid=s.id) }}">
+         View Academic
+      </a>
+      {% elif role == 'admin' %}
+      <span class="badge bg-secondary">Admin View</span>
+      {% endif %}
+   </summary>
+   <div class="student-details-box">
+      <div class="info-row"><strong>Email:</strong> {{ s.email }}</div>
+      <div class="info-row"><strong>Personal Tutor:</strong> {{ s.personal_tutor_email }}</div>
+      <div class="info-row"><strong>Emergency Contact:</strong> {{ s.emergency_contact_name }}</div>
+      <div class="info-row"><strong>Emergency Phone:</strong> {{ s.emergency_contact_phone }}</div>
+   </div>
 </details>
 {% endfor %}
 {% endblock %}
