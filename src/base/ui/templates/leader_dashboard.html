@@ -1,21 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Group Academic Report</h2>
-<p class="text-muted">Weekly average attendance & grade trends.</p>
-<!-- Week Navigation -->
-<div class="week-nav mb-4">
-   {% for w in range(1, 10) %}
-<a href="{{ url_for('course_leader_group_report', week=w) }}"
-          class="btn btn-sm {% if week == w %}btn-primary{% else %}btn-outline-primary{% endif %} mx-1">
-           Week {{ w }}
-</a>
-   {% endfor %}
-</div>
-<!-- Chart -->
-<div class="chart-card">
-   {{ chart_html | safe }}
-</div>
-<a href="{{ url_for('student_list') }}" class="btn btn-secondary mt-3">
-   ⬅ Back
-</a>
-{% endblock %}
+<div class="container mt-4">
+       <h2>📊 Academic Group Report</h2>
+       <p class="text-muted mb-4">Overview of academic performance across all students.</p>
+       <!-- Average Attendance -->
+       <div class="row">
+              <div class="col-md-6">
+                     <div class="card p-4 mb-4">
+                            <h5 class="mb-3">Average Attendance Per Week (%)</h5>
+                            {{ attendance_chart | safe }}
+                     </div>
+              </div>
+              <div class="col-md-6">
+                     <div class="card p-4 mb-4">
+                            <h5 class="mb-3">Average Grade Per Assignment</h5>
+                            {{ grade_chart | safe }}
+                     </div>
+              </div>
+       </div>
+       <!-- Academic Risk Distribution -->
+       <div class="row mt-4">
+              <div class="col-md-6">
+                     {{ category_chart|safe }}
+              </div>
+              <div class="col-md-6">
+                     {{ submission_chart|safe }}
+              </div>
+       </div {% endblock %}
