@@ -1,13 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import plotly.graph_objs as go
 import plotly.express as px
-from services.login_service import Login_Service
+from base.services.login_service import Login_Service
 import random
-from repository.user_repo import User_Repo
-from repository.student_repo import Student_Repo
-from  entity.student import Student
-from services.student_service import Student_Service
-from repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
+from base.repository.user_repo import User_Repo
+from base.repository.student_repo import Student_Repo
+from base.entity.student import Student
+from base.services.student_service import Student_Service
+from base.repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
 import matplotlib.pyplot as plt
 import os
 import plotly.graph_objects as go
@@ -15,9 +15,9 @@ import plotly.io as pio
 import plotly.graph_objs as go
 import plotly.offline as pyo
 import plotly.graph_objects as go
-from repository.attendance_repo import Attendance_Repo
-from repository.attendance_repo import Attendance_Repo
-from repository.assessment_repo import Assessment_Repo
+from base.repository.attendance_repo import Attendance_Repo
+from base.repository.attendance_repo import Attendance_Repo
+from base.repository.assessment_repo import Assessment_Repo
 
 app = Flask(__name__)
 app.secret_key = "secret123"

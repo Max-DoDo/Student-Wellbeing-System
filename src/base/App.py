@@ -1,15 +1,15 @@
 import os
-from entity.student import Student
-from tools.log import Log
-from tools.mytools import MyTools
-from repository.attendance_repo import Attendance_Repo
-from entity.user import User
-from repository.user_repo import User_Repo
-from repository.student_repo import Student_Repo
-from repository.base_repo import Base_Repo
-from services.student_service import Student_Service
-from entity.person import Person
-from ui.app import app
+from base.entity.student import Student
+from base.tools.log import Log
+from base.tools.mytools import MyTools
+from base.repository.attendance_repo import Attendance_Repo
+from base.entity.user import User
+from base.repository.user_repo import User_Repo
+from base.repository.student_repo import Student_Repo
+from base.repository.base_repo import Base_Repo
+from base.services.student_service import Student_Service
+from base.entity.person import Person
+from base.ui.app import app
 import logging
 import sys
 from werkzeug.serving import run_simple
@@ -18,7 +18,7 @@ from werkzeug.serving import run_simple
 hn = "127.0.0.1"
 
 # Port Number
-pt = 521
+pt = 5000
 
 # is flask working on debug mode
 debug = False
