@@ -27,10 +27,10 @@ class Student_Service:
         return Wellbeing_Survey_Repo().getWellBeingSurveysByStudentID(id);
 
     def update(self, student = Student):
-        Student_Repo.updateStudent(student)
+        Student_Repo().updateStudent(student)
 
     def add(self, student = Student):
-        Student_Repo.addStudent(student)
+        Student_Repo().addStudent(student)
 
     def delete(self, student = Student):
-        Student_Repo.deleteStudent(student)
+        Student_Repo().deleteStudent(student)
