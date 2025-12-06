@@ -1,22 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
 <style>
-
 .dashboard-card {
-   transition: all 0.25s ease-in-out;
-   border-radius: 12px;
+  transition: all 0.25s ease-in-out;
+  border-radius: 12px;
 }
 .dashboard-card:hover {
-   transform: translateY(-6px);
-   box-shadow: 0 8px 20px rgba(0,0,0,0.18);
-   cursor: pointer;
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  cursor: pointer;
+}
+.chart-container {
+  max-width: 600px;
+  margin: 0 auto;
 }
 </style>
 <div class="container mt-4">
 <h2 class="mb-2">Admin Dashboard</h2>
 <p class="text-muted">System Overview & Quick Management</p>
 <hr>
-
+<!-- TOP CARDS -->
 <div class="row">
 <div class="col-md-3">
 <div class="card dashboard-card text-center p-3 shadow-sm">
@@ -44,5 +47,10 @@
 </div>
 </div>
 <hr>
+<!-- CENTER PIE CHART -->
+<div class="chart-container card p-4 shadow-sm">
+<h4 class="text-center mb-3">System Data Distribution</h4>
+     {{ system_distribution_chart | safe }}
+</div>
 </div>
 {% endblock %}

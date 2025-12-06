@@ -92,13 +92,26 @@ def admin_dashboard():
    total_surveys = len(survey_repo.getWellBeingSurveys() or [])
    total_attendance = len(attendance_repo.getAllAttendance() or [])
    total_assessments = len(assessment_repo.getAssessments() or [])
+   # ---------- PIE CHART: System Data Distribution ----------
+   labels = ["Students", "Wellbeing Surveys", "Attendance Records", "Assessments"]
+   values = [total_students, total_surveys, total_attendance, total_assessments]
+   import plotly.graph_objects as go
+   pie_fig = go.Figure(
+       data=[go.Pie( labels=labels,values=values,hole=0.45,marker=dict(colors=["#4e79a7", "#59a14f", "#76b7b2", "#f28e2b"]))]
+   )
+   pie_fig.update_layout(
+       title="System Data Distribution",
+       height=380
+   )
+   system_distribution_chart = pie_fig.to_html(full_html=False)
    return render_template(
        "admin_dashboard.html",
        role=session.get("role"),
        total_students=total_students,
        total_surveys=total_surveys,
        total_attendance=total_attendance,
-       total_assessments=total_assessments
+       total_assessments=total_assessments,
+       system_distribution_chart=system_distribution_chart
    )
 
 
