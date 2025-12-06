@@ -39,3 +39,8 @@ class Assessment_Repo(Base_Repo):
 
     def toAssessments(self, rows) -> List[Assessment]:
         return [self.toAssessment(row) for row in rows]
+    
+    def deleteAssessmentsByStudentID(self, sid):
+        query = "DELETE FROM assessments WHERE student_id = ?"
+        self.cursor.execute(query, (sid,))
+        self.conn.commit()

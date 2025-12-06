@@ -690,26 +690,32 @@ def update_student_page():
 # ---------------- DELETE STUDENT ----------------
 @app.route("/delete-student", methods=["GET", "POST"])
 def delete_student_page():
-   # role for sidebar
    role = session.get("role")
-   repo = Student_Repo()
+   student_repo = Student_Repo()
+   att_repo = Attendance_Repo()
+   survey_repo = Wellbeing_Survey_Repo()
+   assessment_repo = Assessment_Repo()
    success = None
    if request.method == "POST":
        sid = int(request.form.get("student_id"))
-
-       student = repo.getStudent(sid)
+       # Check if student exists
+       student = student_repo.getStudent(sid)
        if student:
-           deleted = repo.deleteStudent(student)
+           # DELETE CHILD RECORDS FIRST
+           att_repo.deleteAttendanceByStudentID(sid)
+           survey_repo.deleteSurveysByStudentID(sid)
+           assessment_repo.deleteAssessmentsByStudentID(sid)
+           # DELETE STUDENT LAST
+           deleted = student_repo.deleteStudent(student)
            success = deleted
-      
-       students = repo.getAllStudent()
+       students = student_repo.getAllStudent()
        return render_template(
            "delete_student.html",
            students=students,
            role=role,
            success=success
        )
-   students = repo.getAllStudent()
+   students = student_repo.getAllStudent()
    return render_template(
        "delete_student.html",
        students=students,
