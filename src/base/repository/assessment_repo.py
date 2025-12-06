@@ -20,7 +20,7 @@ class Assessment_Repo(Base_Repo):
             return self.toAssessments(rows)
         return None
     
-    def getAssessmentsByStudentID(self, student_id = int) -> Optional[List[Assessment]]:
+    def getAssessmentsByStudentID(self, id = int) -> Optional[List[Assessment]]:
         query = "SELECT * FROM assessments WHERE student_id = ?"
         self.cursor.execute(query, (student_id,))
         rows = self.cursor.fetchall()

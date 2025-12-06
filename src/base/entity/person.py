@@ -20,7 +20,7 @@ class Person(ABC):
             Log.warn("A no name person object has been created with id", self.id)
             return
         
-        if self.name is None:
+        if self.name is None or self.name == "":
             self.name = f"{self.first_name} {self.last_name}"
 
 

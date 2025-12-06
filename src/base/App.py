@@ -36,6 +36,7 @@ class App:
         self.test();
     
     def test(self):
+        Email_Service(1).sendEmail()
         pass
 
     def configure_DataBase(self):
@@ -54,6 +55,7 @@ class App:
 
 if __name__ == "__main__":
     App()
+
 
     import logging
     logging.getLogger('werkzeug').setLevel(logging.ERROR)
