@@ -8,6 +8,7 @@ from repository.user_repo import User_Repo
 from repository.student_repo import Student_Repo
 from repository.base_repo import Base_Repo
 from services.student_service import Student_Service
+from services.email_service import Email_Service
 from entity.person import Person
 from ui.app import app
 import logging
@@ -36,6 +37,7 @@ class App:
         self.test();
     
     def test(self):
+        Email_Service(1).sendEmail()
         pass
 
     def configure_DataBase(self):
@@ -54,6 +56,7 @@ class App:
 
 if __name__ == "__main__":
     App()
+
 
     import logging
     logging.getLogger('werkzeug').setLevel(logging.ERROR)
