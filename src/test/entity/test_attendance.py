@@ -31,5 +31,15 @@ class TestAttendanceEntity(unittest.TestCase):
         self.assertIsNone(a.is_present)
         self.assertIsNone(a.is_late)
 
+    def test_equality(self):
+        a1 = Attendance(1, 1, 1, True, False)
+        a2 = Attendance(1, 1, 1, True, False)
+        self.assertEqual(a1, a2)
+
+    def test_string_representation(self):
+        a = Attendance(10, 20, 3, True, False)
+        self.assertIn("10", str(a))
+        self.assertIn("20", str(a))
+
 if __name__ == '__main__':
     unittest.main()
