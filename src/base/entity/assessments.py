@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from tools.mytools import MyTools
+from base.tools.mytools import MyTools
 
 @dataclass
 class Assessment:

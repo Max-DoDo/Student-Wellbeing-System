@@ -1,6 +1,6 @@
 from typing import List, Optional
-from entity.wellbeing_survey import Wellbeing_Survey
-from repository.base_repo import Base_Repo
+from base.entity.wellbeing_survey import Wellbeing_Survey
+from base.repository.base_repo import Base_Repo
 
 class Wellbeing_Survey_Repo(Base_Repo):
     
@@ -40,3 +40,8 @@ class Wellbeing_Survey_Repo(Base_Repo):
 
     def toWellBeingSurveys(self, rows) -> List[Wellbeing_Survey]:
         return [self.toWellBeingSurvey(row) for row in rows]
+    
+    def deleteSurveysByStudentID(self, sid):
+        query = "DELETE FROM wellbeing_surveys WHERE student_id = ?"
+        self.cursor.execute(query, (sid,))
+        self.conn.commit()

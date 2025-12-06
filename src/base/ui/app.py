@@ -1,13 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import plotly.graph_objs as go
 import plotly.express as px
-from services.login_service import Login_Service
+from base.services.login_service import Login_Service
 import random
-from repository.user_repo import User_Repo
-from repository.student_repo import Student_Repo
-from  entity.student import Student
-from services.student_service import Student_Service
-from repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
+from base.repository.user_repo import User_Repo
+from base.repository.student_repo import Student_Repo
+from base.entity.student import Student
+from base.services.student_service import Student_Service
+from base.repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
 import matplotlib.pyplot as plt
 import os
 import plotly.graph_objects as go
@@ -15,9 +15,9 @@ import plotly.io as pio
 import plotly.graph_objs as go
 import plotly.offline as pyo
 import plotly.graph_objects as go
-from repository.attendance_repo import Attendance_Repo
-from repository.attendance_repo import Attendance_Repo
-from repository.assessment_repo import Assessment_Repo
+from base.repository.attendance_repo import Attendance_Repo
+from base.repository.attendance_repo import Attendance_Repo
+from base.repository.assessment_repo import Assessment_Repo
 
 app = Flask(__name__)
 app.secret_key = "secret123"
@@ -690,26 +690,32 @@ def update_student_page():
 # ---------------- DELETE STUDENT ----------------
 @app.route("/delete-student", methods=["GET", "POST"])
 def delete_student_page():
-   # role for sidebar
    role = session.get("role")
-   repo = Student_Repo()
+   student_repo = Student_Repo()
+   att_repo = Attendance_Repo()
+   survey_repo = Wellbeing_Survey_Repo()
+   assessment_repo = Assessment_Repo()
    success = None
    if request.method == "POST":
        sid = int(request.form.get("student_id"))
-
-       student = repo.getStudent(sid)
+       # Check if student exists
+       student = student_repo.getStudent(sid)
        if student:
-           deleted = repo.deleteStudent(student)
+           # DELETE CHILD RECORDS FIRST
+           att_repo.deleteAttendanceByStudentID(sid)
+           survey_repo.deleteSurveysByStudentID(sid)
+           assessment_repo.deleteAssessmentsByStudentID(sid)
+           # DELETE STUDENT LAST
+           deleted = student_repo.deleteStudent(student)
            success = deleted
-      
-       students = repo.getAllStudent()
+       students = student_repo.getAllStudent()
        return render_template(
            "delete_student.html",
            students=students,
            role=role,
            success=success
        )
-   students = repo.getAllStudent()
+   students = student_repo.getAllStudent()
    return render_template(
        "delete_student.html",
        students=students,
