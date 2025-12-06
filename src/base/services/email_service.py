@@ -1,11 +1,11 @@
-from repository.user_repo import User_Repo
-from repository.student_repo import Student_Repo
-from repository.wellbeing_surveys_repo  import Wellbeing_Survey_Repo
-from repository.attendance_repo import Attendance_Repo
-from repository.assessment_repo import  Assessment_Repo
+from base.repository.user_repo import User_Repo
+from base.repository.student_repo import Student_Repo
+from base.repository.wellbeing_surveys_repo  import Wellbeing_Survey_Repo
+from base.repository.attendance_repo import Attendance_Repo
+from base.repository.assessment_repo import  Assessment_Repo
 from typing import List
-from entity.attendance import Attendance
-from tools.log import Log
+from base.entity.attendance import Attendance
+from base.tools.log import Log
 
 import ssl
 import smtplib

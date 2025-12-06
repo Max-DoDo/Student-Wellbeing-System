@@ -14,6 +14,8 @@ import logging
 import sys
 from werkzeug.serving import run_simple
 
+from base.services.email_service import Email_Service
+ 
 # Host name
 hn = "127.0.0.1"
 

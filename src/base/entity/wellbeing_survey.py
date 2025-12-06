@@ -16,5 +16,5 @@ class Wellbeing_Survey:
 
     def __post_init__(self):
         if self.survey_date == None:
-            self.survey_date = MyTools.getFormattedDate();
+            self.survey_date = MyTools().getFormattedDate()
         
