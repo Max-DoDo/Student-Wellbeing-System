@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Student List</h2>
+
+<form method="GET" action="{{ url_for('student_list') }}" class="mb-4">
+   <label class="fw-bold mb-2">Sort students by:</label>
+   <div style="display:flex; gap:10px; align-items:center;">
+      <select name="sort" class="form-select" style="width:200px;">
+         <option value="">-- Select --</option>
+         <option value="first_name" {% if sort=="first_name" %}selected{% endif %}>
+            First Name (A → Z)
+         </option>
+         <option value="last_name" {% if sort=="last_name" %}selected{% endif %}>
+            Last Name (A → Z)
+         </option>
+         <option value="id" {% if sort=="id" %}selected{% endif %}>
+            Student ID (Ascending)
+         </option>
+      </select>
+      <button class="btn btn-primary btn-sm">Apply Sort</button>
+   </div>
+</form>
+<style>
+   .student-card {
+      margin-bottom: 16px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid #e3e6ee;
+      transition: all 0.25s ease;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+   }
+
+   .student-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+   }
+
+   .student-summary {
+      cursor: pointer;
+      padding: 18px 20px;
+      font-size: 17px;
+      font-weight: 600;
+      background: #fafbff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+   }
+
+   .student-summary::-webkit-details-marker {
+      display: none;
+   }
+
+   .student-arrow {
+      transition: transform 0.25s ease;
+      margin-right: 10px;
+      color: #666;
+   }
+
+   details[open] .student-arrow {
+      transform: rotate(90deg);
+   }
+
+   .student-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+   }
+
+   .student-details-box {
+      padding: 15px 22px;
+      background: #f8f9fc;
+      border-top: 1px solid #e5e5e5;
+   }
+
+   .info-row {
+      margin-bottom: 6px;
+      font-size: 15px;
+   }
+
+   .view-btn {
+      font-size: 14px;
+      padding: 6px 14px;
+   }
+</style>
+
+{% for s in students %}
+<details class="student-card">
+   <summary class="student-summary">
+      <div class="student-name">
+         <span class="student-arrow">▶</span>
+         <span>ID: {{ s.id }} — {{ s.first_name }} {{ s.last_name }}</span>
+      </div>
+      {% if role == 'wellbeing' %}
+      <a class="btn btn-primary btn-sm view-btn" href="{{ url_for('wellbeing_student_detail', sid=s.id) }}">
+         View Analytics
+      </a>
+      {% elif role == 'course_leader' %}
+      <a class="btn btn-primary btn-sm view-btn" href="{{ url_for('course_leader_student_detail', sid=s.id) }}">
+         View Academic
+      </a>
+      {% elif role == 'admin' %}
+      <span class="badge bg-secondary">Admin View</span>
+      {% endif %}
+   </summary>
+   <div class="student-details-box">
+      <div class="info-row"><strong>Email:</strong> {{ s.email }}</div>
+      <div class="info-row"><strong>Personal Tutor:</strong> {{ s.personal_tutor_email }}</div>
+      <div class="info-row"><strong>Emergency Contact:</strong> {{ s.emergency_contact_name }}</div>
+      <div class="info-row"><strong>Emergency Phone:</strong> {{ s.emergency_contact_phone }}</div>
+   </div>
+</details>
+{% endfor %}
+{% endblock %}

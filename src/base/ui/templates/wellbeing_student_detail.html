@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+   .metric-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      transition: 0.25s;
+   }
+
+   .metric-box:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+   }
+
+   .metric-value {
+      font-size: 28px;
+      font-weight: bold;
+   }
+
+   .report-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+   }
+
+   .warning-box {
+      background: #ffe5e5;
+      border-left: 6px solid #ff3b3b;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+   }
+
+   .week-table {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+   }
+
+   .week-table th,
+   .week-table td {
+      padding: 14px;
+   }
+</style>
+<div class="container mt-4">
+   <h2><b>{{ student.first_name }} {{ student.last_name }}</b></h2>
+   <p class="text-muted">Individual Wellbeing Report</p>
+
+   <div class="row mb-4">
+      <div class="col-md-6">
+         <div class="metric-box">
+            <h5>Average Stress</h5>
+            <div class="metric-value text-danger">{{ avg_stress }}</div>
+         </div>
+      </div>
+      <div class="col-md-6">
+         <div class="metric-box">
+            <h5>Average Sleep</h5>
+            <div class="metric-value text-primary">{{ avg_sleep }} hrs</div>
+         </div>
+      </div>
+   </div>
+
+   {% if warnings and warnings|length > 0 %}
+   <div class="warning-box">
+      {% for w in warnings %}
+      <div>{{ w }}</div>
+      {% endfor %}
+   </div>
+   {% endif %}
+
+   <div class="row mb-4">
+      <div class="col-md-6">
+         <div class="report-card">
+            {{ stress_chart|safe }}
+         </div>
+      </div>
+      <div class="col-md-6">
+         <div class="report-card">
+            {{ sleep_chart|safe }}
+         </div>
+      </div>
+   </div>
+
+   <div class="row mb-4">
+      <div class="col-md-12">
+         <div class="report-card">
+            {{ pie_chart|safe }}
+         </div>
+      </div>
+   </div>
+
+   <h4 class="mt-4 mb-2">📅 Weekly Summary</h4>
+   <table class="table week-table">
+      <thead class="table-light">
+         <tr>
+            <th>Week</th>
+            <th>Stress</th>
+            <th>Sleep (hrs)</th>
+         </tr>
+      </thead>
+      <tbody>
+         {% for row in weekly_rows %}
+         <tr>
+            <td>{{ row.week }}</td>
+            <td>{{ row.stress }}</td>
+            <td>{{ row.sleep }}</td>
+         </tr>
+         {% endfor %}
+      </tbody>
+   </table>
+</div>
+{% endblock %}

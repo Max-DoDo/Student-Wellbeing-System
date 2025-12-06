@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+   .dashboard-card {
+      transition: 0.25s ease;
+      border-radius: 12px;
+      cursor: pointer;
+      border: none !important;
+   }
+
+   .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18) !important;
+   }
+
+   .modern-table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+   }
+
+   .modern-table thead {
+      background: #f1f3f7;
+      font-weight: 600;
+   }
+
+   .modern-table th,
+   .modern-table td {
+      padding: 14px 18px;
+      font-size: 15px;
+      vertical-align: middle;
+   }
+
+   .modern-table tbody tr {
+      transition: 0.2s ease;
+   }
+
+   .modern-table tbody tr:hover {
+      background: #f9fbff;
+      transform: scale(1.01);
+   }
+
+   .risk-high {
+      background: #ffe5e5 !important;
+   }
+
+   .risk-high:hover {
+      background: #ffdcdc !important;
+   }
+
+   .btn-view {
+      font-size: 14px;
+      padding: 6px 14px;
+      border-radius: 6px;
+   }
+
+   .section-title {
+      margin-bottom: 8px;
+   }
+</style>
+
+<div class="container mt-4">
+   <h2 class="section-title">📘 Course Leader Dashboard</h2>
+   <p class="text-muted">Live academic insights for your cohort</p>
+   <hr>
+   <!-- SUMMARY CARDS -->
+   <div class="row mb-4">
+      <div class="col-md-4">
+         <div class="card dashboard-card text-center p-3 shadow-sm">
+            <h5>Total Students</h5>
+            <h1 class="text-primary">{{ total_students }}</h1>
+         </div>
+      </div>
+      <div class="col-md-4">
+         <div class="card dashboard-card text-center p-3 shadow-sm">
+            <h5>Average Attendance</h5>
+            <h1 class="text-success">{{ avg_attendance }}%</h1>
+         </div>
+      </div>
+      <div class="col-md-4">
+         <div class="card dashboard-card text-center p-3 shadow-sm">
+            <h5>Average Grade</h5>
+            <h1 class="text-warning">{{ avg_grade }}</h1>
+         </div>
+      </div>
+   </div>
+
+   <!-- HIGH RISK STUDENTS -->
+   <div class="card p-4 shadow-sm">
+      <h4 class="mb-2">⚠ High-Risk Students</h4>
+      <p class="text-muted mb-3">
+         Students with attendance below <b>50%</b> or average grade below <b>50</b>.
+      </p>
+      {% if high_risk_students %}
+      <table class="modern-table">
+         <thead>
+            <tr>
+               <th>Name</th>
+               <th>Attendance %</th>
+               <th>Average Grade</th>
+               <th style="width: 140px; text-align:center;">View Report</th>
+            </tr>
+         </thead>
+         <tbody>
+            {% for s in high_risk_students %}
+            <tr class="risk-high">
+               <td>{{ s.name }}</td>
+               <td>{{ s.attendance }}%</td>
+               <td>{{ s.grade }}</td>
+               <td class="text-center">
+                  <a class="btn btn-primary btn-view" href="{{ url_for('course_leader_student_detail', sid=s.id) }}">
+                     View →
+                  </a>
+               </td>
+            </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+      {% else %}
+      <p class="text-muted">✔ No high-risk students found.</p>
+      {% endif %}
+   </div>
+</div>
+{% endblock %}

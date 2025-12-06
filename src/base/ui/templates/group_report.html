@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+<h2>📊 Group Wellbeing Report</h2>
+<p class="text-muted">This data represents all students.</p>
+<hr>
+<!-- 🌟 ROW: STRESS + SLEEP SIDE BY SIDE -->
+<div class="row">
+<!-- LEFT: STRESS -->
+<div class="col-md-6">
+<div class="card p-4 mb-4 shadow-sm">
+<h4>Average Stress Levels per Week</h4>
+               {{ avg_stress_chart | safe }}
+<p class="text-muted mt-2">*This reflects stress averages across all students.</p>
+</div>
+</div>
+<!-- RIGHT: SLEEP -->
+<div class="col-md-6">
+<div class="card p-4 mb-4 shadow-sm">
+<h4>Average Sleep Hours per Week</h4>
+               {{ avg_sleep_chart | safe }}
+<p class="text-muted mt-2">*This reflects sleep averages across all students.</p>
+</div>
+</div>
+</div>
+<div class="card p-4 mb-4 shadow-sm">
+<h4>Student Stress Distribution</h4>
+       {{ stress_distribution_chart | safe }}
+<p class="text-muted mt-2">*Based on each student's overall average stress.</p>
+</div>
+</div>
+{% endblock %}
