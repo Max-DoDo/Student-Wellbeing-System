@@ -92,18 +92,24 @@ def admin_dashboard():
    total_surveys = len(survey_repo.getWellBeingSurveys() or [])
    total_attendance = len(attendance_repo.getAllAttendance() or [])
    total_assessments = len(assessment_repo.getAssessments() or [])
-   # ---------- PIE CHART: System Data Distribution ----------
-   labels = ["Students", "Wellbeing Surveys", "Attendance Records", "Assessments"]
-   values = [total_students, total_surveys, total_attendance, total_assessments]
-   import plotly.graph_objects as go
-   pie_fig = go.Figure(
-       data=[go.Pie( labels=labels,values=values,hole=0.45,marker=dict(colors=["#4e79a7", "#59a14f", "#76b7b2", "#f28e2b"]))]
+   # ------- BAR GRAPH (System Data Distribution) -------
+   labels = ["Surveys", "Attendance", "Assessments"]
+   values = [total_surveys, total_attendance, total_assessments]
+   bar_fig = go.Figure(
+       data=[go.Bar(
+           x=labels,
+           y=values,
+           marker=dict(color=["#28a745", "#17a2b8", "#ffc107"])
+       )]
    )
-   pie_fig.update_layout(
+   bar_fig.update_layout(
        title="System Data Distribution",
-       height=380
+       xaxis_title="Category",
+       yaxis_title="Count",
+       template="plotly_white",
+       height=400
    )
-   system_distribution_chart = pie_fig.to_html(full_html=False)
+   admin_bar_chart = bar_fig.to_html(full_html=False)
    return render_template(
        "admin_dashboard.html",
        role=session.get("role"),
@@ -111,9 +117,8 @@ def admin_dashboard():
        total_surveys=total_surveys,
        total_attendance=total_attendance,
        total_assessments=total_assessments,
-       system_distribution_chart=system_distribution_chart
+       admin_bar_chart=admin_bar_chart
    )
-
 
 @app.route("/wellbeing")
 def wellbeing_dashboard():
