@@ -140,6 +140,7 @@ def populate_database():
     ('wellbeing', 'safe123', 'Sarah', 'Care', 'wellbeing@warwick.uni.ac.uk', 1, 1, 1, None),
     
     ('course_leader', 'teach123', 'Prof', 'Smart', 'course_leader@warwick.uni.ac.uk', 2, 1, 1, None)
+
     ]
     cursor.executemany("""
         INSERT INTO users (username, password, first_name, last_name, email, role_id, is_active, is_subscribed, received_report_at)

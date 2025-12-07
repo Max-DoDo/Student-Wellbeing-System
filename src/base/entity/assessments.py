@@ -11,5 +11,5 @@ class Assessment:
 
     def __post_init__(self):
         if self.submitted_on_time == None:
-            self.submitted_on_time = MyTools.getFormattedDate();
+            self.submitted_on_time = MyTools().getFormattedDate()
         

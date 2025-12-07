@@ -41,6 +41,56 @@ class Wellbeing_Survey_Repo(Base_Repo):
     def toWellBeingSurveys(self, rows) -> List[Wellbeing_Survey]:
         return [self.toWellBeingSurvey(row) for row in rows]
     
+    def addWellBeingSurvey(self, survey: Wellbeing_Survey) -> int:
+        if survey.student_id == -1 or survey.week_number == -1 or survey.stress_level == -1 or survey.hours_slept == -1:
+            raise ValueError("Missing required wellbeing survey fields (student_id, week_number, stress_level, hours_slept).")
+
+        # Validate week_number range (1-52)
+        if survey.week_number < 1 or survey.week_number > 52:
+            raise ValueError(f"week_number must be between 1 and 52, got {survey.week_number}")
+
+        # Validate stress_level range (1-5)
+        if survey.stress_level < 1 or survey.stress_level > 5:
+            raise ValueError(f"stress_level must be between 1 and 5, got {survey.stress_level}")
+
+        # Validate hours_slept range (0-24)
+        if survey.hours_slept < 0 or survey.hours_slept > 24:
+            raise ValueError(f"hours_slept must be between 0 and 24, got {survey.hours_slept}")
+
+        if survey.survey_id == -1:
+            query = """
+                INSERT INTO wellbeing_surveys
+                (student_id, week_number, stress_level, hours_slept, survey_date)
+                VALUES (?, ?, ?, ?, ?)
+                """
+            values = (
+                survey.student_id,
+                survey.week_number,
+                survey.stress_level,
+                survey.hours_slept,
+                survey.survey_date
+            )
+        else:
+            query = """
+                INSERT INTO wellbeing_surveys
+                (survey_id, student_id, week_number, stress_level, hours_slept, survey_date)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """
+            values = (
+                survey.survey_id,
+                survey.student_id,
+                survey.week_number,
+                survey.stress_level,
+                survey.hours_slept,
+                survey.survey_date
+            )
+
+        self.cursor.execute(query, values)
+        self.conn.commit()
+        return survey.survey_id if survey.survey_id != -1 else self.cursor.lastrowid
+
+    
+
     def deleteSurveysByStudentID(self, sid):
         query = "DELETE FROM wellbeing_surveys WHERE student_id = ?"
         self.cursor.execute(query, (sid,))

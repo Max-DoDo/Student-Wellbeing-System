@@ -8,6 +8,7 @@ from base.repository.student_repo import Student_Repo
 from base.entity.student import Student
 from base.services.student_service import Student_Service
 from base.repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
+from base.entity.wellbeing_survey import Wellbeing_Survey
 import matplotlib.pyplot as plt
 import os
 import plotly.graph_objects as go
@@ -18,6 +19,8 @@ import plotly.graph_objects as go
 from base.repository.attendance_repo import Attendance_Repo
 from base.repository.attendance_repo import Attendance_Repo
 from base.repository.assessment_repo import Assessment_Repo
+from base.entity.attendance import Attendance
+from base.entity.assessments import Assessment
 
 app = Flask(__name__)
 app.secret_key = "secret123"
@@ -92,15 +95,33 @@ def admin_dashboard():
    total_surveys = len(survey_repo.getWellBeingSurveys() or [])
    total_attendance = len(attendance_repo.getAllAttendance() or [])
    total_assessments = len(assessment_repo.getAssessments() or [])
+   # ------- BAR GRAPH (System Data Distribution) -------
+   labels = ["Surveys", "Attendance", "Assessments"]
+   values = [total_surveys, total_attendance, total_assessments]
+   bar_fig = go.Figure(
+       data=[go.Bar(
+           x=labels,
+           y=values,
+           marker=dict(color=["#28a745", "#17a2b8", "#ffc107"])
+       )]
+   )
+   bar_fig.update_layout(
+       title="System Data Distribution",
+       xaxis_title="Category",
+       yaxis_title="Count",
+       template="plotly_white",
+       height=400
+   )
+   admin_bar_chart = bar_fig.to_html(full_html=False)
    return render_template(
        "admin_dashboard.html",
        role=session.get("role"),
        total_students=total_students,
        total_surveys=total_surveys,
        total_attendance=total_attendance,
-       total_assessments=total_assessments
+       total_assessments=total_assessments,
+       admin_bar_chart=admin_bar_chart
    )
-
 
 @app.route("/wellbeing")
 def wellbeing_dashboard():
@@ -126,7 +147,7 @@ def wellbeing_dashboard():
        avg_h = sum(x.hours_slept for x in s_surveys) / len(s_surveys)
        
        if avg_s >= 4 or avg_h <= 5:
-        high_risk_students.append({
+         high_risk_students.append({
        "id": student.id,
        "name": f"{student.first_name} {student.last_name}",
        "avg_stress": round(avg_s, 2),
@@ -139,6 +160,42 @@ def wellbeing_dashboard():
        avg_stress=avg_stress,
        avg_sleep=avg_sleep,
        high_risk_students=high_risk_students
+   )
+
+@app.route("/wellbeing/add-survey", methods=["GET", "POST"])
+def add_wellbeing_survey():
+   role = session.get("role")
+   if role not in ("wellbeing", "admin"):
+       return redirect(url_for("dashboard_redirect"))
+   student_repo = Student_Repo()
+   survey_repo = Wellbeing_Survey_Repo()
+   students = student_repo.getAllStudent() or []
+   success = False
+   error = None
+   if request.method == "POST":
+       try:
+           sid = int(request.form["student_id"])
+           week = int(request.form["week_number"])
+           stress = int(request.form["stress_level"])
+           sleep = float(request.form["hours_slept"])
+           survey_date = request.form.get("survey_date") or None
+           survey = Wellbeing_Survey(
+               student_id=sid,
+               week_number=week,
+               stress_level=stress,
+               hours_slept=sleep,
+               survey_date=survey_date
+           )
+           survey_repo.addWellBeingSurvey(survey)
+           success = True
+       except Exception as e:
+           error = str(e)
+   return render_template(
+       "add_wellbeing_survey.html",
+       role=role,
+       students=students,
+       success=success,
+       error=error
    )
 
 @app.route("/course-leader")
@@ -184,6 +241,75 @@ def course_leader_dashboard():
        avg_attendance=avg_attendance,
        avg_grade=avg_grade,
        high_risk_students=high_risk_students
+   )
+
+@app.route("/course-leader/add-attendance", methods=["GET", "POST"])
+def add_attendance():
+   role = session.get("role")
+   if role not in ("course_leader", "admin"):
+       return redirect(url_for("dashboard_redirect"))
+   student_repo = Student_Repo()
+   att_repo = Attendance_Repo()
+   students = student_repo.getAllStudent() or []
+   success = False
+   error = None
+   if request.method == "POST":
+       try:
+           sid = int(request.form["student_id"])
+           week = int(request.form["week_number"])
+           is_present = request.form.get("is_present") == "1"
+           is_late = request.form.get("is_late") == "1"
+           att = Attendance(
+               student_id=sid,
+               week_number=week,
+               is_present=is_present,
+               is_late=is_late
+           )
+           att_repo.addAttendance(att)
+           success = True
+       except Exception as e:
+           error = str(e)
+   return render_template(
+       "add_attendance.html",
+       role=role,
+       students=students,
+       success=success,
+       error=error
+   )
+
+@app.route("/course-leader/add-assessment", methods=["GET", "POST"])
+def add_assessment():
+   role = session.get("role")
+   if role not in ("course_leader", "admin"):
+       return redirect(url_for("dashboard_redirect"))
+   student_repo = Student_Repo()
+   grade_repo = Assessment_Repo()
+   students = student_repo.getAllStudent() or []
+   success = False
+   error = None
+   if request.method == "POST":
+       try:
+           sid = int(request.form["student_id"])
+           assignment_name = request.form["assignment_name"]
+           grade = int(request.form["grade"])
+           submitted_on_time = request.form.get("submitted_on_time") == "1"
+           assessment = Assessment(
+               assessment_id=None,
+               student_id=sid,
+               assignment_name=assignment_name,
+               grade=grade,
+               submitted_on_time=int(submitted_on_time)
+           )
+           grade_repo.addAssessment(assessment)
+           success = True
+       except Exception as e:
+           error = str(e)
+   return render_template(
+       "add_assessment.html",
+       role=role,
+       students=students,
+       success=success,
+       error=error
    )
 
 # ---------------- STUDENT LIST ----------------
