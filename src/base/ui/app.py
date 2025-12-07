@@ -8,6 +8,7 @@ from base.repository.student_repo import Student_Repo
 from base.entity.student import Student
 from base.services.student_service import Student_Service
 from base.repository.wellbeing_surveys_repo import Wellbeing_Survey_Repo
+from base.entity.wellbeing_survey import Wellbeing_Survey
 import matplotlib.pyplot as plt
 import os
 import plotly.graph_objects as go
@@ -144,7 +145,7 @@ def wellbeing_dashboard():
        avg_h = sum(x.hours_slept for x in s_surveys) / len(s_surveys)
        
        if avg_s >= 4 or avg_h <= 5:
-        high_risk_students.append({
+         high_risk_students.append({
        "id": student.id,
        "name": f"{student.first_name} {student.last_name}",
        "avg_stress": round(avg_s, 2),
@@ -157,6 +158,42 @@ def wellbeing_dashboard():
        avg_stress=avg_stress,
        avg_sleep=avg_sleep,
        high_risk_students=high_risk_students
+   )
+
+@app.route("/wellbeing/add-survey", methods=["GET", "POST"])
+def add_wellbeing_survey():
+   role = session.get("role")
+   if role not in ("wellbeing", "admin"):
+       return redirect(url_for("dashboard_redirect"))
+   student_repo = Student_Repo()
+   survey_repo = Wellbeing_Survey_Repo()
+   students = student_repo.getAllStudent() or []
+   success = False
+   error = None
+   if request.method == "POST":
+       try:
+           sid = int(request.form["student_id"])
+           week = int(request.form["week_number"])
+           stress = int(request.form["stress_level"])
+           sleep = float(request.form["hours_slept"])
+           survey_date = request.form.get("survey_date") or None
+           survey = Wellbeing_Survey(
+               student_id=sid,
+               week_number=week,
+               stress_level=stress,
+               hours_slept=sleep,
+               survey_date=survey_date
+           )
+           survey_repo.addWellBeingSurvey(survey)
+           success = True
+       except Exception as e:
+           error = str(e)
+   return render_template(
+       "add_wellbeing_survey.html",
+       role=role,
+       students=students,
+       success=success,
+       error=error
    )
 
 @app.route("/course-leader")
