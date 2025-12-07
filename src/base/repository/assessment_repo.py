@@ -45,6 +45,14 @@ class Assessment_Repo(Base_Repo):
             assessment.submitted_on_time is None or assessment.submitted_on_time == ""):
             raise ValueError("Missing required assessment fields (student_id, assignment_name, grade, submitted_on_time).")
 
+        # Validate grade range (0-100)
+        if assessment.grade < 0 or assessment.grade > 100:
+            raise ValueError(f"grade must be between 0 and 100, got {assessment.grade}")
+
+        # Validate submitted_on_time (0 or 1)
+        if assessment.submitted_on_time not in (0, 1):
+            raise ValueError(f"submitted_on_time must be 0 or 1, got {assessment.submitted_on_time}")
+
         if assessment.assessment_id is None:
             query = """
                 INSERT INTO assessments
