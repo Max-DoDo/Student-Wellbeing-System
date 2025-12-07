@@ -19,6 +19,8 @@ import plotly.graph_objects as go
 from base.repository.attendance_repo import Attendance_Repo
 from base.repository.attendance_repo import Attendance_Repo
 from base.repository.assessment_repo import Assessment_Repo
+from base.entity.attendance import Attendance
+from base.entity.assessments import Assessment
 
 app = Flask(__name__)
 app.secret_key = "secret123"
@@ -239,6 +241,75 @@ def course_leader_dashboard():
        avg_attendance=avg_attendance,
        avg_grade=avg_grade,
        high_risk_students=high_risk_students
+   )
+
+@app.route("/course-leader/add-attendance", methods=["GET", "POST"])
+def add_attendance():
+   role = session.get("role")
+   if role not in ("course_leader", "admin"):
+       return redirect(url_for("dashboard_redirect"))
+   student_repo = Student_Repo()
+   att_repo = Attendance_Repo()
+   students = student_repo.getAllStudent() or []
+   success = False
+   error = None
+   if request.method == "POST":
+       try:
+           sid = int(request.form["student_id"])
+           week = int(request.form["week_number"])
+           is_present = request.form.get("is_present") == "1"
+           is_late = request.form.get("is_late") == "1"
+           att = Attendance(
+               student_id=sid,
+               week_number=week,
+               is_present=is_present,
+               is_late=is_late
+           )
+           att_repo.addAttendance(att)
+           success = True
+       except Exception as e:
+           error = str(e)
+   return render_template(
+       "add_attendance.html",
+       role=role,
+       students=students,
+       success=success,
+       error=error
+   )
+
+@app.route("/course-leader/add-assessment", methods=["GET", "POST"])
+def add_assessment():
+   role = session.get("role")
+   if role not in ("course_leader", "admin"):
+       return redirect(url_for("dashboard_redirect"))
+   student_repo = Student_Repo()
+   grade_repo = Assessment_Repo()
+   students = student_repo.getAllStudent() or []
+   success = False
+   error = None
+   if request.method == "POST":
+       try:
+           sid = int(request.form["student_id"])
+           assignment_name = request.form["assignment_name"]
+           grade = int(request.form["grade"])
+           submitted_on_time = request.form.get("submitted_on_time") == "1"
+           assessment = Assessment(
+               assessment_id=None,
+               student_id=sid,
+               assignment_name=assignment_name,
+               grade=grade,
+               submitted_on_time=int(submitted_on_time)
+           )
+           grade_repo.addAssessment(assessment)
+           success = True
+       except Exception as e:
+           error = str(e)
+   return render_template(
+       "add_assessment.html",
+       role=role,
+       students=students,
+       success=success,
+       error=error
    )
 
 # ---------------- STUDENT LIST ----------------
