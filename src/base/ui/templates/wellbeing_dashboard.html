@@ -72,8 +72,13 @@
 </style>
 <div class="container mt-4">
 
-   <h2 class="fw-bold mb-2">🌿 Wellbeing Dashboard</h2>
-   <p class="text-muted mb-4">Welcome! Here’s an overview of student wellbeing insights.</p>
+   <div class="d-flex justify-content-between align-items-start">
+      <div>
+         <h2 class="fw-bold mb-2">🌿Wellbeing Dashboard</h2>
+         <p class="text-muted mb-4">Welcome! Here is an overview of student wellbeing insights.</p>
+      </div>
+      <a class="btn btn-primary mt-1" href="{{ url_for('add_wellbeing_survey') }}">+ Add Survey</a>
+   </div>
    <hr>
 
    <div class="row mb-4">
@@ -104,7 +109,7 @@
    </div>
    <hr>
 
-   <h3 class="mb-2">⚠ High-Risk Students</h3>
+   <h3 class="mb-2">High-Risk Students</h3>
    <p class="text-muted mb-3">Detected by: High stress or low sleep</p>
    {% if high_risk_students %}
    <div class="card p-4 shadow-sm">
@@ -125,7 +130,7 @@
                <td>{{ s.avg_sleep }} hrs</td>
                <td class="text-center">
                   <a class="btn btn-primary btn-view" href="{{ url_for('wellbeing_student_detail', sid=s.id) }}">
-                     View →
+                     View +
                   </a>
                </td>
             </tr>
@@ -134,7 +139,7 @@
       </table>
    </div>
    {% else %}
-   <p class="text-muted">✔ No high-risk students found.</p>
+   <p class="text-muted">No high-risk students found.</p>
    {% endif %}
 </div>
 {% endblock %}

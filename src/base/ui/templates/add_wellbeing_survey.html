@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+   <h2 class="fw-bold mb-2">Add Wellbeing Survey</h2>
+   <p class="text-muted mb-4">Log a new weekly wellbeing check-in for a student.</p>
+
+   {% if success %}
+   <div class="alert alert-success">Survey saved successfully.</div>
+   {% elif error %}
+   <div class="alert alert-danger">Error: {{ error }}</div>
+   {% endif %}
+
+   <div class="card shadow-sm p-4">
+      <form method="POST" action="{{ url_for('add_wellbeing_survey') }}">
+         <div class="mb-3">
+            <label class="form-label fw-semibold">Student</label>
+            <select class="form-select" name="student_id" required>
+               <option value="" disabled selected>Select a student</option>
+               {% for s in students %}
+               <option value="{{ s.id }}">{{ s.first_name }} {{ s.last_name }} (ID: {{ s.id }})</option>
+               {% endfor %}
+            </select>
+         </div>
+
+         <div class="row">
+            <div class="col-md-4 mb-3">
+               <label class="form-label fw-semibold">Week Number</label>
+               <input type="number" class="form-control" name="week_number" min="1" max="52" required>
+            </div>
+            <div class="col-md-4 mb-3">
+               <label class="form-label fw-semibold">Stress Level (1-5)</label>
+               <input type="number" class="form-control" name="stress_level" min="1" max="5" required>
+            </div>
+            <div class="col-md-4 mb-3">
+               <label class="form-label fw-semibold">Hours Slept (0-24)</label>
+               <input type="number" step="0.1" class="form-control" name="hours_slept" min="0" max="24" required>
+            </div>
+         </div>
+
+         <div class="mb-3">
+            <label class="form-label fw-semibold">Survey Date (optional)</label>
+            <input type="date" class="form-control" name="survey_date">
+         </div>
+
+         <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Save Survey</button>
+            <a href="{{ url_for('wellbeing_dashboard') }}" class="btn btn-outline-secondary">Back to Dashboard</a>
+         </div>
+      </form>
+   </div>
+</div>
+{% endblock %}

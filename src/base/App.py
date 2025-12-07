@@ -14,6 +14,8 @@ import logging
 import sys
 from werkzeug.serving import run_simple
 
+from base.services.email_service import Email_Service
+ 
 # Host name
 hn = "127.0.0.1"
 
@@ -36,6 +38,7 @@ class App:
         self.test();
     
     def test(self):
+        Email_Service(1).sendEmail()
         pass
 
     def configure_DataBase(self):
@@ -54,6 +57,7 @@ class App:
 
 if __name__ == "__main__":
     App()
+
 
     import logging
     logging.getLogger('werkzeug').setLevel(logging.ERROR)

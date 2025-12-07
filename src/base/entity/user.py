@@ -11,6 +11,8 @@ class User(Person):
     role_id: Optional[int] = None
     is_active: Optional[bool] = None
     created_at: Optional[str] = None
+    is_subscribed: Optional[bool] = True
+    received_report_at: Optional[str] = None
 
     def __post_init__(self):
         super().__post_init__()

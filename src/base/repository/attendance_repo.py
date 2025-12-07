@@ -40,3 +40,42 @@ class Attendance_Repo(Base_Repo):
 
     def toAttendances(self,rows) -> List[Attendance]:
         return [self.toAttendance(row) for row in rows]
+
+    def addAttendance(self, attendance: Attendance) -> int:
+        if attendance.student_id is None or attendance.week_number is None or attendance.is_present is None or attendance.is_late is None:
+            raise ValueError("Missing required attendance fields (student_id, week_number, is_present, is_late).")
+
+        if attendance.attendance_id is None:
+            query = """
+                INSERT INTO attendance
+                (student_id, week_number, is_present, is_late)
+                VALUES (?, ?, ?, ?)
+                """
+            values = (
+                attendance.student_id,
+                attendance.week_number,
+                int(attendance.is_present),
+                int(attendance.is_late)
+            )
+        else:
+            query = """
+                INSERT INTO attendance
+                (attendance_id, student_id, week_number, is_present, is_late)
+                VALUES (?, ?, ?, ?, ?)
+                """
+            values = (
+                attendance.attendance_id,
+                attendance.student_id,
+                attendance.week_number,
+                int(attendance.is_present),
+                int(attendance.is_late)
+            )
+
+        self.cursor.execute(query, values)
+        self.conn.commit()
+        return attendance.attendance_id if attendance.attendance_id is not None else self.cursor.lastrowid
+
+    def deleteAttendanceByStudentID(self, sid):
+        query = "DELETE FROM attendance WHERE student_id = ?"
+        self.cursor.execute(query, (sid,))
+        self.conn.commit()

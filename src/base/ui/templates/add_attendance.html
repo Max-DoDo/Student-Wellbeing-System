@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+   <h2 class="fw-bold mb-2">Add Attendance</h2>
+   <p class="text-muted mb-4">Record weekly attendance for a student.</p>
+
+   {% if success %}
+   <div class="alert alert-success">Attendance saved successfully.</div>
+   {% elif error %}
+   <div class="alert alert-danger">Error: {{ error }}</div>
+   {% endif %}
+
+   <div class="card shadow-sm p-4">
+      <form method="POST" action="{{ url_for('add_attendance') }}">
+         <div class="mb-3">
+            <label class="form-label fw-semibold">Student</label>
+            <select class="form-select" name="student_id" required>
+               <option value="" disabled selected>Select a student</option>
+               {% for s in students %}
+               <option value="{{ s.id }}">{{ s.first_name }} {{ s.last_name }} (ID: {{ s.id }})</option>
+               {% endfor %}
+            </select>
+         </div>
+
+         <div class="row">
+            <div class="col-md-4 mb-3">
+               <label class="form-label fw-semibold">Week Number</label>
+               <input type="number" class="form-control" name="week_number" min="1" max="52" required>
+            </div>
+            <div class="col-md-4 mb-3">
+               <label class="form-label fw-semibold">Present?</label>
+               <select class="form-select" name="is_present" required>
+                  <option value="1">Present</option>
+                  <option value="0">Absent</option>
+               </select>
+            </div>
+            <div class="col-md-4 mb-3">
+               <label class="form-label fw-semibold">Late?</label>
+               <select class="form-select" name="is_late" required>
+                  <option value="0">No</option>
+                  <option value="1">Yes</option>
+               </select>
+            </div>
+         </div>
+
+         <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Save Attendance</button>
+            <a href="{{ url_for('course_leader_dashboard') }}" class="btn btn-outline-secondary">Back to Dashboard</a>
+         </div>
+      </form>
+   </div>
+</div>
+{% endblock %}

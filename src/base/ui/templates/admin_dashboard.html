@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 <style>
-
 .dashboard-card {
    transition: all 0.25s ease-in-out;
    border-radius: 12px;
@@ -11,12 +10,19 @@
    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
    cursor: pointer;
 }
+/* Center box for pie chart */
+.chart-card {
+   border-radius: 12px;
+   padding: 25px;
+   background: #ffffff;
+   box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+   margin-top: 30px;
+}
 </style>
 <div class="container mt-4">
 <h2 class="mb-2">Admin Dashboard</h2>
 <p class="text-muted">System Overview & Quick Management</p>
 <hr>
-
 <div class="row">
 <div class="col-md-3">
 <div class="card dashboard-card text-center p-3 shadow-sm">
@@ -44,5 +50,12 @@
 </div>
 </div>
 <hr>
+<!-- BAR GRAPH: SYSTEM DATA DISTRIBUTION -->
+<div class="card p-4 shadow-sm mt-4">
+<h4 class="text-center mb-3">System Data Distribution</h4>
+<div class="d-flex justify-content-center">
+       {{ admin_bar_chart | safe }}
+</div>
+</div>
 </div>
 {% endblock %}

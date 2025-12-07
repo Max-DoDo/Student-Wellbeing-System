@@ -64,8 +64,16 @@
 </style>
 
 <div class="container mt-4">
-   <h2 class="section-title">📘 Course Leader Dashboard</h2>
-   <p class="text-muted">Live academic insights for your cohort</p>
+   <div class="d-flex justify-content-between align-items-start">
+      <div>
+         <h2 class="section-title">Course Leader Dashboard</h2>
+         <p class="text-muted">Live academic insights for your cohort</p>
+      </div>
+      <div class="d-flex gap-2">
+         <a class="btn btn-primary" href="{{ url_for('add_attendance') }}">+ Add Attendance</a>
+         <a class="btn btn-secondary" href="{{ url_for('add_assessment') }}">+ Add Assessment</a>
+      </div>
+   </div>
    <hr>
    <!-- SUMMARY CARDS -->
    <div class="row mb-4">
@@ -91,7 +99,7 @@
 
    <!-- HIGH RISK STUDENTS -->
    <div class="card p-4 shadow-sm">
-      <h4 class="mb-2">⚠ High-Risk Students</h4>
+      <h4 class="mb-2">High-Risk Students</h4>
       <p class="text-muted mb-3">
          Students with attendance below <b>50%</b> or average grade below <b>50</b>.
       </p>
@@ -113,7 +121,7 @@
                <td>{{ s.grade }}</td>
                <td class="text-center">
                   <a class="btn btn-primary btn-view" href="{{ url_for('course_leader_student_detail', sid=s.id) }}">
-                     View →
+                     View +
                   </a>
                </td>
             </tr>
@@ -121,7 +129,7 @@
          </tbody>
       </table>
       {% else %}
-      <p class="text-muted">✔ No high-risk students found.</p>
+      <p class="text-muted">No high-risk students found.</p>
       {% endif %}
    </div>
 </div>

@@ -20,9 +20,9 @@ class Assessment_Repo(Base_Repo):
             return self.toAssessments(rows)
         return None
     
-    def getAssessmentsByStudentID(self, s_id = int) -> Optional[List[Assessment]]:
+    def getAssessmentsByStudentID(self, id = int) -> Optional[List[Assessment]]:
         query = "SELECT * FROM assessments WHERE student_id = ?"
-        self.cursor.execute(query, (s_id,))
+        self.cursor.execute(query, (id,))
         rows = self.cursor.fetchall()
         if rows:
             return self.toAssessments(rows)
@@ -39,3 +39,43 @@ class Assessment_Repo(Base_Repo):
 
     def toAssessments(self, rows) -> List[Assessment]:
         return [self.toAssessment(row) for row in rows]
+
+    def addAssessment(self, assessment: Assessment) -> int:
+        if (assessment.student_id is None or assessment.assignment_name is None or assessment.grade is None or
+            assessment.submitted_on_time is None or assessment.submitted_on_time == ""):
+            raise ValueError("Missing required assessment fields (student_id, assignment_name, grade, submitted_on_time).")
+
+        if assessment.assessment_id is None:
+            query = """
+                INSERT INTO assessments
+                (student_id, assignment_name, grade, submitted_on_time)
+                VALUES (?, ?, ?, ?)
+                """
+            values = (
+                assessment.student_id,
+                assessment.assignment_name,
+                assessment.grade,
+                assessment.submitted_on_time
+            )
+        else:
+            query = """
+                INSERT INTO assessments
+                (assessment_id, student_id, assignment_name, grade, submitted_on_time)
+                VALUES (?, ?, ?, ?, ?)
+                """
+            values = (
+                assessment.assessment_id,
+                assessment.student_id,
+                assessment.assignment_name,
+                assessment.grade,
+                assessment.submitted_on_time
+            )
+
+        self.cursor.execute(query, values)
+        self.conn.commit()
+        return assessment.assessment_id if assessment.assessment_id is not None else self.cursor.lastrowid
+
+    def deleteAssessmentsByStudentID(self, sid):
+        query = "DELETE FROM assessments WHERE student_id = ?"
+        self.cursor.execute(query, (sid,))
+        self.conn.commit()

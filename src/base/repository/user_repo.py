@@ -15,8 +15,15 @@ class User_Repo(Base_Repo):
     
     def getUserByUserName(self, username : str) -> Optional[User]:
         query = "SELECT * FROM users WHERE username = ?"
-        Log.debug(username)
         self.cursor.execute(query,(username,))
+        row = self.cursor.fetchone()
+        if row:
+            return self.toUser(row)
+        return None
+    
+    def getUserByEmail(self, email : str) -> Optional[User]:
+        query = "SELECT * FROM users WHERE email = ?"
+        self.cursor.execute(query,(email,))
         row = self.cursor.fetchone()
         if row:
             return self.toUser(row)
@@ -29,7 +36,14 @@ class User_Repo(Base_Repo):
         if rows:
             return self.toUsers(rows)
         return None
+    
+    def updateEmailDate(self,user : User,weeknumber : int):
+        query = "UPDATE users SET received_report_at = ? WHERE users_id = ?"
+        values = (weeknumber, user.id)
 
+        self.cursor.execute(query, values)
+        self.conn.commit()
+        return self.cursor.rowcount > 0
         
 
     def toUser(self,row) -> User:
@@ -42,7 +56,9 @@ class User_Repo(Base_Repo):
             password=row["password"],
             role_id=row["role_id"],
             is_active=row["is_active"],
-            created_at=row["created_at"]
+            created_at=row["created_at"],
+            is_subscribed=row["is_subscribed"],
+            received_report_at=row["received_report_at"]
         )
 
     def toUsers(self,rows) -> List[User]:
