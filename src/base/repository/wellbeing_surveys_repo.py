@@ -45,6 +45,18 @@ class Wellbeing_Survey_Repo(Base_Repo):
         if survey.student_id == -1 or survey.week_number == -1 or survey.stress_level == -1 or survey.hours_slept == -1:
             raise ValueError("Missing required wellbeing survey fields (student_id, week_number, stress_level, hours_slept).")
 
+        # Validate week_number range (1-52)
+        if survey.week_number < 1 or survey.week_number > 52:
+            raise ValueError(f"week_number must be between 1 and 52, got {survey.week_number}")
+
+        # Validate stress_level range (1-5)
+        if survey.stress_level < 1 or survey.stress_level > 5:
+            raise ValueError(f"stress_level must be between 1 and 5, got {survey.stress_level}")
+
+        # Validate hours_slept range (0-24)
+        if survey.hours_slept < 0 or survey.hours_slept > 24:
+            raise ValueError(f"hours_slept must be between 0 and 24, got {survey.hours_slept}")
+
         if survey.survey_id == -1:
             query = """
                 INSERT INTO wellbeing_surveys
