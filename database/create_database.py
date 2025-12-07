@@ -141,7 +141,6 @@ def populate_database():
     
     ('course_leader', 'teach123', 'Prof', 'Smart', 'course_leader@warwick.uni.ac.uk', 2, 1, 1, None)
 
-    ('course_leader', 'teach123', 'Ayush', 'S', 'Ayush.Raghuwanshi@warwick.uni.ac.uk', -10, 1, 1, None)
     ]
     cursor.executemany("""
         INSERT INTO users (username, password, first_name, last_name, email, role_id, is_active, is_subscribed, received_report_at)
