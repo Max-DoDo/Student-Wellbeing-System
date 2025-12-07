@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+   <h2 class="fw-bold mb-2">Add Assessment</h2>
+   <p class="text-muted mb-4">Record an assessment grade for a student.</p>
+
+   {% if success %}
+   <div class="alert alert-success">Assessment saved successfully.</div>
+   {% elif error %}
+   <div class="alert alert-danger">Error: {{ error }}</div>
+   {% endif %}
+
+   <div class="card shadow-sm p-4">
+      <form method="POST" action="{{ url_for('add_assessment') }}">
+         <div class="mb-3">
+            <label class="form-label fw-semibold">Student</label>
+            <select class="form-select" name="student_id" required>
+               <option value="" disabled selected>Select a student</option>
+               {% for s in students %}
+               <option value="{{ s.id }}">{{ s.first_name }} {{ s.last_name }} (ID: {{ s.id }})</option>
+               {% endfor %}
+            </select>
+         </div>
+
+         <div class="mb-3">
+            <label class="form-label fw-semibold">Assessment Name</label>
+            <input type="text" class="form-control" name="assignment_name" maxlength="255" required>
+         </div>
+
+         <div class="row">
+            <div class="col-md-6 mb-3">
+               <label class="form-label fw-semibold">Grade (0-100)</label>
+               <input type="number" class="form-control" name="grade" min="0" max="100" required>
+            </div>
+            <div class="col-md-6 mb-3">
+               <label class="form-label fw-semibold">Submitted On Time?</label>
+               <select class="form-select" name="submitted_on_time" required>
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+               </select>
+            </div>
+         </div>
+
+         <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Save Assessment</button>
+            <a href="{{ url_for('course_leader_dashboard') }}" class="btn btn-outline-secondary">Back to Dashboard</a>
+         </div>
+      </form>
+   </div>
+</div>
+{% endblock %}
