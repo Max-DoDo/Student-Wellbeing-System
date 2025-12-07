@@ -45,6 +45,10 @@ class Attendance_Repo(Base_Repo):
         if attendance.student_id is None or attendance.week_number is None or attendance.is_present is None or attendance.is_late is None:
             raise ValueError("Missing required attendance fields (student_id, week_number, is_present, is_late).")
 
+        # Validate week_number range (1-52)
+        if attendance.week_number < 1 or attendance.week_number > 52:
+            raise ValueError(f"week_number must be between 1 and 52, got {attendance.week_number}")
+
         if attendance.attendance_id is None:
             query = """
                 INSERT INTO attendance
